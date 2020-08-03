@@ -2,6 +2,8 @@
 
 This code is part of the project “Neural Networks for binary classification on multiple data modalities”. This is the core of the project, including the fundamental classes which handle the datasets and the training and evaluation of the models as well as the network architectures.
 
+[TOC]
+
 ## General description
 
 The relationship and interaction among the main components of the `classifier` package is summarised by the following scheme.
