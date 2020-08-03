@@ -1,0 +1,18 @@
+{
+  "paths": {
+    "source": {
+      "data_folder": "dataset",
+      "modality": "audio",
+      "data_source": "",
+      "representation": "",
+      "data_dimension": "base"
+    },
+    "destination": {
+      "data_folder": "preprocessed",
+      "modality": "images",
+      "data_source": "audio",
+      "representation": "mfcc",
+      "data_dimension": "base"
+    }
+  }
+}

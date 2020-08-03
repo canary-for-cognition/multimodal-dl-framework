@@ -1,0 +1,13 @@
+{
+  "submodules": {
+    "text": "transformer",
+    "images": "images_cnn"
+  },
+  "layers": {
+    "linear_1": {
+      "out_features": 20
+    }
+  },
+  "output_size": 2,
+  "features_fusion": "early"
+}

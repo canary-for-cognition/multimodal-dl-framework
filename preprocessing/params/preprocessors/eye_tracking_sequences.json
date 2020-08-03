@@ -1,0 +1,32 @@
+{
+  "verbose": true,
+  "features": "fixations",
+  "max_sequence_length": -1,
+  "fill_na_with_mean": false,
+  "collapse_fixations": true,
+  "filter_by_event": {
+    "active": true,
+    "type": "fixation"
+  },
+  "cyclic_split": {
+    "active": true,
+    "step": -1
+  },
+  "use_cyclic_split": false,
+  "paths": {
+    "source": {
+      "data_folder": "dataset",
+      "modality": "sequences",
+      "data_source": "eye_tracking",
+      "representation": "",
+      "data_dimension": "raw"
+    },
+    "destination": {
+      "data_folder": "preprocessed",
+      "modality": "sequences",
+      "data_source": "eye_tracking",
+      "representation": "collapsed_fixations",
+      "data_dimension": "base"
+    }
+  }
+}

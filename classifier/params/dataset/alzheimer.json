@@ -1,0 +1,18 @@
+{
+  "variable_size_input": false,
+  "classes": {
+    "positive": "alzheimer",
+    "negative": "healthy"
+  },
+  "paths": {
+    "dataset_folder": "../dataset",
+    "dataset_metadata": "metadata",
+    "cv_metadata": "split/metadata/text/5_1",
+    "modalities": {
+      "images": "images",
+      "sequences": "sequences",
+      "text": "text",
+      "audio": "audio"
+    }
+  }
+}

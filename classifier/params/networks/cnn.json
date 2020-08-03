@@ -1,0 +1,30 @@
+{
+  "output_size": 2,
+  "num_conv_blocks": 2,
+  "num_conv": 1,
+  "layers": {
+    "conv_block": {
+      "conv_1": {
+        "type": "2d",
+        "out_channels": 16,
+        "kernel_size": 5,
+        "stride": 1,
+        "padding": 0
+      },
+      "pool": {
+        "type": "2d",
+        "kernel_size": 2,
+        "stride": 2,
+        "padding": 0
+      }
+    },
+    "classifier": {
+      "linear_1": {
+        "out_features": 50
+      },
+      "linear_2": {
+        "out_features": 20
+      }
+    }
+  }
+}

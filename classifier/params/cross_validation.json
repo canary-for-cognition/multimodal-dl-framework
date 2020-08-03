@@ -1,0 +1,16 @@
+{
+  "type": "k_fold",
+  "folds_type": "dataset",
+  "k": 10,
+  "validation_size": 0.1,
+  "test_size": 0.1,
+  "downscale": false,
+  "plot_metrics": true,
+  "force_deletion": true,
+  "use_cv_metadata": true,
+  "save_split_metadata": false,
+  "reload_split": {
+    "training_test": false,
+    "folds": false
+  }
+}

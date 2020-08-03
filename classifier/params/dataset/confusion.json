@@ -1,0 +1,16 @@
+{
+  "variable_size_input": false,
+  "classes": {
+    "positive": "confused",
+    "negative": "not_confused"
+  },
+  "paths": {
+    "dataset_folder": "../dataset",
+    "dataset_metadata": "metadata",
+    "cv_metadata": "split/metadata/eye_tracking/10/cv_info_1.csv",
+    "modalities": {
+      "images": "images",
+      "sequences": "sequences"
+    }
+  }
+}

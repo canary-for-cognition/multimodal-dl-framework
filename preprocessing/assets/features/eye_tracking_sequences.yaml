@@ -1,0 +1,32 @@
+gaze:
+  - "GazePointLeftX (ADCSpx)"  # 0
+  - "GazePointLeftY (ADCSpx)"  # 1
+  - "GazePointRightX (ADCSpx)"  # 2
+  - "GazePointRightY (ADCSpx)"  # 3
+  - "GazePointX (ADCSpx)"  # 4
+  - "GazePointY (ADCSpx)"  # 5
+  - "GazePointX (MCSpx)"  # 6
+  - "GazePointY (MCSpx)"  # 7
+  - "GazePointLeftX (ADCSmm)"  # 8
+  - "GazePointLeftY (ADCSmm)"  # 9
+  - "GazePointRightX (ADCSmm)"  # 10
+  - "GazePointRightY (ADCSmm)"  # 11
+
+head:
+  - "DistanceLeft"  # 12
+  - "DistanceRight"  # 13
+
+pupil:
+  - "PupilLeft"  # 14
+  - "PupilRight"  # 15
+
+fixations:
+  - "FixationPointX (MCSpx)"  # 16
+  - "FixationPointY (MCSpx)"  # 17
+
+event:
+  - "GazeEventType"  # 18
+
+validity:
+  - "ValidityLeft"  # 19
+  - "ValidityRight"  # 20

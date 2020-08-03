@@ -1,0 +1,7 @@
+{
+  "pre_trained_architecture": "bert",
+  "pre_trained_model": "bert-base-uncased",
+  "load_local_pre_trained_model": true,
+  "dropout": 0.2,
+  "output_size": 2
+}

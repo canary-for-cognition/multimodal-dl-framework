@@ -1,0 +1,18 @@
+{
+  "paths": {
+    "source": {
+      "data_folder": "preprocessed",
+      "modality": "sequences",
+      "data_source": "eye_tracking",
+      "representation": "pkl",
+      "data_dimension": "base"
+    },
+    "destination": {
+      "data_folder": "preprocessed",
+      "modality": "images",
+      "data_source": "eye_tracking",
+      "representation": "hsh",
+      "data_dimension": "base"
+    }
+  }
+}

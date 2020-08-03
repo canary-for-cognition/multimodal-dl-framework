@@ -1,0 +1,10 @@
+{
+  "dataset_type": "alzheimer",
+  "labels": {
+    "positive": "1_alzheimer",
+    "negative": "0_healthy"
+  },
+  "paths": {
+    "preprocessed_data": "preprocessed_data"
+  }
+}

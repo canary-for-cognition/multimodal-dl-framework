@@ -1,0 +1,5 @@
+{
+  "output_size": 2,
+  "features_extraction": false,
+  "pre_trained_model": "inception"
+}

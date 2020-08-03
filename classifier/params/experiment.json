@@ -1,0 +1,34 @@
+{
+  "id": "",
+  "device": "cuda:3",
+  "dataset_type": "alzheimer",
+  "network_type": "han",
+  "num_seeds": 1,
+  "base_seed": 1,
+  "training": {
+    "epochs": 1,
+    "optimizer": "AdamW",
+    "criterion": "CrossEntropyLoss",
+    "clip_gradient": true,
+    "batch_size": 1,
+    "early_stopping": {
+      "active": true,
+      "patience": 15,
+      "log_every": 1,
+      "metrics": "auc",
+      "metrics_trend": "increasing"
+    },
+    "learning_rate": {
+      "initial_value": 1e-5,
+      "decay_ratio": 0.5,
+      "decay_patience": 20,
+      "max_decreases": 3,
+      "reload_best_on_decay": true
+    },
+    "tbptt": {
+      "active": false,
+      "k1": 50,
+      "k2": 25
+    }
+  }
+}

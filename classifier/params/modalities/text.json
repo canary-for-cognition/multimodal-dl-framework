@@ -1,0 +1,10 @@
+{
+  "file_format": "txt",
+  "augment": false,
+  "max_sentences": 75,
+  "max_words": 66,
+  "vocabulary_size": 1126,
+  "embedding_size": 300,
+  "path_to_pre_trained_embeddings": "assets/pre_trained_embeddings",
+  "path_to_pre_trained_models": "assets/pre_trained_models"
+}

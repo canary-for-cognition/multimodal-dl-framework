@@ -1,0 +1,11 @@
+{
+  "type": "gaze_fixations_head_pupil",
+  "data_source": "eye_tracking",
+  "file_format": "pkl",
+  "num_features": 18,
+  "normalize": false,
+  "augment": false,
+  "length": 250,
+  "truncate_from": "head",
+  "truncation_offset": 0
+}

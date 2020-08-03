@@ -1,0 +1,20 @@
+{
+  "verbose": true,
+  "filter_out_non_fixations": false,
+  "paths": {
+    "source": {
+      "data_folder": "dataset",
+      "modality": "text",
+      "data_source": "",
+      "representation": "",
+      "data_dimension": "base"
+    },
+    "destination": {
+      "data_folder": "preprocessed",
+      "modality": "sequences",
+      "data_source": "eye_tracking",
+      "representation": "pkl",
+      "data_dimension": "base"
+    }
+  }
+}

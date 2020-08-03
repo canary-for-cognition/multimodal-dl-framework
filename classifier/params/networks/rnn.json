@@ -1,0 +1,16 @@
+{
+  "type": "gru",
+  "output_size": 2,
+  "hidden_size": 256,
+  "dropout": 0.2,
+  "num_layers": 2,
+  "bidirectional": true,
+  "normalized": true,
+  "attention": false,
+  "batch_first": false,
+  "stateless": true,
+  "linear_encoding": {
+    "active": true,
+    "output_size": 400
+  }
+}
