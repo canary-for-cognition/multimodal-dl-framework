@@ -4,10 +4,10 @@
 
 ## Main features
 
-* **Dynamic multi-modal architectures:** easy to combine basic architectures (e.g. CNN, GRU, etc…) for multi-modal approaches to binary classification tasks (supporting multiple features fusion policies);
-* **Structured experiments**: possibility of running multiple reproducible iterations of cross validation using different random seeds and metadata generating detailed reports (including metrics, plots and predictions);
-* **Data management:** grouped data split for K-fold and Leave One Out CV, generated anew or based on metadata;
-* **Ease of extension:** clear extension points and easy customisation
+* **Dynamic multi-modal architectures**. The user is offered off-the-shelf and easy-to-combine basic architectures (e.g. CNN, GRU, etc…) for multimodal approaches to binary classification tasks;
+* **Structured experiments**. possibility of running multiple reproducible iterations of CV using different random seeds or metadata and generating detailed reports (including metrics, plots and predictions);
+* **Data management**. Ready-to-use grouped data split for K-fold and Leave One Out CV, generated anew or based on metadata;
+Ease of extension. Clear extension points and easy customisation of the software for different use cases.
 
 ## Structure of the project
 
