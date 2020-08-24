@@ -497,7 +497,11 @@ Hierarchical Attention Networks (HANs) are NN architectures proposed for documen
 
 ### Adding a new dataset
 
-Each new dataset is associated to a unique ID (e.g. Alzheimer >> `alzheimer`) to allow for it to be referenced in the configuration of the experiment. New datasets must be included in the `dataset` folder and must be coupled with a specific class defining its data grouping policy. This class must be defined at `classes/data/groupers` and must sub class `DataGrouper`. The dataset must also be structured as described at *§ General description - Dataset* in this document. 
+The procedure to add a new dataset is the following:
+
+1. **Creating the dataset ID**. Each new dataset is associated to a unique ID (e.g. Alzheimer >> `alzheimer`) to allow for it to be referenced in the configuration of the experiment. New datasets must be included in the `dataset` folder in a subdirectory named after their IDs (e.g. Alzheimer >> `dataset/alzheimer/...`). Note that case sensitivity matters;
+2. **Structuring the dataset**. The dataset must be structured as described at *§ General description - Dataset* in this document;
+2. **Defininig the grouper**. Each dataset must be coupled with a specific class defining its data grouping policy within the splits for the cross-validation (e.g. group patients by subtasks or by cyclic split). This class must be defined at `classes/data/groupers` and must subclass `DataGrouper`. 
 
 ### Adding a new modality
 
