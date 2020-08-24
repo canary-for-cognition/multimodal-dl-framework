@@ -1,6 +1,6 @@
 # Neural Networks for binary classification on multiple data modalities
 
- This project is meant to be an extensible PyTorch framework to experiment with various neural-networks-base deep learning algorithms on multiple data modalities.
+ This project is meant to be an extensible PyTorch framework to experiment with various neural-networks-based deep learning algorithms on multiple data modalities.
 
 ## Main features
 
