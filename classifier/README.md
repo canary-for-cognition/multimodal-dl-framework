@@ -6,7 +6,7 @@ This code is part of the project “Neural Networks for binary classification on
 
 The relationship and interaction among the main components of the `classifier` package is summarised by the following scheme.
 
-<img src="docs/gallery/image-20200715121555299.png" alt="image-20200715121555299" style="zoom:75%;" />
+<img src="docs/gallery/framework-classifier.png" alt="class" style="zoom:75%;" />
 
 ### Components
 
@@ -32,7 +32,7 @@ They can either handle:
 
 Multi modal networks must subclass the base `MultimodalNetwork` stored at `modules/base/networks`. Networks handling multiple modalities are built combining submodules (i.e. networks handling single modalities, e.g. VisTempNet = CNN + GRU) according to a features fusion policy (i.e. early fusion, late model blending, etc…) as exemplified by the following scheme. 
 
-<img src="docs/gallery/image-20200715124444532.png" alt="image-20200715124444532" style="zoom:67%;" />
+<img src="docs/gallery/multimodal-architecture.png" alt="image-20200715124444532" style="zoom:67%;" />
 
 #### Data
 
@@ -60,7 +60,7 @@ In order to be used together with this project, a dataset must follow a precise 
 
 The following scheme exemplifies the relationship among modalities, data sources and representations.
 
-<img src="docs/gallery/image-20200729114506169.png" alt="image-20200729114506169" style="zoom:67%;" /> 
+<img src="docs/gallery/data-organization.png" alt="image-20200729114506169" style="zoom:67%;" /> 
 
 The dataset must also contain:
 
