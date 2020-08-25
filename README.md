@@ -13,10 +13,10 @@ Ease of extension. Clear extension points and easy customisation of the software
 
 The project is structured around some main components stored in the following directories:
 
-* `classifier`: code related to the core of the project, including the fundamental classes which handle the datasets and the training and evaluation of the models as well as the network architectures:
-* `preprocessing`: code related to the data generation and preprocessing;
-* `scripts`: utility scripts (e.g. post-processing of the results and analysis of the data splits);
-* `dataset`: one or more datasets and the corresponding metadata and data split for the cross validation procedure.
+* `classifier`. Stores the code related to the core of the project, including the fundamental classes handling the dataset and the training and evaluation of the models as well as the NN architectures:
+* `preprocessing`. A pipeline-structured utility that allows for the generation and preprocessing of the data. For instance, image representations of eye-tracking data can be produced from the corresponding sequences, while the latter need to be adjusted and polished before being fed to a NN;
+* `scripts`. Various utility scripts are included for postprocessing the results (e.g. aggregating the scores produced by multiple iterations of CV);
+* `dataset`. The dataset used with the framework needs to be structure according to precise requirements to ensure its compatibility with the implemented NN architectures.
 
 The relationship and interaction among the the main packages is summarised by the following scheme.
 
