@@ -83,22 +83,25 @@ The general structure of a compatible dataset is the following:
 ├── modalities
 │   ├── modality_1
 │   │   └── data_source_1 [optional]
-│   │   |   ├── representation_1
+│   │   |   ├── representation_1 [optional]
 │   │   |   │   └── base
 │   │   |   │	|   ├── 0_neg_label
 │   │   |   │   |   └── 1_pos_label
 │   │   |   │   └── augmented
 │   │   |   │       ├── 0_neg_label
 │   │   |   │       └── 1_pos_label
-|	|	|	|
+|   |	|   |	
 │   │   |   |	...
-|	|	|	|
-|	|	|	└── representation_N
-│   │   └── data_source_N [optional]
-|	| 	
-|	| 	...
-|	| 	
-|	└── modality_N
+|   |	|   |	
+|   |	|   └── representation_N [optional]
+|   |   |
+│   │   |   ...
+|   |   |
+|   |   └── data_source_N [optional]
+|   | 	
+|   | 	...
+|   | 	
+|   └── modality_N
 └── split
     ├── folds [dynamically generated]
     │   ├── fold_1
