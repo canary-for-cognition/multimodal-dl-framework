@@ -19,4 +19,4 @@ The project is structured around the following main high-level packages:
 
 The relationship and interaction among the the main packages is summarised by the following scheme.
 
-<img src="docs/gallery/framework-packages.png" alt="image-20200715121331470" style="zoom:80%;" />
+<img src="docs/gallery/framework-packages.png" alt="image-20200715121331470" style="zoom:50%;" />
