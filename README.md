@@ -13,7 +13,7 @@ Ease of extension. Clear extension points and easy customisation of the software
 
 The project is structured around the following main high-level packages:
 
-* `classifier`. Stores the code related to the core of the project, including the fundamental classes handling the dataset and the training and evaluation of the models as well as the NN architectures:
+* `classifier`. Stores the code related to the core of the project, including the fundamental classes handling the dataset and the training and evaluation of the models as well as the NN architectures;
 * `preprocessing`. A pipeline-structured utility that allows for the generation and preprocessing of the data. For instance, image representations of eye-tracking data can be produced from the corresponding sequences, while the latter need to be adjusted and polished before being fed to a NN;
 * `scripts`. Various utility scripts are included for postprocessing the results (e.g. aggregating the scores produced by multiple iterations of CV).
 
