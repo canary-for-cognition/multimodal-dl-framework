@@ -1,8 +1,6 @@
 # Classifier
 
-This code is part of the project “Neural Networks for binary classification on multiple data modalities”. This is the core of the project, including the fundamental classes which handle the datasets and the training and evaluation of the models as well as the network architectures.
-
-[TOC]
+This code is part of the project “Neural Networks for binary classification on multiple data modalities”. The `classifier` package is the core of the project, including the fundamental classes which handle the datasets and the training and evaluation of the models as well as the Neural Networks (NNs) architectures.
 
 ## General description
 
@@ -14,25 +12,25 @@ The relationship and interaction among the main components of the `classifier` p
 
 #### Core
 
-The **core** component runs an experiment, which is a series of cross validation procedures. It interacts with data and networks-related classes to fetch the data from the dataset and to train the model respectively. The main classes of the package are:
+The **core** component runs an experiment, which is a series of Cross-Validation (CV) procedures. It interacts with `data` and networks-related classes to fetch the data from the dataset and to train the model respectively. The main classes of the package are:
 
 * `Trainer`: receives the `training_params` saved in the `experiment.json` file and handles the training of the model; 
 * `Evaluator`: evaluates the model computing the reported metrics; 
-* `Model`: takes care of predictions and weight update and is sub classed by each new module. 
+* `Model`: takes care of predictions and weight update and is subclassed by each new module. 
 
 #### Modules
 
 Modules consist of two parts:
 
-* A *network* (sub classing torch `nn.Module`) defining the architecture of the NN and its forward phase (e.g. `GRU(nn.Module)`)
-* A *model* (sub classing the base `Model` in the core component) the defining how the input is fed to the network for the prediction (e.g. `ModelGRU(Model)`)
+* A *network* (subclassing torch `nn.Module`) defining the architecture of the NN and its forward phase (e.g. `GRU(nn.Module)`)
+* A *model* (subclassing the base `Model` in the core component) defining how the input is fed to the network for the prediction (e.g. `ModelGRU(Model)`)
 
 They can either handle:
 
 * *Single modalities* (e.g. text as in BERT), or
 * *Multiple modalities* (e.g. eye-tracking sequences and images as in the VisTempNet).
 
-Multi modal networks must sub class the base `MultimodalNetwork` stored at `modules/base/networks`. Networks handling multiple modalities are built combining sub modules (i.e. networks handling single modalities, e.g. VisTempNet = CNN + GRU) according to a features fusion policy (i.e. early fusion, late model blending, etc…) as exemplified by the following scheme. 
+Multi modal networks must subclass the base `MultimodalNetwork` stored at `modules/base/networks`. Networks handling multiple modalities are built combining submodules (i.e. networks handling single modalities, e.g. VisTempNet = CNN + GRU) according to a features fusion policy (i.e. early fusion, late model blending, etc…) as exemplified by the following scheme. 
 
 <img src="docs/gallery/image-20200715124444532.png" alt="image-20200715124444532" style="zoom:67%;" />
 
@@ -54,11 +52,11 @@ In order to be used together with this project, a dataset must follow a precise 
 
    * *Images*: any image representation;
 
-   * *Text*: properly encoded depending on the network processing it.
+   * *Text*: word sequences properly encoded depending on the network which is processing them.
 
-2. Each modality may have one or mode **data sources** (e.g. the images may have two data sources: audio and eye-tracking;
+2. Each modality may have one or more **data sources** (e.g. the images may have two data sources: audio and eye-tracking;
 
-3. Each data source may have one ore mode **representations** (e.g. the eye-tracking images may be either scan-paths or heatmaps). 
+3. Each data source may have one ore more **representations** (e.g. the eye-tracking images may be either scan-paths or heatmaps). 
 
 The following scheme exemplifies the relationship among modalities, data sources and representations.
 
@@ -67,7 +65,7 @@ The following scheme exemplifies the relationship among modalities, data sources
 The dataset must also contain:
 
 * A `metadata` folder where a `dataset.csv` file summarising the information about the data is dynamically generated;
-* A `split` folder containing the metadata for the cross validation and where the data split is dynamically generated.
+* A `split` folder containing the metadata for the CV and where the data split is dynamically generated.
 
 The metadata for generating the splits are CSV files stating which items belong to each set in each split and where each row correspond to a CV split. The metadata must be structured as follows:
 
@@ -156,13 +154,13 @@ The code is based on PyTorch and can run both on CPU and GPU supporting CUDA. In
 
 ## Configuration of the experiment
 
-In order to run an experiment, one has to manually edit the configuration JSON files (stored in `params`) related to core aspects of the experiment itself. The core aspects of an experiments are the following:
+In order to run an experiment, one has to manually edit the configuration JSON files (stored in `params`) related to some core aspects of the analysis. The core aspects of an experiments are the following:
 
-1. **Experimental setting** (`experiment.json`): selection of the network architecture and of dataset and parameters related to the the training procedure;
-2. **Cross validation** (`cross_validation.json`): selection of the type of cross validation to be performed and whether or not to regenerate the data split;
-3. **Network** (`networks/`): architecture-specific parameters for the selected networks (or for the sub modules in case of multi-modal architectures);
-4. **Dataset** (`dataset/`): paths to the data modalities involved in the experiment and selection of the main modality;
-5. **Modality** (`modalities/`):  modality-specific parameters for the modalities handled by the selected network. 
+1. **Experimental setting** (`experiment.json`): NN architecture and dataset, parameters related to the the training procedure;
+2. **Cross validation** (`cross_validation.json`): type of CV to be performed and whether or not to regenerate the data split;
+3. **Network** (`networks/`): architecture-specific parameters for the selected NN (or for the submodules in case of multi-modal architectures);
+4. **Dataset** (`dataset/`): paths to the data modalities involved in the experiment;
+5. **Modality** (`modalities/`):  modality-specific parameters for the modalities handled by the selected NN. 
 
 ### Experimental setting
 
@@ -400,13 +398,13 @@ File `alzheimer.json` with respect to the Alzheimer dataset stored at `../datase
 
 ## Report of the experiments
 
-Results of experiments are saved in a user-named folder. The results are nested by seed and iteration and include, for each fold:
+The results of the experiments are saved in a user-named folder, refered to as "report". The information in the report is nested by seed and iteration and include, for each fold:
 
 * Training, validation and test metrics;
 * Training, validation and test plots of metrics over epochs;
 * Training, validation and test predictions
 
-All the parameters involved in the experiment are dumped into the main folder of the report. These are stored in three files:
+All the parameters involved in the experiment are dumped into the main folder of the report, namely in three files:
 
 1. `data.json`: data-related parameters such as dataset parameters (including name and main modality used for the experiment);
 2. `experiment_setting`: general configuration of the experiment included in the `experiment.json` configuration file;
@@ -416,84 +414,48 @@ All the parameters involved in the experiment are dumped into the main folder of
 
 ### RNN
 
-> Reference: https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-recurrent-neural-networks
+An RNN is a class of NNs where connections between nodes form a directed graph along a temporal sequence. For a given input sequence, RNNs allow for outputs at a previous time step to be used as inputs to the next one by implementing hidden states. Such a mechanism makes it possible to leverage temporal dynamic behaviour, thus RNN models are mostly used in the fields of NLP and speech recognition. Nevertheless, they can also be used for classification tasks.
 
-A Recurrent Neural Network (RNN) is a class of neural networks where connections between nodes form a directed graph along a temporal sequence. RNNs allow previous outputs to be used as inputs while having hidden states. This makes it possible to exhibit temporal dynamic behaviour, thus RNN models are mostly used in the fields of natural language processing and speech recognition. 
+RNN architectures have been used in this research in the form of Long Short-Term Memory units (LSTM) and Gated Recurrent Unit (GRU) to perform sequence classification on audio and eye-tracking data. A common LSTM unit consists of a cell and three gates: (i) input, (ii) forget and (ii) output. The cell remembers values over arbitrary time intervals and the gates regulate the flow of information into and out of the cell. Intuitively, the cell is responsible for keeping track of the dependencies between the elements in the input sequence, the input gate controls the extent to which a new value flows into the cell, the forget gate controls the extent to which a value remains in the cell and the output gate controls the extent to which the value in the cell contributes to the computation of the output activation of the unit. The GRU is similar to an LSTM but features fewer parameters as it lacks an output gate. The performance of the GRU on certain tasks was found to be comparable to that of the LSTM while guaranteeing shorter training time.
 
-![File:Recurrent neural network unfold.svg](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Recurrent_neural_network_unfold.svg/800px-Recurrent_neural_network_unfold.svg.png)
+In the experiments conducted for the present work, the hyperbolic tangent function was used as the activation function since this is the default implementation of the LSTM layer in PyTorch. Both the LSTM and the GRU were implemented as bidirectional networks. The principle of Bidirectional RNN (BRNN) architectures is to split the neurons of a regular RNN into two directions, one for the positive time direction (i.e. forward states), and another for the negative time direction (i.e. backward states). The outputs from the two states are not connected to the inputs of the states in the opposite direction. By taking into consideration time with respect to two directions, input information from the past and future of the current time frame can be leveraged (unlike standard RNNs, in which delays are required for including future information).
 
-The vanishing and exploding gradient phenomena are often encountered in the context of RNNs. The reason why they happen is that it is difficult to capture long term dependencies because of multiplicative gradient that can be exponentially decreasing/increasing with respect to the number of layers. Gradient clipping is a technique used to cope with the exploding gradient problem sometimes encountered when performing backpropagation. By capping the maximum value for the gradient, this phenomenon is controlled in practice. Gated Recurrent Unit (GRU) and Long Short-Term Memory units (LSTM) deal with the vanishing gradient problem encountered by traditional RNNs, with LSTM being a generalisation of GRU.
-
-The principle of Bidirectional RNN (BRNN) is to split the neurons of a regular RNN into two directions, one for positive time direction (forward states), and another for negative time direction (backward states). Those two states’ output are not connected to inputs of the opposite direction states. By using two time directions, input information from the past and future of the current time frame can be used unlike standard RNN which requires the delays for including future information.
-
-![img](https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Structural_diagrams_of_unidirectional_and_bidirectional_recurrent_neural_networks.png/350px-Structural_diagrams_of_unidirectional_and_bidirectional_recurrent_neural_networks.png)
-
-#### LSTM
-
-> Reference: https://en.wikipedia.org/wiki/Long_short-term_memory
-
-Long short-term memory (LSTM) is an artificial recurrent neural network (RNN) architecture which, unlike feed forward neural networks, has feedback connections. It can not only process single data points (such as images), but also entire sequences of data (such as speech or video). A common LSTM unit is composed of a cell, an input gate, an output gate and a forget gate. The cell remembers values over arbitrary time intervals and the three gates regulate the flow of information into and out of the cell.
-
-In theory, classic (or "vanilla") RNNs can keep track of arbitrary long-term dependencies in the input sequences. The problem of vanilla RNNs is computational (or practical) in nature: when training a vanilla RNN using back-propagation, the gradients which are back-propagated can "vanish" (that is, they can tend to zero) or "explode" (that is, they can tend to infinity), because of the computations involved in the process, which use finite-precision numbers. RNNs using LSTM units partially solve the vanishing gradient problem, because LSTM units allow gradients to also flow unchanged. However, LSTM networks can still suffer from the exploding gradient problem.
-
-There are several architectures of LSTM units. A common architecture is composed of a cell (the memory part of the LSTM unit) and three "regulators", usually called gates, of the flow of information inside the LSTM unit: an input gate, an output gate and a forget gate. Some variations of the LSTM unit do not have one or more of these gates or maybe have other gates. For example, gated recurrent units (GRUs) do not have an output gate.
-
-Intuitively, the cell is responsible for keeping track of the dependencies between the elements in the input sequence. The input gate controls the extent to which a new value flows into the cell, the forget gate controls the extent to which a value remains in the cell and the output gate controls the extent to which the value in the cell is used to compute the output activation of the LSTM unit. The activation function of the LSTM gates is often the logistic sigmoid function.
-
-There are connections into and out of the LSTM gates, a few of which are recurrent. The weights of these connections, which need to be learned during training, determine how the gates operate.
-
-![img](https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Long_Short-Term_Memory.svg/1920px-Long_Short-Term_Memory.svg.png)
-
-#### GRU
-
-> Reference: https://en.wikipedia.org/wiki/Gated_recurrent_unit
-
-Gated recurrent units (GRUs) are a gating mechanism in recurrent neural networks. The GRU is like a long short-term memory (LSTM) with a forget gate but has fewer parameters than LSTM, as it lacks an output gate. The performance of GRU on certain tasks was found to be similar to that of LSTM. GRUs have been shown to exhibit even better performance on certain smaller and less frequent datasets.
-
-![img](https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Gated_Recurrent_Unit.svg/1920px-Gated_Recurrent_Unit.svg.png) 
+Both GRU and LSTM-based models share the same base architecture, which stacks a normalization layer and two RNN layers with a hidden size equal to 256 and dropout with probability 0.2. The normalization layer computes the mean and variance used for normalization from all of the summed inputs to the neurons in a layer on a single training case.
 
 ### CNN
 
-> Reference: https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-convolutional-neural-networks
+The CNN is a specific type of NN architecture that is generally composed of stacked convolutional, pooling and fully connected layers.
 
-Convolutional Neural Networks (CNNs), are a specific type of neural networks that are generally composed of the following layers:
+The convolutional layer uses filters that perform the convolution operations as they scan the input with respect to its dimensions. Its main hyperparameters are the kernel size, defining the range of action of the operation, and the stride, defining its shift with respect to the input matrix. Typically used in its 2D variant, the convolution step can be applied to the 1D and 3D cases as well. The 1D variant was used in this research to process the time series stemming from eye-tracking and audio, while a standard 2D convolution was applied to the images.
 
-* **Convolution layer.** The convolution layer uses filters that perform convolution operations as it is scanning the input I with respect to its dimensions. Its hyper parameters include the filter size F and stride S. The resulting output O is called feature map or activation map. The convolution step can be generalised to the 1D and 3D cases as well.
-* **Pooling.** The pooling layer is a down sampling operation, typically applied after a convolution layer. In particular, max and average pooling are special kinds of pooling where the maximum and average value is taken, respectively.
-* **Fully Connected.** The Fully Connected (FC) layer operates on a flattened input where each input element is connected to all neurons. If present, FC layers are usually found towards the end of CNN architectures and can be used to optimise objectives such as class scores.
+The pooling layer performs is a downsampling operation, typically applied after a convolution layer. In particular, max and average pooling are kinds of pooling where the maximum and average value is taken respectively for the considered kernel.
 
-#### Pretrained CNN
+Finally, the Fully Connected (FC) layer operates on a flattened input where each incoming item is connected to all neurons. If present, FC layers are usually found towards the end of CNN architectures and can be used to optimise objectives such as class scores.
 
-Pretrained CNNs feature a model which has previously been trained on a very large dataset to either extract useful features from the input or perform standard classification. In the former case, the parameters of the pretrained model will not be updated during the training procedure.
+The CNN architecture used in this research features two consecutive blocks made of a convolutional layer with kernel size 5 and stride 1 followed by a pooling layer with kernel size 2 and stride 2. Two final linear layers are stacked on top of these two blocks to perform the classification. Both convolution and pooling were performed in a 2D fashion when dealing with images and in a 1D fashion when dealing with sequences. A pre-trained variant of the CNN was tested as well. The core of this architecture is a pre-trained block that can be used either as a feature extractor or as a proper classifier. In the former case, the weights of the pre-trained block are frozen and only those of the final classification layers are learnt. Both ResNet and Inception were tested as underlying pre-trained models. 
 
 ### CNNRNN
 
-> Reference: https://machinelearningmastery.com/cnn-long-short-term-memory-networks/
 
-The CNNRNN is an RNN architecture specifically designed for sequence prediction problems with spatial inputs, like images or videos. The CNNRNN architecture involves using Convolutional Neural Network (CNN) layers for feature extraction on input data combined with RNNs to support sequence prediction. CNNRNNs were developed for visual time series prediction problems and the application of generating textual descriptions from sequences of images (e.g. videos). In this project, a CNNRNN architecture is used for both image and sequence classification. In the former case, the intuition is leveraging the sequential nature of 1D plots such as spectrograms whose features are summarised by the convolution process. In the latter case, the idea is projecting very long sequences in a lower dimensional space using convolution and then feeding them to an RNN.     
+The CNNRNN is an RNN architecture specifically designed for sequence prediction problems with spatial inputs, like images or videos. The CNNRNN architecture involves using CNN layers for feature extraction on input data combined with RNNs to support sequence prediction. Nevertheless, this architecture can also be used for classification tasks on translation-invariant inputs.
+
+In this project, a CNNRNN architecture was used for both image and sequence classification. In the former case, the intuition is leveraging the sequential nature of 1D plots such as spectrograms whose features are summarised by the convolution process. In the latter case, the idea is projecting very long sequences in a lower-dimensional space using convolution and then feeding them to an RNN. The implementation of CNNRNN used in this research has a first block featuring a convolutional layer with kernel size 5 and stride 1 followed by a pooling layer with kernel size 2 and stride 2. The output of the CNN component is then reshaped with a linear layer and subsequently fed to a normalized two-layers bidirectional LSTM of hidden size 256 topped by two more linear layers for the final classification. The usage of this architecture for processing images requires 2D convolutions, while 1D convolutions are used when processing sequences.
 
 ### Transformer
 
-> Reference: https://en.wikipedia.org/wiki/Transformer_(machine_learning_model)
+Just like RNNs, Transformers are architectures specifically designed to handle data of a sequential nature (e.g. natural language) for tasks such as text translation, summarization or classification. However, unlike RNNs, Transformers do not require for the sequential data to be processed in its implicit order. For example, if the input data is a natural language sentence, the Transformer does not need to process its beginning before processing the end. Due to this feature, Transformers allow for much more parallelization than RNNs and therefore reduced training times.
 
-Like recurrent neural networks (RNNs), Transformers are designed to handle sequential data, such as natural language, for tasks such as translation and text summarization. However, unlike RNNs, Transformers do not require that the sequential data be processed in order. For example, if the input data is a natural language sentence, the Transformer does not need to process the beginning of it before the end. Due to this feature, the Transformer allows for much more parallelization than RNNs and therefore reduced training times.
+The Transformer is an encoder-decoder architecture. The encoder consists of a set of encoding layers that process the input iteratively one layer after another and the decoder consists of a set of decoding layers that apply the same procedure to the output of the encoder. The encodings generated by the encoder component of the architecture are meant to contain information about which parts of the inputs are relevant to each other. The decoder then uses the contextual information incorporated in the encoding to generate an output sequence. This behaviour is achieved by using an attention mechanism both in the encoder and in the decoder, which for each input weighs the relevance of every other input and draws information accordingly to produce the output. Both the encoder and decoder layers feature a feed-forward NN for additional processing of the outputs and contain residual connections and layer normalization steps.
 
-The Transformer is an encoder-decoder architecture. The encoder consists of a set of encoding layers that processes the input iteratively one layer after another and the decoder consists of a set of decoding layers that does the same thing to the output of the encoder.
-
-The function of each encoder layer is to process its input to generate encodings, containing information about which parts of the inputs that are relevant to each other. It passes its set of encodings to the next encoder layer as inputs. Each decoder layer does the opposite, taking all the encodings and processes them, using their incorporated contextual information to generate an output sequence. To achieve this, each encoder and decoder layer makes use of an attention mechanism, which for each input, weighs the relevance of every other input and draws information from them accordingly to produce the output. Each layer decoder also has an additional attention mechanism which draws information from the outputs of previous decoders, before the decoder layer draws information from the encodings. Both the encoder and decoder layers have a feed-forward neural network for additional processing of the outputs, and contain residual connections and layer normalisation steps.
+In this research, the implementations provided by Hugging Face of both the Bidirectional Encoder Representations from Transformers (BERT) and Robustly Optimized BERT pretraining Approach (RoBERTa) architectures have been tested, with the latter being a refinement of the former. Both architectures are used for dealing with the textual data.
 
 ### HAN
 
-> Reference: https://www.cs.cmu.edu/~./hovy/papers/16HLT-hierarchical-attention-networks.pdf
+The HAN is a NN architecture proposed for document classification tasks which features two distinctive characteristics: (i) a hierarchical structure that mirrors the hierarchical structure of documents and (ii) two levels of attention mechanisms applied at the word and sentence-level, enabling it to attend deferentially to more and less important content when constructing the document representation.
 
-Hierarchical Attention Networks (HANs) are NN architectures proposed for document classification tasks which have two distinctive characteristics:
-
-1. A hierarchical structure that mirrors the hierarchical structure of documents;
-2. Two levels of attention mechanisms applied at the word and sentence-level, enabling it to attend deferentially to more and less important content when constructing the document representation.
+The implementation used in this work to deal with text used bidirectional GRUs with attention mechanisms for handling both the word and sentence levels of the hierarchy.
 
 ## Extending the code
-
-> Reference: https://en.wikipedia.org/wiki/Factory_method_pattern
 
 ### Adding a new dataset
 
@@ -501,23 +463,23 @@ The procedure to add a new dataset is the following:
 
 1. **Creating the dataset ID**. Each new dataset is associated to a unique ID (e.g. Alzheimer >> `alzheimer`) to allow for it to be referenced in the configuration of the experiment. New datasets must be included in the `dataset` folder in a subdirectory named after their IDs (e.g. Alzheimer >> `dataset/alzheimer/...`). Note that case sensitivity matters;
 2. **Structuring the dataset**. The dataset must be structured as described at *§ General description - Dataset* in this document;
-2. **Defininig the grouper**. Each dataset must be coupled with a specific class defining its data grouping policy within the splits for the cross-validation (e.g. group patients by subtasks or by cyclic split). This class must be defined at `classes/data/groupers` and must subclass `DataGrouper`. 
+2. **Defininig the grouper**. Each dataset must be coupled with a specific class defining its data grouping policy within the splits for the CV (e.g. group patients by subtasks or by cyclic split). This class must be defined at `classes/data/groupers` and must subclass `DataGrouper`. After defining the new grouper class, make sure to update the factory for the groupers at `classes/factories`.
 
 ### Adding a new modality
 
-Each new modality is associated to a unique ID (e.g. sequences >> `sequences`) to allow for it to be referenced in the configuration of the experiment. New modalities must be included in the `dataset/specific_dataset/modalities` folder and may include specific data sources and representation. The procedure to add a new modality is the following:
+Each new modality is associated to a unique ID (e.g. sequences >> `sequences`) to allow for it to be referenced in the configuration of the experiment. New modalities must be included in the `dataset/specific_dataset/modalities` folder and may include specific data sources and representations. The procedure to add a new modality is the following:
 
-1. Move the data at `dataset/specific_dataset/modalities/new_modality` making sure the folder is structured as described at *§ General description - Dataset* in this document;
-2. Write a new data loader at `classes/data/loaders` defining how the data items belonging to the new modality must be loaded (note that the new class must sub class `data.Loader` ;
+1. Move the data for the new modality at `dataset/specific_dataset/modalities/data_source[optional]/new_modality/representation[optional]` making sure the folder is structured as described at *§ General description - Dataset* of this document;
+2. Write a new data loader at `classes/data/loaders` defining how the data items belonging to the new modality must be loaded (note that the new class must subclass `data.Loader` ;
 3. Update the `factories.LoaderFactory` inserting a new key value pair in the corresponding map binding the ID of the modality to its loader;
-4. Write a new file named as the ID of the modality including the modality-specific parameters.
+4. Write a new file at `parameters/modalities` named as the ID of the modality including the modality-specific parameters.
 
 ### Adding a new network
 
 Each module is associated to an ID that allows for it to be referenced in the configuration of the experiment (e.g. Hierarchical Attention Network >> `han`). To add a new network, a new module must be defined. Modules are stored at `classes/modules` and include two classes:
 
-1. The network class defining the architecture of the network and its forward phase (i.e. a sub class of `nn.Module`);
-2. The model class defining how the network is instantiated an how the inputs are fed to it. This must sub class `classes.core.Model`.
+1. The network class defining the NN architecture and its forward phase (i.e. a subclass of `nn.Module`);
+2. The model class defining how the network is instantiated an how the inputs are fed to it. This must subclass `classes.core.Model`.
 
 Note that the constructor of the network classes must have the following signature:
 
@@ -534,14 +496,14 @@ After writing the new module, the following factories must be updated inserting 
 * `factories.ModelFactory`, binding the ID of the new module to the corresponding model;
 * `factories.NetworkFactory`, binding the ID of the new module to the corresponding network.
 
-Next, the new module must be bounded to a modality (or to multiple modalities in case of multi modal networks). This can be done updating the corresponding map at `binders.ModalityBinder`.
+Next, the new module must be bounded to a modality (or to multiple modalities in case of multimodal networks). This can be done updating the corresponding map at `binders.ModalityBinder`.
 
 Finally, the module can be configured either:
 
 * Using a preexisting  JSON file at `params/networks` binding the two together at `binders.ParamsBinder` , or
 * Writing a fresh JSON configuration file for the new module
 
-Note that the binding between the configuration file and the module is optional. If no binding exists, the `binders.ParamsBinder` will search for a configuration file named as the ID of the new module. 
+Note that the binding between the configuration file and the module is optional. If no binding exists, the `binders.ParamsBinder` will search for a configuration file named after the ID of the new module. 
 
 ### Adding a new criterion
 
