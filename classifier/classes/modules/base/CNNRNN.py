@@ -37,5 +37,8 @@ class CNNRNN(nn.Module):
     def init_state(self, batch_size: int) -> tuple:
         return self.rnn.init_state(batch_size)
 
+    def get_hidden_size(self) -> int:
+        return self._hidden_size
+
     def get_pre_activation_size(self) -> int:
         return self._pre_activation_size
