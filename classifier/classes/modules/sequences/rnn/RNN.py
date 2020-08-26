@@ -70,7 +70,7 @@ class RNN(AttentionNN):
         outputs = self._attention(outputs) if self._use_attention else outputs
 
         outputs = outputs[-1, :, :]
-        return self._fc(outputs) if self.__activation else outputs
+        return self._fc(outputs) if self._activation else outputs
 
     def set_state(self, state: Union[tuple, torch.Tensor]):
         self._state = state
