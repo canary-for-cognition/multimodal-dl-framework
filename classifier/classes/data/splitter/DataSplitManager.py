@@ -19,7 +19,8 @@ class DataSplitManager:
         self.__path_to_folds = self.__k_fold.get_path_to_folds()
 
     def get_k(self) -> int:
-        return len(os.listdir(self.__path_to_folds))
+        items = os.listdir(self.__path_to_folds)
+        return len([item for item in items if os.path.isdir(os.path.join(self.__path_to_folds, item))])
 
     def check_split_availability(self) -> bool:
         """
