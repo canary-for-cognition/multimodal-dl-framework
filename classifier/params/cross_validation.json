@@ -7,8 +7,8 @@
   "downscale": false,
   "plot_metrics": true,
   "force_deletion": true,
-  "use_cv_metadata": true,
-  "save_split_metadata": false,
+  "use_cv_metadata": false,
+  "save_split_metadata": true,
   "reload_split": {
     "training_test": false,
     "folds": false

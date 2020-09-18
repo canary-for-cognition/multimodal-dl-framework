@@ -465,8 +465,12 @@ The implementation used in this work to deal with text used bidirectional GRUs w
 The procedure to add a new dataset is the following:
 
 1. **Creating the dataset ID**. Each new dataset is associated to a unique ID (e.g. Alzheimer >> `alzheimer`) to allow for it to be referenced in the configuration of the experiment. New datasets must be included in the `dataset` folder in a subdirectory named after their IDs (e.g. Alzheimer >> `dataset/alzheimer/...`). Note that case sensitivity matters;
+
 2. **Structuring the dataset**. The dataset must be structured as described at *§ General description - Dataset* in this document;
-2. **Defininig the grouper**. Each dataset must be coupled with a specific class defining its data grouping policy within the splits for the CV (e.g. group patients by subtasks or by cyclic split). This class must be defined at `classes/data/groupers` and must subclass `DataGrouper`. After defining the new grouper class, make sure to update the factory for the groupers at `classes/factories`.
+
+3. **Defininig the grouper**. Each dataset must be coupled with a specific class defining its data grouping policy within the splits for the CV (e.g. group patients by subtasks or by cyclic split). This class must be defined at `classes/data/groupers` and must subclass `DataGrouper`. After defining the new grouper class, make sure to update the factory for the groupers at `classes/factories`.
+
+   Note that if manually augmented data is used, the corresponding files must be indexed according to and increasing integer value greater than zero.  If for example a sequence stored in a file named L1-5.csv is split in 4 different subsequences, the 4 corresponding files must be named as L1-5-1.csv, L1-5-2.csv, L1-5-3.csv, L1-5-4.csv (the “-” character dividing the item ID and the augmentation index matters).
 
 ### Adding a new modality
 
