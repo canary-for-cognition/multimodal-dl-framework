@@ -62,15 +62,68 @@ class KFold:
             shutil.rmtree(path_to_data)
             print("\n Old data deleted successfully! \n")
 
+    def sanitize_folds(self):
+        """
+        Looks for empty folders in a stored CV split and possibly moves some data items
+        from the training set to balance validation and test
+        """
+        for fold in os.listdir(self.__path_to_folds):
+            path_to_training = os.path.join(self.__path_to_folds, fold, "training")
+            for set_type in ["validation", "test"]:
+                path_to_set = os.path.join(self.__path_to_folds, fold, set_type)
+                for label in os.listdir(path_to_set):
+                    path_to_set_label = os.path.join(path_to_set, label)
+                    if not os.listdir(path_to_set_label):
+                        print(" WARNING: empty folder at {}. Trying to fix the problem...".format(path_to_set_label))
+                        training_items = os.listdir(os.path.join(path_to_training, label))
+                        training_data = self.__data[self.__data["file_name"].isin(training_items)]
+                        groups, _ = self.__data_grouper.get_groups(training_data)
+                        groups_idxes = list(set(groups))
+                        if len(groups_idxes) <= 1:
+                            raise ValueError("Not enough items in training set to sanitize {} set! Empty folder at {}"
+                                             .format(set_type, path_to_set_label))
+                        else:
+                            path_to_training_label = os.path.join(path_to_training, label)
+                            for i, g in enumerate(groups):
+                                if g == groups_idxes[0]:
+                                    item = training_data.iloc[i]["file_name"]
+                                    shutil.move(os.path.join(path_to_training_label, item),
+                                                os.path.join(path_to_set_label, item))
+                            print(" Empty folder fixed successfully!\n")
+
     def split_on_training(self):
         """
-        Splits the training set in K folds (i.e. training-validation split, using always the same test set)
+        Splits the training set in K folds (i.e. training-validation splits using always the same test set)
         """
-        print("\n Splitting the training set into {} folds... \n".format(self.__k))
-        self.__training_test_split(self.__test_size, self.__reload_train_test)
+        path_to_training = os.path.join(self.__path_to_split, "training")
+        path_to_test = os.path.join(self.__path_to_split, "test")
 
-        training_set = self.__dataset.create_dataset(os.path.join(self.__path_to_split, "training"))
-        test_set = self.__dataset.create_dataset(os.path.join(self.__path_to_split, "test"))
+        print("\n Splitting the training set into {} folds... \n".format(self.__k))
+
+        if self.__reload_train_test:
+            print("\n Loading existing training and test split at {}... \n".format(self.__path_to_split))
+        else:
+            print("\n Splitting the data into training and test... \n")
+            self.delete_old_data(path_to_training)
+            self.delete_old_data(path_to_test)
+            self.delete_old_data(self.__path_to_folds)
+            self.__build_local_split(split_data=self.__train_test_split(self.__data, self.__test_size),
+                                     path_to_training=path_to_training,
+                                     path_to_test=path_to_test)
+
+        print("\n Dataset split overview: \n")
+        training_data = self.__dataset.create_dataset_folder(path_to_training)
+        self.__dataset.print_data_loader(data_loader=self.__dataset.create_data_loader(training_data),
+                                         percentage=1 - self.__test_size,
+                                         data_type="training")
+
+        test_data = self.__dataset.create_dataset_folder(path_to_test)
+        self.__dataset.print_data_loader(data_loader=self.__dataset.create_data_loader(test_data),
+                                         percentage=self.__test_size,
+                                         data_type="test")
+
+        training_set = self.__dataset.create_dataset(path_to_training)
+        test_set = self.__dataset.create_dataset(path_to_test)
         test_set = list(zip(test_set["path"], test_set["label"]))
 
         groups, groups_labels = self.__data_grouper.get_groups(training_set)
@@ -78,29 +131,28 @@ class KFold:
 
         for i, (train, val) in enumerate(k_fold):
             print("\n Writing fold {}/{}... \n".format(i + 1, self.__k))
-            self.__create_fold(num_fold=i,
-                               training=[(training_set.iloc[i]["path"], groups_labels[i]) for i in train],
-                               validation=[(training_set.iloc[i]["path"], groups_labels[i]) for i in val],
-                               test=test_set)
+            self.__create_fold_split(num_fold=i,
+                                     training=[(training_set.iloc[i]["path"], groups_labels[i]) for i in train],
+                                     validation=[(training_set.iloc[i]["path"], groups_labels[i]) for i in val],
+                                     test=test_set)
 
     def split_on_dataset(self):
         """
-        Splits the dataset in K folds (i.e. training-test splits, using always different test sets)
+        Splits the dataset in K folds (i.e. training-validations splits using always different test sets)
         """
         print("\n Splitting the data into {} folds... \n".format(self.__k))
-
         groups, groups_labels = self.__data_grouper.get_groups(self.__data)
         k_fold = GroupKFold(n_splits=self.__k).split(X=self.__data, y=groups_labels, groups=groups)
 
         training_folds, test_folds = [], []
-        for i, (training, test) in tqdm(enumerate(k_fold), desc="Creation of training-test split"):
+        for (training, test) in tqdm(k_fold, desc="Creation of training-test split"):
             test_folds += [[(self.__data.iloc[i]["path"], groups_labels[i]) for i in test]]
             training_folds += [[(self.__data.iloc[i]["path"], groups_labels[i]) for i in training]]
 
-        training_folds, validation_folds = self.__split_training_folds(training_folds)
+        training_folds, validation_folds = self.__training_validation_split(training_folds)
         for i, (training_set, validation_set, test_set) in enumerate(zip(training_folds, validation_folds, test_folds)):
-            print("\n Writing fold {}/{}... \n".format(i + 1, self.__k))
-            self.__create_fold(num_fold=i, training=training_set, validation=validation_set, test=test_set)
+            print("\n Writing split for fold {}/{}... \n".format(i + 1, self.__k))
+            self.__create_fold_split(num_fold=i, training=training_set, validation=validation_set, test=test_set)
 
     def split_from_metadata(self, split_info: pd.DataFrame):
         """
@@ -110,16 +162,16 @@ class KFold:
         training_neg = self.__fetch_items_from_metadata(split_info["train_neg"], 0)
         training_pos = self.__fetch_items_from_metadata(split_info["train_pos"], 1)
         training_folds = [neg + pos for (neg, pos) in zip(training_neg, training_pos)]
-        training_data, validation_data = self.__split_training_folds(training_folds)
+        training_data, validation_data = self.__training_validation_split(training_folds)
 
         test_neg = self.__fetch_items_from_metadata(split_info["test_neg"], 0)
         test_pos = self.__fetch_items_from_metadata(split_info["test_pos"], 1)
         test_data = [neg + pos for (neg, pos) in zip(test_neg, test_pos)]
 
         for i, (training_set, validation_set, test_set) in enumerate(zip(training_data, validation_data, test_data)):
-            self.__create_fold(num_fold=i, training=training_set, validation=validation_set, test=test_set)
+            self.__create_fold_split(num_fold=i, training=training_set, validation=validation_set, test=test_set)
 
-    def __build_class_directories(self, path_to_source: str, paths_to_data: dict, set_type: str):
+    def __build_label_folders(self, path_to_source: str, paths_to_data: dict, set_type: str):
         """
         Builds the local positive and negative directories for a given data source
         :param path_to_source: the path to the source data
@@ -158,9 +210,9 @@ class KFold:
         set_types = ["training", "validation", "test"]
         for path_to_set, set_type in zip(paths, set_types):
             if path_to_set:
-                self.__build_class_directories(path_to_set, split_data[set_type], set_type)
+                self.__build_label_folders(path_to_set, split_data[set_type], set_type)
 
-    def __fetch_split_data(self, training: list = None, validation: list = None, test: list = None) -> dict:
+    def __split_by_label(self, training: list = None, validation: list = None, test: list = None) -> dict:
         """
         Splits the input data into negative and positive items and store them in a dict
         :param training: the training data as a (item, label) list
@@ -176,7 +228,7 @@ class KFold:
                 }
         return split
 
-    def __split_training_folds(self, training_folds: list):
+    def __training_validation_split(self, training_folds: list):
         """
         Splits the input training folds into training and validation
         :param training_folds: a list of lists of training items
@@ -191,7 +243,7 @@ class KFold:
                 data["item_id"] += [path.split(os.sep)[-1].split(".")[0]]
                 data["label"] += [label]
 
-            split_data = self.__fetch_train_test_split(pd.DataFrame(data), self.__validation_size)
+            split_data = self.__train_test_split(pd.DataFrame(data), self.__validation_size)
 
             training_pos = [(item, 1) for item in split_data["training"][self.__positive_class]]
             training_neg = [(item, 0) for item in split_data["training"][self.__negative_class]]
@@ -208,7 +260,7 @@ class KFold:
 
         return training_data, validation_data
 
-    def __create_fold(self, num_fold: int, training: list, validation: list, test: list):
+    def __create_fold_split(self, num_fold: int, training: list, validation: list, test: list):
         """
         Builds the local split for a single fold
         :param num_fold: the number corresponding to the current fold
@@ -218,43 +270,12 @@ class KFold:
         """
         print("\n Generating fold {}... \n".format(num_fold + 1))
         path_to_fold = os.path.join(self.__path_to_folds, "fold_" + str(num_fold + 1))
-        self.__build_local_split(split_data=self.__fetch_split_data(training, validation, test),
+        self.__build_local_split(split_data=self.__split_by_label(training, validation, test),
                                  path_to_training=os.path.join(path_to_fold, "training"),
                                  path_to_validation=os.path.join(path_to_fold, "validation"),
                                  path_to_test=os.path.join(path_to_fold, "test"))
 
-    def __training_test_split(self, test_percentage: float = 0.3, reload_data: bool = False):
-        """
-        Splits the data into training and test loaders
-        :param test_percentage: the percentage of elements of the data to be used for testing
-        :param reload_data: whether or not to reload existing data
-        """
-        path_to_training = os.path.join(self.__path_to_split, "training")
-        path_to_test = os.path.join(self.__path_to_split, "test")
-
-        if reload_data:
-            print("\n Loading existing training and test split at {}... \n".format(self.__path_to_split))
-        else:
-            print("\n Splitting the data into training and test... \n")
-            self.delete_old_data(path_to_training)
-            self.delete_old_data(path_to_test)
-            self.delete_old_data(self.__path_to_folds)
-            self.__build_local_split(split_data=self.__fetch_train_test_split(self.__data, test_percentage),
-                                     path_to_training=path_to_training,
-                                     path_to_test=path_to_test)
-
-        print("\n Dataset split overview: \n")
-        training_data = self.__dataset.create_dataset_folder(path_to_training)
-        self.__dataset.print_data_loader(data_loader=self.__dataset.create_data_loader(training_data),
-                                         percentage=1 - test_percentage,
-                                         data_type="training")
-
-        test_data = self.__dataset.create_dataset_folder(path_to_test)
-        self.__dataset.print_data_loader(data_loader=self.__dataset.create_data_loader(test_data),
-                                         percentage=test_percentage,
-                                         data_type="test")
-
-    def __fetch_train_test_split(self, data: pd.DataFrame, test_size: float) -> dict:
+    def __train_test_split(self, data: pd.DataFrame, test_size: float) -> dict:
         """
         Computes the training and test sets of items taking into account groups
         :param data: the data to be split
@@ -264,8 +285,8 @@ class KFold:
         groups, groups_labels = self.__data_grouper.get_groups(data)
         gss = GroupShuffleSplit(n_splits=1, test_size=test_size, random_state=1)
         train, test = [i for i in gss.split(X=data, y=groups_labels, groups=groups)][0]
-        return self.__fetch_split_data(training=[(data.iloc[i]["path"], groups_labels[i]) for i in train],
-                                       test=[(data.iloc[i]["path"], groups_labels[i]) for i in test])
+        return self.__split_by_label(training=[(data.iloc[i]["path"], groups_labels[i]) for i in train],
+                                     test=[(data.iloc[i]["path"], groups_labels[i]) for i in test])
 
     def __fetch_items_from_metadata(self, data: list, label_idx: int) -> list:
         """

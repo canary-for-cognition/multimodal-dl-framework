@@ -16,6 +16,6 @@ class AlzheimerGrouper:
         split_info = filename.split("-")
         return {
             "id": filename,
+            "group": filename if len(split_info) < 3 else "-".join(split_info[:-1]),
             "frame": 0 if len(split_info) < 3 else split_info[-1],
-            "group": filename if len(split_info) < 3 else "-".join(split_info[:-1])
         }

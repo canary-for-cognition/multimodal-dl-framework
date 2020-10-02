@@ -19,8 +19,7 @@ class DataSplitManager:
         self.__path_to_folds = self.__k_fold.get_path_to_folds()
 
     def get_k(self) -> int:
-        items = os.listdir(self.__path_to_folds)
-        return len([item for item in items if os.path.isdir(os.path.join(self.__path_to_folds, item))])
+        return len([filename for filename in os.listdir(self.__path_to_folds) if filename.startswith('fold_')])
 
     def check_split_availability(self) -> bool:
         """
@@ -32,11 +31,11 @@ class DataSplitManager:
             raise ValueError("No stored split available!")
         return True
 
-    def load_fold(self, fold_number: int) -> dict:
+    def load_split(self, fold_number: int) -> dict:
         """
-        Creates the data loaders for training, validation and test for the given fold
+        Creates the data loaders for training, validation and test for the given fold number
         :param fold_number: the number of the fold to load
-        :return: the data loaders for the given fold
+        :return: the data loaders for the given fold number
         """
         path_to_fold = os.path.join(self.__path_to_folds, "fold_" + str(fold_number))
 
@@ -66,10 +65,15 @@ class DataSplitManager:
         print("\n Generating folds on {} \n".format(folds_type))
         self.__k_fold.delete_old_data(self.__path_to_folds)
         self.__select_folds_type(folds_type)()
+
+        print("\n Sanitizing folds... \n")
+        self.__k_fold.sanitize_folds()
+        print(" Folds have been successfully sanitized! \n")
+
         if save_split:
             print("\n Saving split metadata on file... \n")
             self.__save_split_metadata()
-            print("\n Saved split metadata on file! \n")
+            print(" Saved split metadata on file! \n")
 
     def split_from_file(self, path_to_cv_metadata: str):
         """
@@ -81,16 +85,16 @@ class DataSplitManager:
         self.__k_fold.split_from_metadata(pd.read_csv(path_to_cv_metadata))
 
     @staticmethod
-    def __fetch_class_items(path_to_items: str, augmented: bool) -> list:
-        class_items = []
+    def __fetch_labelled_items(path_to_items: str, augmented: bool) -> list:
+        items = []
         for item in os.listdir(path_to_items):
             item_id = item.split(".")[0]
-            class_items += [item_id[:-2] if augmented else item_id]
-        return class_items
+            items += [item_id[:-2] if augmented else item_id]
+        return items
 
-    def __fetch_fold_items(self, path_to_fold: str, pos_class: str, neg_class: str, augmented: bool) -> dict:
+    def __fetch_split(self, path_to_fold: str, pos_class: str, neg_class: str, augmented: bool) -> dict:
         """
-        Creates a dictionary containing all the items for all the sets of a given fold
+        Creates a dictionary containing all the items for all the sets of a given split
         :param path_to_fold: the path to the root folder of a data fold (containing "training", "test" and "validation")
         :param pos_class: the id of the positive class
         :param neg_class: the id of the negative class
@@ -101,12 +105,12 @@ class DataSplitManager:
         for set_type in ["training", "validation", "test"]:
             path_to_set = os.path.join(path_to_fold, set_type)
             fold_items[set_type] = {
-                "pos": self.__fetch_class_items(os.path.join(path_to_set, pos_class), augmented),
-                "neg": self.__fetch_class_items(os.path.join(path_to_set, neg_class), augmented)
+                "pos": self.__fetch_labelled_items(os.path.join(path_to_set, pos_class), augmented),
+                "neg": self.__fetch_labelled_items(os.path.join(path_to_set, neg_class), augmented)
             }
         return fold_items
 
-    def __fetch_split_items(self) -> dict:
+    def __fetch_training_test_split(self) -> dict:
         """
         Creates a dictionary containing all the items for all the folds of a given split
         :return: a dictionary containing all the items for all the folds of a given split
@@ -116,7 +120,7 @@ class DataSplitManager:
         neg_class, pos_class = self.__dataset.get_classes()
         for fold in tqdm(os.listdir(self.__path_to_folds), desc="Fetching split items at {}"):
             path_to_fold = os.path.join(self.__path_to_folds, fold)
-            fold_items = self.__fetch_fold_items(path_to_fold, pos_class, neg_class, augmented)
+            fold_items = self.__fetch_split(path_to_fold, pos_class, neg_class, augmented)
             split_items["training"]["pos"] += [fold_items["training"]["pos"] + fold_items["validation"]["pos"]]
             split_items["training"]["neg"] += [fold_items["training"]["neg"] + fold_items["validation"]["neg"]]
             split_items["test"]["pos"] += [fold_items["test"]["pos"]]
@@ -129,7 +133,7 @@ class DataSplitManager:
         """
         path_to_saved_split = os.path.join(self.__path_to_folds, "split_metadata.csv")
         if not os.path.isfile(path_to_saved_split):
-            split_items = self.__fetch_split_items()
+            split_items = self.__fetch_training_test_split()
             split_metadata = pd.DataFrame({
                 "train_pos": [" ".join(items) for items in split_items["training"]["pos"]],
                 "train_neg": [" ".join(items) for items in split_items["training"]["neg"]],
