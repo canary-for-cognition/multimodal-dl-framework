@@ -56,7 +56,7 @@ class SequenceLoader(Loader):
         """
         path_to_item = self._get_path_to_item(path_to_input, self.__data_source, self.__data_type)
         sequence = pickle.load(open(path_to_item, 'rb')) if self._file_format == "pkl" else pd.read_csv(path_to_item)
-        sequence = self.__truncate(sequence.values, )
+        sequence = self.__truncate(sequence.values)
 
         if len(sequence) < self.__max_sequence_length:
             sequence = self.__pad_sequences(sequence)
