@@ -204,7 +204,7 @@ class CrossValidator:
         path_to_best_model = os.path.join("experiments", "saved_models", model_name + ".pt")
         trainer = Trainer(self.__network_type, self.__training_params, self.__device, path_to_best_model)
 
-        data = self.__data_split_manager.load_fold(fold_number)
+        data = self.__data_split_manager.load_split(fold_number)
 
         start_time = time.time()
         epochs_metrics = trainer.train(data)

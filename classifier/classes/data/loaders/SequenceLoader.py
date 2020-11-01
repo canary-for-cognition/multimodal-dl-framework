@@ -33,18 +33,19 @@ class SequenceLoader(Loader):
     def __truncate(self, sequence: np.array) -> np.array:
         """
         Truncates the sequences according to two axis:
-            1. Time steps: according to the truncation starting point (i.e. head or tail) and offset
+            1. Time steps: according to the truncation starting point (i.e. head or tail) and offset. In case the
+                target sequence length is greater than the actual sequence length, the full sequence will be preserved
             2. Features: according to the selected number of features
         :param sequence: the sequence to be truncated
         :return: the truncated sequence
         """
-        sequence_length = self.__truncation_offset + self.__max_sequence_length
+        seq_length = self.__truncation_offset + self.__max_sequence_length
         truncations_map = {
-            "head": sequence[self.__truncation_offset:sequence_length, :],
-            "tail": sequence[-sequence_length: -self.__truncation_offset, :]
+            "head": sequence[self.__truncation_offset:seq_length, :],
+            "tail": sequence[-seq_length:-self.__truncation_offset if self.__truncation_offset else None, :]
         }
-        truncated_sequences = truncations_map[self.__truncate_from]
-        return truncated_sequences[:, :self.__num_features].astype(float)
+        truncated_sequence = truncations_map[self.__truncate_from]
+        return truncated_sequence[:, :self.__num_features].astype(float)
 
     def load(self, path_to_input: str) -> torch.Tensor:
         """
