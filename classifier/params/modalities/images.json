@@ -1,11 +1,11 @@
 {
-  "type": "heatmaps_fixations",
+  "type": "scanpaths",
   "data_source": "eye_tracking",
   "file_format": "png",
-  "augment": false,
+  "augment": true,
   "num_channels": 3,
   "size": {
-    "width": 336,
-    "height": 210
+    "width": 150,
+    "height": 150
   }
 }

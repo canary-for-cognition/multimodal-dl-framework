@@ -1,10 +1,10 @@
 {
-  "type": "gaze_fixations_head_pupil",
+  "type": "",
   "data_source": "eye_tracking",
-  "file_format": "pkl",
-  "num_features": 18,
+  "file_format": "csv",
+  "num_features": 3,
   "normalize": false,
-  "augment": false,
+  "augment": true,
   "length": 250,
   "truncate_from": "head",
   "truncation_offset": 0

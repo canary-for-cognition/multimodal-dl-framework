@@ -5,9 +5,9 @@
     "negative": "healthy"
   },
   "paths": {
-    "dataset_folder": "../dataset",
+    "dataset_folder": "../dataset/alzheimer",
     "dataset_metadata": "metadata",
-    "cv_metadata": "split/metadata/text/5_1",
+    "cv_metadata": "split/metadata/eye_tracking/5_1",
     "modalities": {
       "images": "images",
       "sequences": "sequences",

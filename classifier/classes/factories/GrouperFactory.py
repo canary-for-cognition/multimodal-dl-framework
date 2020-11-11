@@ -2,12 +2,14 @@ from typing import Callable
 
 from classifier.classes.data.groupers.AlzheimerGrouper import AlzheimerGrouper
 from classifier.classes.data.groupers.ConfusionGrouper import ConfusionGrouper
+from classifier.classes.data.groupers.CognitiveAbilitiesGrouper import CognitiveAbilitiesGrouper
 
 
 class GrouperFactory:
     groupers_maps = {
         "confusion": ConfusionGrouper,
-        "alzheimer": AlzheimerGrouper
+        "alzheimer": AlzheimerGrouper,
+        "cognitive_abilities": CognitiveAbilitiesGrouper
     }
 
     def __check_implementation(self, grouper_type: str):

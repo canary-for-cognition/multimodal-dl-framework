@@ -1,8 +1,8 @@
 {
   "id": "",
   "device": "cuda:3",
-  "dataset_type": "alzheimer",
-  "network_type": "han",
+  "dataset_type": "cognitive_abilities",
+  "network_type": "images_cnn",
   "num_seeds": 1,
   "base_seed": 1,
   "training": {
@@ -13,7 +13,7 @@
     "batch_size": 1,
     "early_stopping": {
       "active": true,
-      "patience": 15,
+      "patience": 50,
       "log_every": 1,
       "metrics": "auc",
       "metrics_trend": "increasing"
@@ -21,7 +21,7 @@
     "learning_rate": {
       "initial_value": 1e-5,
       "decay_ratio": 0.5,
-      "decay_patience": 20,
+      "decay_patience": 100,
       "max_decreases": 3,
       "reload_best_on_decay": true
     },

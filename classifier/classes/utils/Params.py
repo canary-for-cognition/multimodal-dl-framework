@@ -82,8 +82,7 @@ class Params:
         params["type"] = dataset_type
         params["main_modality"] = main_modality[0] if isinstance(main_modality, tuple) else main_modality
 
-        dataset_folder = os.path.join(params["paths"]["dataset_folder"], dataset_type)
-        params["paths"]["dataset_folder"] = dataset_folder
+        dataset_folder = params["paths"]["dataset_folder"]
         params["paths"]["dataset_metadata"] = os.path.join(dataset_folder, params["paths"]["dataset_metadata"])
         params["paths"]["cv_metadata"] = os.path.join(dataset_folder, params["paths"]["cv_metadata"])
         for modality, path_to_modality in params["paths"]["modalities"].items():
