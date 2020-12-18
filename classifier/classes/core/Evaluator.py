@@ -4,6 +4,7 @@ import numpy as np
 import torch
 import torch.utils.data
 from sklearn.metrics import recall_score, f1_score, roc_auc_score, roc_curve
+from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from classifier.classes.core.Model import Model
@@ -20,60 +21,45 @@ class Evaluator:
         self.__device = device
         self.__batch_size = batch_size
 
-    def evaluate_model(self, data: dict, model: Model):
-        """
-        Evaluates the given model against training, validation and test data
-        :param data: a dictionary containing the data loaders for training, validation and test
-        :param model: the model to be evaluated
-        :return: the evaluation of the model on training, validation and test data
-        """
-        print(" Evaluating model...")
-        self.__model = model
-        self.__model.evaluation_mode()
-        return self.__evaluate_all_data(data)
-
-    def evaluate_saved_model(self, data: dict, model: Model, path_to_best_model: str) -> dict:
+    def evaluate_model(self, data: dict, model: Model, path_to_model: str = "") -> dict:
         """
         Evaluates the saved best model against training, validation and test data
         :param data: a dictionary tuple containing the data loaders for training, validation and test
         :param model: the model to be evaluated
-        :param path_to_best_model: the path to the saved serialization of the best model
+        :param path_to_model: the path to the saved serialization of the best model
         :return: the evaluation of the model on training, validation and test data
         """
-        print(" Evaluating saved model...")
         self.__model = model
-        self.__model.load(path_to_best_model)
         self.__model.evaluation_mode()
-        return self.__evaluate_all_data(data)
 
-    def __evaluate_all_data(self, data: dict):
-        """
-        Evaluates the model against training, validation and test data
-        :param data: a dictionary containing the data loaders for training, validation and test
-        :return: the evaluation of the model on training, validation and test data
-        """
+        if path_to_model != "":
+            print(" Evaluating model saved at {}".format(path_to_model))
+            self.__model.load(path_to_model)
+        else:
+            print(" Evaluating model...")
+
         return {
             "training": self.__evaluate_data(data["training"], mode="training"),
             "validation": self.__evaluate_data(data["validation"], mode="validation"),
             "test": self.__evaluate_data(data["test"], mode="test")
         }
 
-    def evaluate_predictions(self, predictions: list) -> dict:
+    def evaluate_preds(self, preds: list) -> dict:
         """
         Computes the metrics for the given predictions
-        :param predictions: a list of predictions including ground-truth and probability scores
+        :param preds: a list of predictions including ground-truth and probability scores
         :return: the following metrics in a dict:
             * Sensitivity (TP rate) / Specificity (FP rate) / Combined
             * Accuracy / F1 / AUC
         """
         print("\n Evaluating test predictions... \n")
-        y_true = np.array([labels for prediction in predictions for labels in prediction["y_true"]])
-        y_1_scores = np.array([scores for prediction in predictions for scores in prediction["y_scores"]])[:, 1]
-        threshold = self.__compute_optimal_roc_threshold(y_true, y_1_scores)
+        y_true = np.array([labels for prediction in preds for labels in prediction["y_true"]])
+        y_1_scores = np.array([scores for prediction in preds for scores in prediction["y_scores"]])[:, 1]
+        threshold = self.__optimal_roc_threshold(y_true, y_1_scores)
         y_pred = np.array((y_1_scores >= threshold), dtype=np.int)
         return self.__compute_metrics(y_true, y_pred, y_1_scores)
 
-    def __evaluate_batches(self, data_loader: torch.utils.data.DataLoader, mode: str) -> tuple:
+    def __evaluate_batches(self, data_loader: DataLoader, mode: str) -> tuple:
         """
         Evaluates the input data batch by batch
         :param data_loader: the data which to run the evaluation on
@@ -81,30 +67,30 @@ class Evaluator:
         :return the predictions of the model and the evaluation loss
         """
         items_ids, y_scores, y_true = [], [], []
-        running_accuracy, running_loss = 0.0, 0.0
+        loss, accuracy = 0.0, 0.0
 
         with torch.no_grad():
-            for i, (inputs, labels) in tqdm(enumerate(data_loader), desc="Evaluating {}".format(mode)):
-                labels = labels.long().to(self.__device)
-                outputs = self.__model.predict(inputs, ).to(self.__device)
+            for i, (x, y) in tqdm(enumerate(data_loader), desc="Evaluating {}".format(mode)):
+                y = y.long().to(self.__device)
+                o = self.__model.predict(x).to(self.__device)
 
-                running_loss += self.__model.compute_loss(outputs, labels)
-                running_accuracy += self.compute_batch_accuracy(outputs, labels)
+                loss += self.__model.compute_loss(o, y)
+                accuracy += self.batch_accuracy(o, y)
 
                 items_ids += self.__get_items_ids(data_loader, mode, batch_index=i)
-                y_scores += torch.exp(outputs).cpu().numpy().tolist()
-                y_true += labels.cpu().numpy().tolist()
+                y_scores += torch.exp(o).cpu().numpy().tolist()
+                y_true += y.cpu().numpy().tolist()
 
-        loss, accuracy = running_loss / len(data_loader), running_accuracy / len(data_loader)
+        loss, accuracy = loss / len(data_loader), accuracy / len(data_loader)
         print("\n [ Average {} scores ] loss: {:.5f} | accuracy: {:.5f}".format(mode, loss, accuracy))
 
-        predictions = {
+        preds = {
             "items_ids": items_ids,
             "y_scores": np.array(y_scores).reshape((len(y_scores), 2)),
             "y_true": np.array(y_true)
         }
 
-        return predictions, loss
+        return preds, loss
 
     @staticmethod
     def __compute_metrics(y_true: np.array, y_pred: np.array, y_1_scores: np.array) -> dict:
@@ -146,19 +132,19 @@ class Evaluator:
             * Accuracy / F1 / AUC
             * Loss
         """
-        predictions, loss = self.__evaluate_batches(data_loader, mode)
+        preds, loss = self.__evaluate_batches(data_loader, mode)
 
-        threshold = self.__compute_optimal_roc_threshold(predictions["y_true"], predictions["y_scores"][:, 1])
-        predictions["y_pred"] = np.array((predictions["y_scores"][:, 1] >= threshold), dtype=np.int)
+        threshold = self.__optimal_roc_threshold(preds["y_true"], preds["y_scores"][:, 1])
+        preds["y_pred"] = np.array((preds["y_scores"][:, 1] >= threshold), dtype=np.int)
 
-        metrics = self.__compute_metrics(predictions["y_true"], predictions["y_pred"], predictions["y_scores"][:, 1])
+        metrics = self.__compute_metrics(preds["y_true"], preds["y_pred"], preds["y_scores"][:, 1])
         metrics["loss"] = loss
 
         print("\n {} metrics: \n".format(mode.capitalize()))
         for metric, value in metrics.items():
             print(("\t - {} " + "".join(["."] * (15 - len(metric))) + " : {}").format(metric, value))
 
-        return {"metrics": metrics, "predictions": predictions}
+        return {"metrics": metrics, "predictions": preds}
 
     def __get_items_ids(self, data_loader: torch.utils.data.DataLoader, mode: str, batch_index: int) -> list:
         """
@@ -177,19 +163,19 @@ class Evaluator:
             return [data_loader.dataset.samples[j][0].split(os.sep)[-1].split(".")[0] for j in items_indices]
 
     @staticmethod
-    def compute_batch_accuracy(logit: torch.Tensor, target: torch.Tensor) -> float:
+    def batch_accuracy(o: torch.Tensor, y: torch.Tensor) -> float:
         """
         Computes the accuracy of the predictions over the items in a single batch
-        :param logit: the logit output of datum in the batch
-        :param target: the correct class index of each datum
+        :param o: the logit output of datum in the batch
+        :param y: the correct class index of each datum
         :return the percentage of correct predictions as a value in [0,1]
         """
-        corrects = (torch.max(logit, 1)[1].view(target.size()).data == target.data).sum()
-        accuracy = 100.0 * corrects / target.size()[0]
+        corrects = (torch.max(o, 1)[1].view(y.size()).data == y.data).sum()
+        accuracy = corrects / y.size()[0]
         return accuracy.item()
 
     @staticmethod
-    def __compute_optimal_roc_threshold(y_true: np.array, y_1_scores: np.array) -> float:
+    def __optimal_roc_threshold(y_true: np.array, y_1_scores: np.array) -> float:
         """
         Computes the optimal ROC threshold
         :param y_true: the ground truth

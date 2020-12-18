@@ -16,7 +16,7 @@ The **core** component runs an experiment, which is a series of Cross-Validation
 
 * `Trainer`: receives the `training_params` saved in the `experiment.json` file and handles the training of the model; 
 * `Evaluator`: evaluates the model computing the reported metrics; 
-* `Model`: takes care of predictions and weight update and is subclassed by each new module. 
+* `Model`: takes care of preds and weight update and is subclassed by each new module. 
 
 #### Modules
 
@@ -405,7 +405,7 @@ The results of the experiments are saved in a user-named folder, refered to as "
 
 * Training, validation and test metrics;
 * Training, validation and test plots of metrics over epochs;
-* Training, validation and test predictions
+* Training, validation and test preds
 
 All the parameters involved in the experiment are dumped into the main folder of the report, namely in three files:
 

@@ -32,7 +32,7 @@ def main():
           "**********************************************************\n".format(dataset_type))
 
     device = ExperimentManager.get_device(device_type)
-    print("\n\t\t Using Torch version ... : {v} \n"
+    print("\n\t\t Using Torch version ... : {v}"
           "\n\t\t Running on device ..... : {d} \n".format(d=device, v=torch.__version__))
 
     ExperimentManager.set_random_seed(base_seed, device)

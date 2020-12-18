@@ -37,7 +37,7 @@ class AttentionNN(nn.Module):
 
     def __batch_mm(self, sequence: torch.Tensor) -> torch.Tensor:
         product = None
-        for i in range(sequence.size(0)):
+        for i in range(sequence.shape[0]):
             item = sequence[i]
             s_product = torch.mm(item.unsqueeze(0) if len(item.shape) == 1 else item, self.__weights_projection)
             s_product = s_product.unsqueeze(0)
@@ -47,7 +47,7 @@ class AttentionNN(nn.Module):
     @staticmethod
     def __attention_mm(rnn_outputs: torch.Tensor, weights: torch.Tensor) -> torch.Tensor:
         attentions = None
-        for i in range(rnn_outputs.size(0)):
+        for i in range(rnn_outputs.shape[0]):
             h_i = rnn_outputs[i]
             a_i = weights[i].unsqueeze(1).expand_as(h_i)
             h_i = (a_i * h_i).unsqueeze(0)

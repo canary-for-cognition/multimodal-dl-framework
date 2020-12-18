@@ -124,19 +124,19 @@ class Params:
         Params.save(Params.load_network_params(network_type), os.path.join(path_to_experiment, "network_params.json"))
 
     @staticmethod
-    def save_experiment_predictions(fold_evaluation: dict, path_to_predictions: str, fold_number: int):
+    def save_experiment_preds(fold_evaluation: dict, path_to_preds: str, fold_number: int):
         """
         Saves the experiments predictions in CSV format at the given path
         :param fold_evaluation: the evaluation data for the given fold, including ground truth and predictions
-        :param path_to_predictions: the path where to store the predictions at
+        :param path_to_preds: the path where to store the predictions at
         :param fold_number: the number of the fold for generating the name of the file
         """
         for set_type in ["training", "validation", "test"]:
-            predictions = fold_evaluation[set_type]["predictions"]
-            predictions_data = {
-                "items_ids": predictions["items_ids"],
-                "ground_truth": predictions["y_true"],
-                "prediction": predictions["y_pred"]
+            preds = fold_evaluation[set_type]["predictions"]
+            preds_data = {
+                "items_ids": preds["items_ids"],
+                "ground_truth": preds["y_true"],
+                "prediction": preds["y_pred"]
             }
             file_name = "fold_" + str(fold_number) + "_" + set_type + "_predictions.csv"
-            pd.DataFrame(predictions_data).to_csv(os.path.join(path_to_predictions, file_name), index=False)
+            pd.DataFrame(preds_data).to_csv(os.path.join(path_to_preds, file_name), index=False)

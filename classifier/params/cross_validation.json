@@ -11,6 +11,6 @@
   "save_split_metadata": true,
   "reload_split": {
     "training_test": false,
-    "folds": false
+    "folds": true
   }
 }

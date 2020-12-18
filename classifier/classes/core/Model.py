@@ -72,27 +72,26 @@ class Model:
         return self.__criterion(outputs, labels).item()
 
     def optimize(self):
-        """
-        Performs the optimization step
-        """
+        """ Performs the optimization step """
         self.__optimizer.step()
+
+    def reset_gradient(self):
+        """ Zeros out all the accumulated gradients """
+        self.__optimizer.zero_grad()
 
     def update_weights(self,
                        outputs: torch.Tensor,
                        labels: torch.Tensor,
-                       retain_graph: bool = True,
                        optimize: bool = True) -> float:
         """
         Updates the weights of the model performing standard backpropagation (with gradient clipping, if enabled)
         :param outputs: the output of the forward step
         :param labels: the ground truth
-        :param retain_graph: whether or not to retain the computational graph when performing the backward step
         :param optimize: whether or not to perform the optimization step
         :return: the loss value for the current update of the weights
         """
         loss = self.__criterion(outputs, labels)
-        self.__optimizer.zero_grad()
-        loss.backward(retain_graph=retain_graph)
+        loss.backward()
 
         if self.__clip_gradient:
             torch.nn.utils.clip_grad_norm_(self._network.parameters(), max_norm=0.2)
@@ -129,8 +128,8 @@ class Model:
         Saves the current model at the given path
         :param path_to_model: the path where to save the current model at
         """
-        print("\n Saving model... \n")
         torch.save(self._network.state_dict(), path_to_model)
+        print("\n\t Saved model at {} \n".format(path_to_model))
 
     def load(self, path_to_model: str):
         """
