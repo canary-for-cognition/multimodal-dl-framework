@@ -1,12 +1,12 @@
 {
   "id": "",
   "device": "cuda:3",
-  "dataset_type": "cognitive_abilities",
+  "dataset_type": "confusion",
   "network_type": "rnn",
   "num_seeds": 1,
   "base_seed": 1,
   "training": {
-    "epochs": 10,
+    "epochs": 100,
     "optimizer": "AdamW",
     "criterion": "CrossEntropyLoss",
     "clip_gradient": true,
@@ -15,7 +15,7 @@
       "active": true,
       "patience": 50,
       "log_every": 10,
-      "evaluate_every": 5,
+      "evaluate_every": 1,
       "metrics": "auc",
       "metrics_trend": "increasing"
     },
