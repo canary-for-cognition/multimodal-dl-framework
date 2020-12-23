@@ -8,7 +8,7 @@ from classifier.classes.modules.base.MultimodalNN import MultimodalNN
 class VisTextNet(MultimodalNN):
 
     def __init__(self, network_params: dict, activation: bool = True):
-        super().__init__(network_params["features_fusion"], activation)
+        super().__init__(network_params["fusion_policy"], activation)
 
         text_params = network_params["submodules"]["text"]
         text_architecture = text_params["architecture"]
@@ -18,7 +18,7 @@ class VisTextNet(MultimodalNN):
         images_architecture = images_params["architecture"]
         self.__stateful_image_model = images_architecture in ["images_cnn_rnn"]
 
-        activate_submodule = self._features_fusion != "early"
+        activate_submodule = self._fusion_policy != "early"
         self.images_network = NetworkFactory().get(images_architecture, images_params, activate_submodule)
         self.text_network = NetworkFactory().get(text_architecture, text_params, activate_submodule)
 

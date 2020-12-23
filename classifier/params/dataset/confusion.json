@@ -1,8 +1,7 @@
 {
-  "variable_size_input": false,
   "classes": {
-    "positive": "confused",
-    "negative": "not_confused"
+    "pos": "confused",
+    "neg": "not_confused"
   },
   "paths": {
     "dataset_folder": "../dataset/confusion",

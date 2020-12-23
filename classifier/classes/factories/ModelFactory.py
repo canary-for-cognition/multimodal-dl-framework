@@ -7,7 +7,6 @@ from classifier.classes.modules.multimodal.vistextnet.ModelVisTextNet import Mod
 from classifier.classes.modules.sequences.rnn.ModelRNN import ModelRNN
 from classifier.classes.modules.sequences.sequences_cnn.ModelSequencesCNN import ModelSequencesCNN
 from classifier.classes.modules.sequences.sequences_cnn_rnn.ModelSequencesCNNRNN import ModelSequencesCNNRNN
-from classifier.classes.modules.text.han.ModelHAN import ModelHAN
 from classifier.classes.modules.text.transformer.ModelTransformer import ModelTransformer
 
 
@@ -21,7 +20,6 @@ class ModelFactory:
         "images_cnn": ModelImagesCNN,
         "images_cnn_rnn": ModelImagesCNNRNN,
         "pre_trained_cnn": ModelPreTrainedCNN,
-        "han": ModelHAN,
         "transformer": ModelTransformer,
     }
 

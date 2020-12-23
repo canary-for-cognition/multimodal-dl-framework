@@ -1,8 +1,8 @@
+from classifier.classes.binders.ModalityBinder import ModalityBinder
 from classifier.classes.data.loaders.ImageLoader import ImageLoader
 from classifier.classes.data.loaders.MultimodalLoader import MultimodalLoader
 from classifier.classes.data.loaders.SequenceLoader import SequenceLoader
 from classifier.classes.data.loaders.TextLoader import TextLoader
-from classifier.classes.binders.ModalityBinder import ModalityBinder
 
 
 class LoaderFactory:

@@ -6,5 +6,5 @@
   "vocabulary_size": 1126,
   "embedding_size": 300,
   "path_to_pre_trained_embeddings": "assets/pre_trained_embeddings",
-  "path_to_pre_trained_models": "assets/pre_trained_models"
+  "path_to_pretrained_models": "assets/pretrained_models"
 }

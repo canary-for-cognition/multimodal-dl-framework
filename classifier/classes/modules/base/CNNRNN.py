@@ -12,10 +12,10 @@ class CNNRNN(nn.Module):
         rnn_params = network_params["rnn"]
         bidirectional = rnn_params["bidirectional"]
         output_size = rnn_params["output_size"]
-        self._hidden_size = rnn_params["hidden_size"]
-        rnn_params["input_size"] = self._hidden_size
+        self.__hidden_size = rnn_params["hidden_size"]
+        rnn_params["input_size"] = self.__hidden_size
 
-        self._pre_activation_size = 2 * self._hidden_size if bidirectional else self._hidden_size
+        self._pre_activation_size = 2 * self.__hidden_size if bidirectional else self.__hidden_size
         self.__activate = activate
 
         self.cnn = None
@@ -23,10 +23,10 @@ class CNNRNN(nn.Module):
 
         if self.__activate:
             self.classifier = nn.Sequential(
-                nn.Linear(self._pre_activation_size, self._hidden_size),
+                nn.Linear(self._pre_activation_size, self.__hidden_size),
                 nn.GELU(),
                 nn.Dropout(0.1),
-                nn.Linear(self._hidden_size, output_size)
+                nn.Linear(self.__hidden_size, output_size)
             )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -38,7 +38,7 @@ class CNNRNN(nn.Module):
         return self.rnn.init_state(batch_size)
 
     def get_hidden_size(self) -> int:
-        return self._hidden_size
+        return self.__hidden_size
 
     def get_pre_activation_size(self) -> int:
         return self._pre_activation_size

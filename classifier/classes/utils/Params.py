@@ -20,8 +20,8 @@ class Params:
     @staticmethod
     def load_cv_params() -> dict:
         """
-        Loads the parameters stored in the params/cross_validation.json file
-        :return: the loaded cross validation parameters in a dict
+        Loads the parameters stored in the params/cross_val.json file
+        :return: the loaded cross val parameters in a dict
         """
         return json.load(open(os.path.join("params", "cross_validation.json"), "r"))
 
@@ -30,7 +30,7 @@ class Params:
         """
         Loads the parameters stored in the params/modalities/modality.json file
         :param modality: the modality params to be loaded
-        :return: the loaded cross validation parameters in a dict
+        :return: the loaded cross val parameters in a dict
         """
         return json.load(open(os.path.join("params", "modalities", modality + ".json"), "r"))
 
@@ -45,7 +45,7 @@ class Params:
         for modality, network_type in submodules_map.items():
             module_params = json.load(open(os.path.join("params", "networks", ParamsBinder().get(network_type)), "r"))
             module_params["architecture"] = network_type
-            module_params["batch_size"] = Params.load_experiment_params()["training"]["batch_size"]
+            module_params["batch_size"] = Params.load_experiment_params()["train"]["batch_size"]
             module_params["modality"] = Params.load_modality_params(ModalityBinder().get(network_type))
             submodules_params[modality] = module_params
         return submodules_params
@@ -63,7 +63,7 @@ class Params:
             network_params["submodules"] = Params.__load_submodules_params(network_params["submodules"])
         else:
             network_params["architecture"] = network_type
-            network_params["batch_size"] = Params.load_experiment_params()["training"]["batch_size"]
+            network_params["batch_size"] = Params.load_experiment_params()["train"]["batch_size"]
             network_params["modality"] = Params.load_modality_params(ModalityBinder().get(network_type))
 
         return network_params
@@ -93,7 +93,7 @@ class Params:
     @staticmethod
     def load_cv_metadata(path_to_cv_metadata: str) -> list:
         """
-        Loads the CV metadata, i.e. file(s) describing the splits for the validation procedure
+        Loads the CV metadata, i.e. file(s) describing the splits for the val procedure
         :param path_to_cv_metadata: the path to the CV metadata (to a single file or folder)
         :return: the CV metadata in a list
         """
@@ -112,31 +112,25 @@ class Params:
         json.dump(data, open(path_to_destination, 'w'), indent=2)
 
     @staticmethod
-    def save_experiment_params(path_to_experiment: str, network_type: str, dataset_type: str):
+    def save_experiment_params(path_to_results: str, network_type: str, dataset_type: str):
         """
         Saves the configuration for the current experiment to file at the given path
-        :param path_to_experiment: the path where to save the configuration of the experiment at
+        :param path_to_results: the path where to save the configuration of the experiment at
         :param network_type: the type of network used for the experiment
         :param dataset_type: the type of data used for the experiment
         """
-        Params.save(Params.load_experiment_params(), os.path.join(path_to_experiment, "experiment_setting.json"))
-        Params.save(Params.load_dataset_params(dataset_type), os.path.join(path_to_experiment, "data.json"))
-        Params.save(Params.load_network_params(network_type), os.path.join(path_to_experiment, "network_params.json"))
+        Params.save(Params.load_experiment_params(), os.path.join(path_to_results, "experiment_setting.json"))
+        Params.save(Params.load_dataset_params(dataset_type), os.path.join(path_to_results, "data.json"))
+        Params.save(Params.load_network_params(network_type), os.path.join(path_to_results, "network_params.json"))
 
     @staticmethod
     def save_experiment_preds(fold_evaluation: dict, path_to_preds: str, fold_number: int):
         """
-        Saves the experiments predictions in CSV format at the given path
-        :param fold_evaluation: the evaluation data for the given fold, including ground truth and predictions
-        :param path_to_preds: the path where to store the predictions at
+        Saves the experiments preds in CSV format at the given path
+        :param fold_evaluation: the evaluation data for the given fold, including ground truth and preds
+        :param path_to_preds: the path where to store the preds at
         :param fold_number: the number of the fold for generating the name of the file
         """
-        for set_type in ["training", "validation", "test"]:
-            preds = fold_evaluation[set_type]["predictions"]
-            preds_data = {
-                "items_ids": preds["items_ids"],
-                "ground_truth": preds["y_true"],
-                "prediction": preds["y_pred"]
-            }
-            file_name = "fold_" + str(fold_number) + "_" + set_type + "_predictions.csv"
-            pd.DataFrame(preds_data).to_csv(os.path.join(path_to_preds, file_name), index=False)
+        for set_type in ["train", "val", "test"]:
+            path_to_csv = os.path.join(path_to_preds, "fold_" + str(fold_number) + "_" + set_type + "_preds.csv")
+            pd.DataFrame(fold_evaluation[set_type]["preds"]).to_csv(path_to_csv, index=False)

@@ -140,3 +140,4 @@ classifier/experiments/
 /dataset/confusion/split/
 /docs/data_exploration/
 /scripts/utility/
+/classifier/results/

@@ -1,6 +1,6 @@
 # Classifier
 
-This code is part of the project “Neural Networks for binary classification on multiple data modalities”. The `classifier` package is the core of the project, including the fundamental classes which handle the datasets and the training and evaluation of the models as well as the Neural Networks (NNs) architectures.
+This code is part of the project “Neural Networks for binary classification on multiple data modalities”. The `classifier` package is the core of the project, including the fundamental classes which handle the datasets and the train and evaluation of the models as well as the Neural Networks (NNs) architectures.
 
 ## General description
 
@@ -14,7 +14,7 @@ The relationship and interaction among the main components of the `classifier` p
 
 The **core** component runs an experiment, which is a series of Cross-Validation (CV) procedures. It interacts with `data` and networks-related classes to fetch the data from the dataset and to train the model respectively. The main classes of the package are:
 
-* `Trainer`: receives the `training_params` saved in the `experiment.json` file and handles the training of the model; 
+* `Trainer`: receives the `train_params` saved in the `experiment.json` file and handles the train of the model; 
 * `Evaluator`: evaluates the model computing the reported metrics; 
 * `Model`: takes care of preds and weight update and is subclassed by each new module. 
 
@@ -159,15 +159,15 @@ The code is based on PyTorch and can run both on CPU and GPU supporting CUDA. In
 
 In order to run an experiment, one has to manually edit the configuration JSON files (stored in `params`) related to some core aspects of the analysis. The core aspects of an experiments are the following:
 
-1. **Experimental setting** (`experiment.json`): NN architecture and dataset, parameters related to the the training procedure;
-2. **Cross validation** (`cross_validation.json`): type of CV to be performed and whether or not to regenerate the data split;
+1. **Experimental setting** (`experiment.json`): NN architecture and dataset, parameters related to the the train procedure;
+2. **Cross val** (`cross_val.json`): type of CV to be performed and whether or not to regenerate the data split;
 3. **Network** (`networks/`): architecture-specific parameters for the selected NN (or for the submodules in case of multi-modal architectures);
 4. **Dataset** (`dataset/`): paths to the data modalities involved in the experiment;
 5. **Modality** (`modalities/`):  modality-specific parameters for the modalities handled by the selected NN. 
 
 ### Experimental setting
 
-These parameters define the general setting of the experiments and the configuration for the training procedure.
+These parameters define the general setting of the experiments and the configuration for the train procedure.
 
 #### Description of the parameters
 
@@ -175,41 +175,41 @@ These parameters define the general setting of the experiments and the configura
 
 | Name           | Type  | Values                                                       | Description                                                  |
 | -------------- | ----- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `id`           | `str` | Any string including the empty string                        | An optional ID for the experiment which the folder reporting the results will be named after (including a timestamp at the tail). If the empty string is provided then the ID defaults to `[dataset_type]_[validation_type]_[network_type]_[timestamp]`. |
-| `device`       | `str` | `cpu` or a string matching the regex `\bcuda:\b\d+`          | The device to be used when performing the training procedure. If a selected CUDA device is not available, defaults to CPU. |
+| `id`           | `str` | Any string including the empty string                        | An optional ID for the experiment which the folder reporting the results will be named after (including a timestamp at the tail). If the empty string is provided then the ID defaults to `[dataset_type]_[val_type]_[network_type]_[timestamp]`. |
+| `device`       | `str` | `cpu` or a string matching the regex `\bcuda:\b\d+`          | The device to be used when performing the train procedure. If a selected CUDA device is not available, defaults to CPU. |
 | `dataset_type` | `str` | Any dataset name having corresponding parameters in the `params/dataset/` folder | The dataset to be used to train and evaluate the model.      |
 | `network_type` | `str` | Any network name having corresponding parameters in the `params/networks/` folder | The network to be used to train and evaluate the model.      |
-| `num_seeds`    | `int` | Any positive integer number                                  | The number of different random seeds for which the CV procedure on each selected split must be run. The random seeds are generated increasing the `base_seed` by one unit at a time (e.g. `num_seed = 3` and `base_seed = 1` implies seeds ranging from 1 to 3 included). |
+| `num_seeds`    | `int` | Any pos integer number                                  | The number of different random seeds for which the CV procedure on each selected split must be run. The random seeds are generated increasing the `base_seed` by one unit at a time (e.g. `num_seed = 3` and `base_seed = 1` implies seeds ranging from 1 to 3 included). |
 | `base_seed`    | `int` | Any integer number                                           | The base random seed value increased by one unit at a time for `num_seeds` times. |
 
 ##### Training
 
 | Name            | Type   | Values                                                       | Description                                                  |
 | --------------- | ------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `epochs`        | `int`  | Any positive integer number                                  | The maximum number of epochs (i.e. iterations through the whole dataset) to be performed. |
+| `epochs`        | `int`  | Any pos integer number                                  | The maximum number of epochs (i.e. iterations through the whole dataset) to be performed. |
 | `optimizer`     | `str`  | Any optimiser name implemented in `classes/factories/OptimizerFactory` | The type of optimiser to be used. for updating the weights.  |
 | `criterion`     | `str`  | Any criterion name implemented in `classes/factories/CriterionFactory` | The loss criterion to be used for approximating the error.   |
 | `clip_gradient` | `bool` | Any Boolean value                                            | Whether or not to clip the gradient (using a normalisation strategy) during the update of the weights |
-| `batch_size`    | `int`  | Any positive integer number greater than zero                | The size of the mini-batches                                 |
+| `batch_size`    | `int`  | Any pos integer number greater than zero                | The size of the mini-batches                                 |
 
 ###### Early stopping
 
 | Name            | Type   | Values                                                       | Description                                                  |
 | --------------- | ------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `active`        | `bool` | Any positive integer number greater than zero                | Whether or not to use early stopping. If set to `false`, the training procedure stops after the selected number of epochs. |
-| `patience`      | `int`  | Any positive integer number greater than zero                | The number of iterations for which a non-improvement of the monitored metrics is tolerated. |
-| `log_every`     | `int`  | Any positive integer number greater than zero                | The frequency (in terms of epochs) with which the metrics should be logged on terminal. |
-| `metrics`       | `str`  | Any metrics name from those implemented in `classes/core/Evaluator.py ` | The monitored validation metrics (e.g. `auc`, `f1`, `loss`, etc…) |
+| `active`        | `bool` | Any pos integer number greater than zero                | Whether or not to use early stopping. If set to `false`, the train procedure stops after the selected number of epochs. |
+| `patience`      | `int`  | Any pos integer number greater than zero                | The number of iterations for which a non-improvement of the monitored metrics is tolerated. |
+| `log_every`     | `int`  | Any pos integer number greater than zero                | The frequency (in terms of epochs) with which the metrics should be logged on terminal. |
+| `metrics`       | `str`  | Any metrics name from those implemented in `classes/core/Evaluator.py ` | The monitored val metrics (e.g. `auc`, `f1`, `loss`, etc…) |
 | `metrics_trend` | `str`  | `increasing` or `decreasing`                                 | Whether the monitored metrics is supposed to increase or decrease (e.g. `auc` should increase while `loss` should decrease). |
 
 ###### Learning rate
 
 | Name                   | Type    | Values                                        | Description                                                  |
 | ---------------------- | ------- | --------------------------------------------- | ------------------------------------------------------------ |
-| `initial_value`        | `float` | Any positive float number greater than zero   | The learning rate value the optimiser should initialised to. |
-| `decay_ratio`          | `float` | Any positive integer number greater than zero | The number by which the learning rate should be multiplied on decay. |
-| `decay_patience`       | `int`   | Any positive integer number greater than zero | The number of iterations for which a non-improvement of the monitored metrics is tolerated before decaying the learning rate. In order not to use the learning rate decay it is sufficient to set this value to a number which is higher than the patience of the early stopping. |
-| `max_decreases`        | `int`   | Any positive integer number greater than zero | The maximum number of times the learning rate decay should be applied. After that number has been reached, the learning rate will not be decreased any further. |
+| `initial_value`        | `float` | Any pos float number greater than zero   | The learning rate value the optimiser should initialised to. |
+| `decay_ratio`          | `float` | Any pos integer number greater than zero | The number by which the learning rate should be multiplied on decay. |
+| `decay_patience`       | `int`   | Any pos integer number greater than zero | The number of iterations for which a non-improvement of the monitored metrics is tolerated before decaying the learning rate. In order not to use the learning rate decay it is sufficient to set this value to a number which is higher than the patience of the early stopping. |
+| `max_decreases`        | `int`   | Any pos integer number greater than zero | The maximum number of times the learning rate decay should be applied. After that number has been reached, the learning rate will not be decreased any further. |
 | `reload_best_on_decay` | `bool`  | Any Boolean value                             | Whether or not to reload the best model after decaying the learning rate. |
 
 #### Example
@@ -222,7 +222,7 @@ These parameters define the general setting of the experiments and the configura
   "network_type": "cnn",
   "num_seeds": 1,
   "base_seed": 1,
-  "training": {
+  "train": {
     "epochs": 100,
     "optimizer": "AdamW",
     "criterion": "CrossEntropyLoss",
@@ -246,9 +246,9 @@ These parameters define the general setting of the experiments and the configura
 }
 ```
 
-### Cross validation
+### Cross val
 
-These parameters define how the cross validation should be performed and whether or not to reload preexisting data.
+These parameters define how the cross val should be performed and whether or not to reload preexisting data.
 
 #### Description of the parameters
 
@@ -257,12 +257,12 @@ These parameters define how the cross validation should be performed and whether
 | Name              | Type    | Values                                                     | Description                                                  |
 | ----------------- | ------- | ---------------------------------------------------------- | ------------------------------------------------------------ |
 | `type`            | `str`   | `k_fold` or `leave_one_out`                                | The type of CV to be performed, either K-fold CV or Leave One Out CV. |
-| `folds_type`      | `str`   | `dataset` or `training`                                    | Whether to split into folds the the training set (training + validation), thus using always the same test set, or the whole dataset. |
-| `k`               | `int`   | Any positive integer number greater than zero (usually 10) | The number of folds which the dataset must be split into.    |
-| `validation_size` | `float` | Any positive float number between zero and one             | The percentage of items to be included in the validation set (with respect to the training set). |
-| `test_size`       | `float` | Any positive float number between zero and one             | The percentage of items to be included in the test set (with respect to the whole dataset). |
-| `downscale`       | `bool`  | Any Boolean value                                          | Whether or not to downscale the validation set to have the same amount of items in the majority class as the training set. |
-| `plot_metrics`    | `bool`  | Any Boolean value                                          | Whether or not to save the plot of the metrics during training. |
+| `folds_type`      | `str`   | `dataset` or `train`                                    | Whether to split into folds the the train set (train + val), thus using always the same test set, or the whole dataset. |
+| `k`               | `int`   | Any pos integer number greater than zero (usually 10) | The number of folds which the dataset must be split into.    |
+| `val_size` | `float` | Any pos float number between zero and one             | The percentage of items to be included in the val set (with respect to the train set). |
+| `test_size`       | `float` | Any pos float number between zero and one             | The percentage of items to be included in the test set (with respect to the whole dataset). |
+| `down_sample`       | `bool`  | Any Boolean value                                          | Whether or not to down_sample the val set to have the same amount of items in the majority class as the train set. |
+| `plot_metrics`    | `bool`  | Any Boolean value                                          | Whether or not to save the plot of the metrics during train. |
 | `force_deletion`  | `bool`  | Any Boolean value                                          | Whether or not to ask forcefully delete the stored split. If set to `true`, the user will not be prompted for confirmation when the deleting the current split. |
 | `use_cv_metadata` | `bool`  | Any Boolean value                                          | Whether or not to use metadata information for the split instead of generating it anew. |
 
@@ -270,7 +270,7 @@ These parameters define how the cross validation should be performed and whether
 
 | Name            | Type   | Values            | Description                                                  |
 | --------------- | ------ | ----------------- | ------------------------------------------------------------ |
-| `training_test` | `bool` | Any Boolean value | When the dataset is split using `folds_type = “training”`, it is first split into training and test set and then the training set is split into `k` folds. This parameter states whether or not this split should be reloaded. |
+| `train_test` | `bool` | Any Boolean value | When the dataset is split using `folds_type = “train”`, it is first split into train and test set and then the train set is split into `k` folds. This parameter states whether or not this split should be reloaded. |
 | `folds`         | `bool` | Any Boolean value | Whether or not to reload the previously generated folds.     |
 
 #### Example
@@ -280,15 +280,15 @@ These parameters define how the cross validation should be performed and whether
   "type": "k_fold",
   "folds_type": "dataset",
   "k": 10,
-  "validation_size": 0.1,
+  "val_size": 0.1,
   "test_size": 0.1,
-  "downscale": false,
+  "down_sample": false,
   "plot_metrics": true,
   "force_deletion": true,
   "use_cv_metadata": true,
   "save_split_metadata": false,
   "reload_split": {
-    "training_test": false,
+    "train_test": false,
     "folds": false
   }
 }
@@ -308,8 +308,8 @@ These parameters define how the cross validation should be performed and whether
 
 | Name       | Type  | Values                          | Description                                                  |
 | ---------- | ----- | ------------------------------- | ------------------------------------------------------------ |
-| `positive` | `str` | Any string but the empty string | The ID of the positive class. It must be the same as the name of the folder containing the positive data items (without the `1_` prefix). |
-| `negative` | `str` | Any string but the empty string | The ID of the negative class. It must be the same as the name of the folder containing the negative data items (without the `0_` prefix). |
+| `pos` | `str` | Any string but the empty string | The ID of the pos class. It must be the same as the name of the folder containing the pos data items (without the `1_` prefix). |
+| `neg` | `str` | Any string but the empty string | The ID of the neg class. It must be the same as the name of the folder containing the neg data items (without the `0_` prefix). |
 
 ##### Paths
 
@@ -336,8 +336,8 @@ File `alzheimer.json` with respect to the Alzheimer dataset stored at `../datase
 {
   "variable_size_input": false,
   "classes": {
-    "positive": "alzheimer",
-    "negative": "healthy"
+    "pos": "alzheimer",
+    "neg": "healthy"
   },
   "paths": {
     "dataset_folder": "../dataset",
@@ -362,12 +362,12 @@ File `alzheimer.json` with respect to the Alzheimer dataset stored at `../datase
 | `type`              | `str`  | Any string                             | The type of sequences to be used. This must match with the name of a folder inside the corresponding `data_source` in the dataset. |
 | `data_source`       | `str`  | Any string                             | The type of data source the sequences are fetched from. This must match with the name of a folder inside `modalities/sequences` in the dataset. |
 | `file_format`       | `str`  | Any string but the empty string        | The file format of the data items (e.g. `pkl`, `csv`, etc…). |
-| `num_features`      | `int`  | Any positive integer greater than zero | The number of features to be used. Features are selected sequentially from the features at position 0. |
+| `num_features`      | `int`  | Any pos integer greater than zero | The number of features to be used. Features are selected sequentially from the features at position 0. |
 | `normalize`         | `bool` | Any Boolean value                      | Whether or not to perform batch-wise L2 normalisation        |
 | `augment`           | `bool` | Any Boolean value                      | Whether or not to use *augmented* sequences instead of *base* (i.e. non-augmented) sequences. |
-| `length`        | `int`  | Any positive integer greater than zero | The target length of the truncated sequences.                |
+| `length`        | `int`  | Any pos integer greater than zero | The target length of the truncated sequences.                |
 | `truncate_from`     | `str`  | Either `head` or `tail`                | The starting point for the truncation of the sequence. |
-| `truncation_offset` | `int`  | Any non-negative integer               | The number of time steps to skip with respect to the starting point of the truncation of the sequence. |
+| `truncation_offset` | `int`  | Any non-neg integer               | The number of time steps to skip with respect to the starting point of the truncation of the sequence. |
 
 #### Images
 
@@ -383,8 +383,8 @@ File `alzheimer.json` with respect to the Alzheimer dataset stored at `../datase
 
 | Name     | Type  | Values                   | Description                                           |
 | -------- | ----- | ------------------------ | ----------------------------------------------------- |
-| `width`  | `int` | Any non-negative integer | The width which the input images will be resized to.  |
-| `height` | `int` | Any non-negative integer | The height which the input images will be resized to. |
+| `width`  | `int` | Any non-neg integer | The width which the input images will be resized to.  |
+| `height` | `int` | Any non-neg integer | The height which the input images will be resized to. |
 
 #### Text
 
@@ -395,7 +395,7 @@ File `alzheimer.json` with respect to the Alzheimer dataset stored at `../datase
 | `max_sentences`                  | `int`  | The dataset-specific maximum number of sentences in a document | The dataset-specific maximum number of sentences in a document. |
 | `max_words`                      | `int`  | The dataset-specific maximum number of words in a sentence   | The dataset-specific maximum number of words in a sentence.  |
 | `vocabulary_size`                | `int`  | The dataset-specific size of the vocabulary                  | The dataset-specific size of the vocabulary.                 |
-| `embedding_size`                 | `int`  | Any non-negative integer                                     | The desired size for the word embedding (usually 300).       |
+| `embedding_size`                 | `int`  | Any non-neg integer                                     | The desired size for the word embedding (usually 300).       |
 | `use_pre_trained_embeddings`     | `bool` | Any Boolean value                                            | Whether or not to use pretrained word embeddings.            |
 | `path_to_pre_trained_embeddings` | `str`  | Any string                                                   | A local path to some pretrained word embeddings.             |
 
@@ -403,9 +403,9 @@ File `alzheimer.json` with respect to the Alzheimer dataset stored at `../datase
 
 The results of the experiments are saved in a user-named folder, refered to as "report". The information in the report is nested by seed and iteration and include, for each fold:
 
-* Training, validation and test metrics;
-* Training, validation and test plots of metrics over epochs;
-* Training, validation and test preds
+* Training, val and test metrics;
+* Training, val and test plots of metrics over epochs;
+* Training, val and test preds
 
 All the parameters involved in the experiment are dumped into the main folder of the report, namely in three files:
 
@@ -419,11 +419,11 @@ All the parameters involved in the experiment are dumped into the main folder of
 
 An RNN is a class of NNs where connections between nodes form a directed graph along a temporal sequence. For a given input sequence, RNNs allow for outputs at a previous time step to be used as inputs to the next one by implementing hidden states. Such a mechanism makes it possible to leverage temporal dynamic behaviour, thus RNN models are mostly used in the fields of NLP and speech recognition. Nevertheless, they can also be used for classification tasks.
 
-RNN architectures have been used in this research in the form of Long Short-Term Memory units (LSTM) and Gated Recurrent Unit (GRU) to perform sequence classification on audio and eye-tracking data. A common LSTM unit consists of a cell and three gates: (i) input, (ii) forget and (ii) output. The cell remembers values over arbitrary time intervals and the gates regulate the flow of information into and out of the cell. Intuitively, the cell is responsible for keeping track of the dependencies between the elements in the input sequence, the input gate controls the extent to which a new value flows into the cell, the forget gate controls the extent to which a value remains in the cell and the output gate controls the extent to which the value in the cell contributes to the computation of the output activation of the unit. The GRU is similar to an LSTM but features fewer parameters as it lacks an output gate. The performance of the GRU on certain tasks was found to be comparable to that of the LSTM while guaranteeing shorter training time.
+RNN architectures have been used in this research in the form of Long Short-Term Memory units (LSTM) and Gated Recurrent Unit (GRU) to perform sequence classification on audio and eye-tracking data. A common LSTM unit consists of a cell and three gates: (i) input, (ii) forget and (ii) output. The cell remembers values over arbitrary time intervals and the gates regulate the flow of information into and out of the cell. Intuitively, the cell is responsible for keeping track of the dependencies between the elements in the input sequence, the input gate controls the extent to which a new value flows into the cell, the forget gate controls the extent to which a value remains in the cell and the output gate controls the extent to which the value in the cell contributes to the computation of the output activation of the unit. The GRU is similar to an LSTM but features fewer parameters as it lacks an output gate. The performance of the GRU on certain tasks was found to be comparable to that of the LSTM while guaranteeing shorter train time.
 
-In the experiments conducted for the present work, the hyperbolic tangent function was used as the activation function since this is the default implementation of the LSTM layer in PyTorch. Both the LSTM and the GRU were implemented as bidirectional networks. The principle of Bidirectional RNN (BRNN) architectures is to split the neurons of a regular RNN into two directions, one for the positive time direction (i.e. forward states), and another for the negative time direction (i.e. backward states). The outputs from the two states are not connected to the inputs of the states in the opposite direction. By taking into consideration time with respect to two directions, input information from the past and future of the current time frame can be leveraged (unlike standard RNNs, in which delays are required for including future information).
+In the experiments conducted for the present work, the hyperbolic tangent function was used as the activation function since this is the default implementation of the LSTM layer in PyTorch. Both the LSTM and the GRU were implemented as bidirectional networks. The principle of Bidirectional RNN (BRNN) architectures is to split the neurons of a regular RNN into two directions, one for the pos time direction (i.e. forward states), and another for the neg time direction (i.e. backward states). The outputs from the two states are not connected to the inputs of the states in the opposite direction. By taking into consideration time with respect to two directions, input information from the past and future of the current time frame can be leveraged (unlike standard RNNs, in which delays are required for including future information).
 
-Both GRU and LSTM-based models share the same base architecture, which stacks a normalization layer and two RNN layers with a hidden size equal to 256 and dropout with probability 0.2. The normalization layer computes the mean and variance used for normalization from all of the summed inputs to the neurons in a layer on a single training case.
+Both GRU and LSTM-based models share the same base architecture, which stacks a normalization layer and two RNN layers with a hidden size equal to 256 and dropout with probability 0.2. The normalization layer computes the mean and variance used for normalization from all of the summed inputs to the neurons in a layer on a single train case.
 
 ### CNN
 
@@ -446,11 +446,11 @@ In this project, a CNNRNN architecture was used for both image and sequence clas
 
 ### Transformer
 
-Just like RNNs, Transformers are architectures specifically designed to handle data of a sequential nature (e.g. natural language) for tasks such as text translation, summarization or classification. However, unlike RNNs, Transformers do not require for the sequential data to be processed in its implicit order. For example, if the input data is a natural language sentence, the Transformer does not need to process its beginning before processing the end. Due to this feature, Transformers allow for much more parallelization than RNNs and therefore reduced training times.
+Just like RNNs, Transformers are architectures specifically designed to handle data of a sequential nature (e.g. natural language) for tasks such as text translation, summarization or classification. However, unlike RNNs, Transformers do not require for the sequential data to be processed in its implicit order. For example, if the input data is a natural language sentence, the Transformer does not need to process its beginning before processing the end. Due to this feature, Transformers allow for much more parallelization than RNNs and therefore reduced train times.
 
 The Transformer is an encoder-decoder architecture. The encoder consists of a set of encoding layers that process the input iteratively one layer after another and the decoder consists of a set of decoding layers that apply the same procedure to the output of the encoder. The encodings generated by the encoder component of the architecture are meant to contain information about which parts of the inputs are relevant to each other. The decoder then uses the contextual information incorporated in the encoding to generate an output sequence. This behaviour is achieved by using an attention mechanism both in the encoder and in the decoder, which for each input weighs the relevance of every other input and draws information accordingly to produce the output. Both the encoder and decoder layers feature a feed-forward NN for additional processing of the outputs and contain residual connections and layer normalization steps.
 
-In this research, the implementations provided by Hugging Face of both the Bidirectional Encoder Representations from Transformers (BERT) and Robustly Optimized BERT pretraining Approach (RoBERTa) architectures have been tested, with the latter being a refinement of the former. Both architectures are used for dealing with the textual data.
+In this research, the implementations provided by Hugging Face of both the Bidirectional Encoder Representations from Transformers (BERT) and Robustly Optimized BERT pretrain Approach (RoBERTa) architectures have been tested, with the latter being a refinement of the former. Both architectures are used for dealing with the textual data.
 
 ### HAN
 

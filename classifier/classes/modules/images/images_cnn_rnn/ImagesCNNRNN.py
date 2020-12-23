@@ -9,6 +9,6 @@ class ImagesCNNRNN(CNNRNN):
 
         cnn_params = network_params["cnn"]
         cnn_params["modality"] = network_params["modality"]
-        cnn_params["layers"]["classifier"]["linear_1"]["out_features"] = self._hidden_size
+        cnn_params["layers"]["classifier"]["linear_1"]["out_features"] = self.__hidden_size
 
         self.cnn = ImagesCNN(cnn_params, activation=False)

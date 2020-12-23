@@ -8,11 +8,11 @@ class PreTrainedCNN(nn.Module):
     def __init__(self, network_params: dict, activation: bool = True):
         super().__init__()
 
-        pre_trained_type = network_params["pre_trained_model"]
+        pre_trained_type = network_params["pretrained_model"]
         features_extraction = network_params["features_extraction"]
         self.output_size = network_params["output_size"]
 
-        pre_trained = self.__select_pre_trained_model(pre_trained_type)
+        pre_trained = self.__select_pretrained_model(pre_trained_type)
 
         if features_extraction:
             for param in pre_trained.parameters():
@@ -21,8 +21,8 @@ class PreTrainedCNN(nn.Module):
         self.__model = self.__add_classifier(pre_trained, pre_trained_type) if activation else pre_trained
 
     @staticmethod
-    def __select_pre_trained_model(pre_trained_model: str) -> nn.Module:
-        pre_trained_models_map = {
+    def __select_pretrained_model(pretrained_model: str) -> nn.Module:
+        pretrained_models_map = {
             "resnet": models.resnet18,
             "alexnet": models.alexnet,
             "vgg": models.vgg11_bn,
@@ -30,7 +30,7 @@ class PreTrainedCNN(nn.Module):
             "densenet": models.densenet121,
             "inception": models.inception_v3
         }
-        return pre_trained_models_map[pre_trained_model](pretrained=True)
+        return pretrained_models_map[pretrained_model](pretrained=True)
 
     def __add_classifier_to_resnet(self, model: nn.Module) -> nn.Module:
         """ Initializes Resnet18 """
@@ -70,7 +70,7 @@ class PreTrainedCNN(nn.Module):
 
         return model
 
-    def __add_classifier(self, pre_trained_model: nn.Module, pre_trained_model_type: str) -> nn.Module:
+    def __add_classifier(self, pretrained_model: nn.Module, pretrained_model_type: str) -> nn.Module:
         initializations_map = {
             "resnet": self.__add_classifier_to_resnet,
             "alexnet": self.__add_classifier_to_alexnet,
@@ -79,7 +79,7 @@ class PreTrainedCNN(nn.Module):
             "densenet": self.__add_classifier_to_densenet,
             "inception": self.__add_classifier_to_inception
         }
-        return initializations_map[pre_trained_model_type](pre_trained_model)
+        return initializations_map[pretrained_model_type](pretrained_model)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.__model(x)

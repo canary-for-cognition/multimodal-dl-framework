@@ -11,17 +11,19 @@ def main():
     torch.backends.cudnn.benchmark = False
 
     experiment_params = Params.load_experiment_params()
-    experiment_id = experiment_params["id"]
-    device_type = experiment_params["device"]
     dataset_type = experiment_params["dataset_type"]
     network_type = experiment_params["network_type"]
+    device_type = experiment_params["device"]
+    device = ExperimentManager.get_device(device_type)
 
-    training_params = experiment_params["training"]
+    train_params = experiment_params["train"]
+    train_params["network_type"] = network_type
+    train_params["device"] = device
     dataset_params = Params.load_dataset_params(dataset_type)
     cv_metadata = Params.load_cv_metadata(dataset_params["paths"]["cv_metadata"])
     data_loader = LoaderFactory().get(network_type)
 
-    batch_size = training_params["batch_size"]
+    batch_size = train_params["batch_size"]
     base_seed = experiment_params["base_seed"]
     num_seeds = experiment_params["num_seeds"]
 
@@ -29,24 +31,16 @@ def main():
           "==========================================================\n"
           "         Neural network for {} prediction               \n"
           "==========================================================\n"
-          "**********************************************************\n".format(dataset_type))
+          "**********************************************************\n".format(dataset_type.upper()))
 
-    device = ExperimentManager.get_device(device_type)
     print("\n\t\t Using Torch version ... : {v}"
-          "\n\t\t Running on device ..... : {d} \n".format(d=device, v=torch.__version__))
+          "\n\t\t Running on device ..... : {d}".format(d=device, v=torch.__version__))
 
     ExperimentManager.set_random_seed(base_seed, device)
 
-    dataset = Dataset(dataset_params, batch_size, data_loader, device)
+    dataset = Dataset(dataset_params, batch_size, data_loader)
 
-    experiment_manager = ExperimentManager(experiment_id,
-                                           network_type,
-                                           dataset_type,
-                                           dataset,
-                                           cv_metadata,
-                                           training_params,
-                                           device)
-
+    experiment_manager = ExperimentManager(dataset, cv_metadata, train_params)
     experiment_manager.run_experiment(base_seed, num_seeds)
 
 

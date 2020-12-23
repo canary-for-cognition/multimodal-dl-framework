@@ -16,7 +16,7 @@ class TextLoader(Loader):
         super().__init__("text", for_submodule)
 
         if self._network_type == "transformer":
-            self._network_type = self._network_params["pre_trained_architecture"]
+            self._network_type = self._network_params["model_type"]
 
         self.__word_embeddings = pd.read_csv(os.path.join(self._dataset_params["paths"]["text"], "text.csv"))
         self.__embedding_size = Params.load_modality_params("text")["embedding_size"]
@@ -26,7 +26,7 @@ class TextLoader(Loader):
             "bert": BertTokenizer,
             "roberta": RobertaTokenizer
         }
-        return tokenizers[self._network_type].from_pretrained(self._network_params["pre_trained_model"])
+        return tokenizers[self._network_type].from_pretrained(self._network_params["pretrained_model"])
 
     def __load_bert_encoding(self, path_to_input: str) -> tuple:
         """

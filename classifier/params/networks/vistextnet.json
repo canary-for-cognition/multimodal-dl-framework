@@ -9,5 +9,5 @@
     }
   },
   "output_size": 2,
-  "features_fusion": "early"
+  "fusion_policy": "early"
 }

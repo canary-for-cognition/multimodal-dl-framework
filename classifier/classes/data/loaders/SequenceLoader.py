@@ -3,7 +3,6 @@ import pickle
 import numpy as np
 import pandas as pd
 import torch
-from sklearn.preprocessing import normalize
 
 from classifier.classes.data.loaders.Loader import Loader
 
@@ -16,7 +15,6 @@ class SequenceLoader(Loader):
         self.__data_source = self._modality_params["data_source"]
         self.__data_type = self._modality_params["type"]
         self.__max_sequence_length = self._modality_params["length"]
-        self.__apply_normalization = self._modality_params["normalize"]
         self.__num_features = self._modality_params["num_features"]
         self.__truncate_from = self._modality_params["truncate_from"]
         self.__truncation_offset = self._modality_params["truncation_offset"]
@@ -60,8 +58,5 @@ class SequenceLoader(Loader):
 
         if len(sequence) < self.__max_sequence_length:
             sequence = self.__pad_sequences(sequence)
-
-        if self.__apply_normalization:
-            sequence = normalize(sequence, norm="l2")
 
         return torch.from_numpy(sequence)

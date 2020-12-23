@@ -3,7 +3,6 @@
   "data_source": "eye_tracking",
   "file_format": "pkl",
   "num_features": 14,
-  "normalize": false,
   "augment": true,
   "length": 150,
   "truncate_from": "head",

@@ -8,7 +8,7 @@ from classifier.classes.modules.base.MultimodalNN import MultimodalNN
 class VisTempNet(MultimodalNN):
 
     def __init__(self, network_params: dict, activation: bool = True):
-        super().__init__(network_params["features_fusion"], activation)
+        super().__init__(network_params["fusion_policy"], activation)
 
         images_params = network_params["submodules"]["images"]
         images_architecture = images_params["architecture"]
@@ -18,7 +18,7 @@ class VisTempNet(MultimodalNN):
         sequences_params["input_size"] = sequences_params["modality"]["num_features"]
         sequences_architecture = sequences_params["architecture"]
 
-        activate_submodule = self._features_fusion != "early"
+        activate_submodule = self._fusion_policy != "early"
         self.images_network = NetworkFactory().get(images_architecture, images_params, activate_submodule)
         self.sequences_network = NetworkFactory().get(sequences_architecture, sequences_params, activate_submodule)
 

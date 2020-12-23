@@ -1,8 +1,7 @@
 {
-  "variable_size_input": false,
   "classes": {
-    "positive": "alzheimer",
-    "negative": "healthy"
+    "pos": "alzheimer",
+    "neg": "healthy"
   },
   "paths": {
     "dataset_folder": "../dataset/alzheimer",

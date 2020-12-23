@@ -6,7 +6,6 @@ from classifier.classes.modules.images.pre_trained_cnn.PreTrainedCNN import PreT
 from classifier.classes.modules.sequences.rnn.RNN import RNN
 from classifier.classes.modules.sequences.sequences_cnn.SequencesCNN import SequencesCNN
 from classifier.classes.modules.sequences.sequences_cnn_rnn.SequencesCNNRNN import SequencesCNNRNN
-from classifier.classes.modules.text.han.HAN import HAN
 from classifier.classes.modules.text.transformer.Transformer import Transformer
 
 
@@ -18,7 +17,6 @@ class NetworkFactory:
         "images_cnn_rnn": ImagesCNNRNN,
         "sequences_cnn_rnn": SequencesCNNRNN,
         "pre_trained_cnn": PreTrainedCNN,
-        "han": HAN,
         "transformer": Transformer
     }
 

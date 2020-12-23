@@ -9,50 +9,36 @@ import torch
 
 from classifier.classes.core.CrossValidator import CrossValidator
 from classifier.classes.data.Dataset import Dataset
-from classifier.classes.data.splitter.DataSplitManager import DataSplitManager
+from classifier.classes.data.DataManager import DataManager
 from classifier.classes.utils.Params import Params
 
 
 class ExperimentManager:
 
-    def __init__(self,
-                 experiment_id: str,
-                 network_type: str,
-                 dataset_type: str,
-                 dataset: Dataset,
-                 cv_metadata: list,
-                 training_params: dict,
-                 device: torch.device):
+    def __init__(self, dataset: Dataset, cv_metadata: list, train_params: dict):
         """
-        :param experiment_id: the id of the current experiment whose results folder will be named after
-        :param network_type: the type of network to be used for the experiment
-        :param dataset_type: the type of dataset to be used for the experiment
         :param dataset: an instance of the selected dataset type
         :param cv_metadata: the info about the split items for the CV
-        :param training_params: the parameters concerning the training procedure
-        :param device: the device on which to run the experiment
+        :param train_params: the parameters concerning the train procedure
         """
         cv_params = Params.load_cv_params()
 
-        validation_type = cv_params["type"]
-        plot_metrics = cv_params["plot_metrics"]
+        self.__reload_stored_split = cv_params["reload_folds"]
+        self.__generate_splits_from_file = cv_params["use_cv_metadata"]
 
-        self.__reload_stored_split = cv_params["reload_split"]["folds"]
-        self.__generate_split_from_file = cv_params["use_cv_metadata"]
-        self.__save_split_metadata = cv_params["save_split_metadata"]
-        self.__fold_on = cv_params["folds_type"]
-
-        self.__data_split_manager = DataSplitManager(cv_params, dataset)
+        self.__data_manager = DataManager(cv_params, dataset)
         self.__cv_splits_files = cv_metadata
-        self.__device = device
-        self.__cross_validator = CrossValidator(self.__data_split_manager,
-                                                experiment_id,
-                                                validation_type,
-                                                dataset_type,
-                                                network_type,
-                                                training_params,
-                                                plot_metrics,
-                                                device)
+        self.__device = train_params["device"]
+
+        network_type = train_params["network_type"]
+        dataset_type = dataset.get_dataset_type()
+
+        experiment_id = "{}_{}_{}".format(dataset_type, network_type, str(time.time()))
+        self.__path_to_results = os.path.join("results", experiment_id)
+        os.makedirs(self.__path_to_results)
+        Params.save_experiment_params(self.__path_to_results, network_type, dataset.get_dataset_type())
+
+        self.__cv = CrossValidator(self.__data_manager, self.__path_to_results, train_params)
 
     @staticmethod
     def get_device(device_type: str) -> torch.device:
@@ -94,12 +80,8 @@ class ExperimentManager:
         print("\n Aggregated results for {} seeds \n".format(num_seeds))
         dfs = [pd.concat([pd.DataFrame({"Seed": list(range(1, s.shape[0] + 1))}), s], axis=1) for s in avg_test_scores]
         df = pd.concat(dfs)
+        df.to_csv(os.path.join(self.__path_to_results, "avg_seeds_test.csv"), index=False)
         print(df)
-
-        file_name = "aggregated_test_results_seeds.csv"
-        df.to_csv(os.path.join(self.__cross_validator.get_path_to_experiment(), file_name), index=False)
-
-        return df
 
     def __aggregate_iterations_results(self, avg_test_scores: list, seed: int, num_iterations: int) -> pd.DataFrame:
         """
@@ -116,8 +98,8 @@ class ExperimentManager:
 
         df = df.rename(columns={column: column.capitalize() for column in list(columns)})
         df.insert(loc=0, column="Iteration", value=range(1, num_iterations + 1))
-        path_to_seed = os.path.join(self.__cross_validator.get_path_to_experiment(), "seed_" + str(seed))
-        df.to_csv(os.path.join(path_to_seed, "aggregated_test_results.csv"), index=False)
+        path_to_seed = os.path.join(self.__path_to_results, "seed_" + str(seed))
+        df.to_csv(os.path.join(path_to_seed, "avg_iterations_test.csv"), index=False)
 
         return df
 
@@ -133,8 +115,8 @@ class ExperimentManager:
                   "                  CV iteration {} / {}                     \n"
                   "..........................................................\n"
                   .format(iteration + 1, len(self.__cv_splits_files)))
-            self.__data_split_manager.split_from_file(cv_split_file)
-            avg_test_scores += [self.__cross_validator.validate(seed, iteration + 1)]
+            self.__data_manager.split_from_file(cv_split_file)
+            avg_test_scores += [self.__cv.validate(seed, iteration + 1)]
         return avg_test_scores
 
     def run_experiment(self, base_seed: int, num_seeds: int):
@@ -145,6 +127,7 @@ class ExperimentManager:
         """
         avg_test_scores = []
         start_time = time.time()
+
         for seed in range(num_seeds):
             print("\n\n==========================================================\n"
                   "                      Seed {} / {}                       \n"
@@ -152,26 +135,22 @@ class ExperimentManager:
 
             self.set_random_seed(base_seed + seed, self.__device)
 
-            if self.__reload_stored_split and self.__data_split_manager.check_split_availability():
-                print("\n Reloading stored splits... \n")
-                test_scores = [self.__cross_validator.validate(seed + 1)]
+            if self.__reload_stored_split and self.__data_manager.split_available():
+                print("Reloading stored splits...")
+                test_scores = [self.__cv.validate(seed + 1)]
             else:
-                if self.__generate_split_from_file:
-                    print("\n Generating splits from metadata... \n")
+                if self.__generate_splits_from_file:
+                    print("Generating splits from metadata...")
                     test_scores = self.__run_cv_iterations(seed + 1)
                 else:
-                    print("\n Generating new splits... \n")
-                    self.__data_split_manager.split(self.__fold_on, self.__save_split_metadata)
-                    test_scores = [self.__cross_validator.validate(seed + 1)]
+                    print("Generating new splits...")
+                    self.__data_manager.split()
+                    test_scores = [self.__cv.validate(seed + 1)]
 
-            aggregated_test_scores = self.__aggregate_iterations_results(avg_test_scores=test_scores,
-                                                                         seed=seed + 1,
-                                                                         num_iterations=len(self.__cv_splits_files))
-
-            avg_test_scores += [aggregated_test_scores]
+            avg_test_scores += [self.__aggregate_iterations_results(test_scores, seed + 1, len(self.__cv_splits_files))]
 
             print("\n................................................................\n"
-                  "|                    Finished cross validation                  |\n"
+                  "|                    Finished cross val                  |\n"
                   "................................................................\n")
 
         self.__aggregate_seeds_results(avg_test_scores, num_seeds)

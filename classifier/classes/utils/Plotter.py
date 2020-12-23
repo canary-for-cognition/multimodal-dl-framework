@@ -30,23 +30,23 @@ class Plotter:
 
     def plot_metrics(self, metrics: dict, fold: int):
         self.__set_fold(fold)
-        self.__set_range(len(metrics["training"]))
+        self.__set_range(len(metrics["train"]))
 
         for metric in ["loss", "accuracy", "f1", "auc"]:
-            self.plot_metric(self.__fetch_metrics(metrics, metric_type=metric, data_type="training"),
-                             self.__fetch_metrics(metrics, metric_type=metric, data_type="validation"),
+            self.plot_metric(self.__fetch_metrics(metrics, metric_type=metric, data_type="train"),
+                             self.__fetch_metrics(metrics, metric_type=metric, data_type="val"),
                              self.__fetch_metrics(metrics, metric_type=metric, data_type="test"),
                              metric=metric)
 
         sensitivity = {
-            "training": self.__fetch_metrics(metrics, metric_type="sensitivity", data_type="training"),
-            "validation": self.__fetch_metrics(metrics, metric_type="sensitivity", data_type="validation"),
+            "train": self.__fetch_metrics(metrics, metric_type="sensitivity", data_type="train"),
+            "val": self.__fetch_metrics(metrics, metric_type="sensitivity", data_type="val"),
             "test": self.__fetch_metrics(metrics, metric_type="sensitivity", data_type="test")
         }
 
         specificity = {
-            "training": self.__fetch_metrics(metrics, metric_type="specificity", data_type="training"),
-            "validation": self.__fetch_metrics(metrics, metric_type="specificity", data_type="validation"),
+            "train": self.__fetch_metrics(metrics, metric_type="specificity", data_type="train"),
+            "val": self.__fetch_metrics(metrics, metric_type="specificity", data_type="val"),
             "test": self.__fetch_metrics(metrics, metric_type="specificity", data_type="test")
         }
 
@@ -55,11 +55,11 @@ class Plotter:
     def plot_sensitivity_vs_specificity(self, sensitivity: dict, specificity: dict):
         fig, ax = plt.subplots()
 
-        ax.plot(self.range, sensitivity["training"], self.color_1, label="training sensitivity")
-        ax.plot(self.range, specificity["training"], self.color_1_accent, label="training specificity")
+        ax.plot(self.range, sensitivity["train"], self.color_1, label="train sensitivity")
+        ax.plot(self.range, specificity["train"], self.color_1_accent, label="train specificity")
 
-        ax.plot(self.range, sensitivity["validation"], self.color_2, label="validation sensitivity")
-        ax.plot(self.range, specificity["validation"], self.color_2_accent, label="validation specificity")
+        ax.plot(self.range, sensitivity["val"], self.color_2, label="val sensitivity")
+        ax.plot(self.range, specificity["val"], self.color_2_accent, label="val specificity")
 
         ax.plot(self.range, sensitivity["test"], self.color_3, label="test sensitivity")
         ax.plot(self.range, specificity["test"], self.color_3_accent, label="test specificity")
@@ -70,11 +70,11 @@ class Plotter:
         fig.savefig(os.path.join(self.plots_folder, "fold_" + str(self.fold) + "_sensibility_specificity.png"))
         plt.close(fig)
 
-    def plot_metric(self, training: list, validation: list, test: list, metric: str):
+    def plot_metric(self, train: list, val: list, test: list, metric: str):
         fig, ax = plt.subplots()
 
-        ax.plot(self.range, training, self.color_1, label="training")
-        ax.plot(self.range, validation, self.color_2, label="validation")
+        ax.plot(self.range, train, self.color_1, label="train")
+        ax.plot(self.range, val, self.color_2, label="val")
         ax.plot(self.range, test, self.color_3, label="test")
 
         ax.set(xlabel="Epochs", ylabel=metric.capitalize(), title=metric.capitalize())

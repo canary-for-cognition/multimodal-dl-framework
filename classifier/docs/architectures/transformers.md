@@ -39,14 +39,14 @@ model = BertModel.from_pretrained('path_to_bert_base_uncased')
 
 ### Adding support for a new model
 
-In order to add support for a new model, it is sufficient to update the `transformers_map` in the function`Tranformer.__select_pre_trained_architecture` at `Transformer.py`.  This map binds a model ID that can be specified in the experiment configuration to the respective class in the Hugging Face framework. 
+In order to add support for a new model, it is sufficient to update the `transformers_map` in the function`Tranformer.__select_model_type` at `Transformer.py`.  This map binds a model ID that can be specified in the experiment configuration to the respective class in the Hugging Face framework. 
 
 ## Configuration
 
 | Name                           | Type    | Values                                                      | Description                                                  |
 | ------------------------------ | ------- | ----------------------------------------------------------- | ------------------------------------------------------------ |
-| `pre_trained_architecture`     | `str`   | The ID for any supported architecture                       | The transformer architecture to be used.                     |
-| `pre_trained_model`            | `str`   | The ID of any supported model for the selected architecture | The pretrained model to be used along with the selected architecture. |
-| `load_local_pre_trained_model` | `bool`  | Any Boolean value                                           | Whether or not to load a locally downloaded model. If set to `false`, the pretrained model will be downloaded (this make take much time). |
-| `dropout`                      | `float` | Any non-negative float number                               | The probability of dropping out units during the training process. |
-| `output_size`                  | `int`   | Any positive integer greater than zero                      | The number of labels for the classification problem.         |
+| `model_type`     | `str`   | The ID for any supported architecture                       | The transformer architecture to be used.                     |
+| `pretrained_model`            | `str`   | The ID of any supported model for the selected architecture | The pretrained model to be used along with the selected architecture. |
+| `reload_pretrained` | `bool`  | Any Boolean value                                           | Whether or not to load a locally downloaded model. If set to `false`, the pretrained model will be downloaded (this make take much time). |
+| `dropout`                      | `float` | Any non-neg float number                               | The probability of dropping out units during the train process. |
+| `output_size`                  | `int`   | Any pos integer greater than zero                      | The number of labels for the classification problem.         |

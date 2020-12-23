@@ -4,11 +4,5 @@
   "hidden_size": 256,
   "dropout": 0.0,
   "num_layers": 1,
-  "bidirectional": false,
-  "normalized": false,
-  "attention": false,
-  "linear_encoding": {
-    "active": false,
-    "output_size": 400
-  }
+  "bidirectional": false
 }

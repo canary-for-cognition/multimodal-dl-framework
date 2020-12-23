@@ -8,15 +8,15 @@ class ModelVisTextNet(Model):
 
     def __init__(self, network_params: dict):
         super().__init__(device=network_params["device"])
-        self._network = VisTextNet(network_params).float().to(self._device)
+        self._network = VisTextNet(network_params).to(self._device)
 
     def predict(self, inputs: dict, **kwargs) -> torch.Tensor:
         """
-        Performs the predictions using VisTextNet
+        Performs the preds using VisTextNet
         :param inputs: a dictionary containing "images" and "text" inputs
-        :return: the logits of the predictions
+        :return: the logits of the preds
         """
-        images = inputs["images"].float().to(self._device)
+        images = inputs["images"].to(self._device)
         text = inputs["text"]
 
         if self._network.using_pre_trained_text_model():

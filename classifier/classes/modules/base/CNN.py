@@ -14,16 +14,16 @@ class CNN(nn.Module):
         self.__num_conv = network_params["num_conv"]
         self.__conv_block_params = network_params["layers"]["conv_block"]
         self.__classifier_params = network_params["layers"]["classifier"]
-        self.__fc_output_size = self.__classifier_params["linear_1"]["out_features"]
+        self.__output_size = self.__classifier_params["linear_1"]["out_features"]
         self.__activation = activation
 
         conv_blocks, last_conv_out_channels = self._generate_conv_blocks()
         self.conv_and_pool_layers = nn.Sequential(*conv_blocks)
 
-        self.__fc_input_size = self._compute_fc_input_size(input_size, output_size=last_conv_out_channels)
+        self.__linear_size = self._compute_linear_size(input_size, output_size=last_conv_out_channels)
 
         self.fc = nn.Sequential(
-            nn.Linear(self.__fc_input_size, self.__fc_output_size),
+            nn.Linear(self.__linear_size, self.__output_size),
             nn.ReLU()
         )
 
@@ -82,7 +82,7 @@ class CNN(nn.Module):
             output_dim = self.__compute_layer_out_dim(output_dim, self.__conv_block_params["pool"])
         return int(output_dim)
 
-    def _compute_fc_input_size(self, input_size: tuple, output_size: int) -> int:
+    def _compute_linear_size(self, input_size: tuple, output_size: int) -> int:
         """
         Computes the input size for the fully connected layer
         :param input_size: the size of the input (W x H in case of images). If an element of the tuple is equal to -1,
@@ -164,9 +164,9 @@ class CNN(nn.Module):
         return conv_blocks, last_conv_out_channels
 
     def get_pre_activation_size(self) -> int:
-        return self.__fc_output_size
+        return self.__output_size
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.conv_and_pool_layers(x)
-        x = self.fc(x.view(-1, self.__fc_input_size))
+        x = self.fc(x.view(-1, self.__linear_size))
         return self.classifier(x) if self.__activation else x

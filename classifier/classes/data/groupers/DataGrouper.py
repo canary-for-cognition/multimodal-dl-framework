@@ -18,8 +18,8 @@ class DataGrouper:
         :param group_type: the criterion with respect to which data must be grouped
         :return: the grouped data and labels
         """
-        negative_group = self.__grouper(data, label=0, group_type=group_type)
-        positive_group = self.__grouper(data, label=1, group_type=group_type)
-        groups = negative_group + positive_group
-        groups_labels = [0 for _ in range(len(negative_group))] + [1 for _ in range(len(positive_group))]
+        neg_group = self.__grouper(data, label=0, group_type=group_type)
+        pos_group = self.__grouper(data, label=1, group_type=group_type)
+        groups = neg_group + pos_group
+        groups_labels = [0 for _ in range(len(neg_group))] + [1 for _ in range(len(pos_group))]
         return groups, groups_labels
