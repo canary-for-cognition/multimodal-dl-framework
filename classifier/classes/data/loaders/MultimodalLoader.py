@@ -10,11 +10,7 @@ class MultimodalLoader:
         network_params = Params.load_network_params(Params.load_experiment_params()["network_type"])
         self.__modalities = list(network_params["submodules"].keys())
 
-    loaders_map = {
-        "images": ImageLoader,
-        "sequences": SequenceLoader,
-        "text": TextLoader,
-    }
+    loaders_map = {"images": ImageLoader, "sequences": SequenceLoader, "text": TextLoader}
 
     def load(self, path_to_input: str) -> dict:
         """

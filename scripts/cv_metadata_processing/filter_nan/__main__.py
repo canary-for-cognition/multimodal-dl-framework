@@ -15,12 +15,12 @@ def filter_items(data: pd.Series, participants: pd.Series):
 
 
 def main():
-    dataset_type = "alzheimer"
+    dataset_name = "alzheimer"
     modality = "sequences"
     data_source = "eye_tracking"
     representation = "random_sampled_gaze_fixations_dropped_na"
 
-    path_to_dataset = os.path.join("..", "..", "..", "dataset", dataset_type)
+    path_to_dataset = os.path.join("..", "..", "..", "dataset", dataset_name)
     base_path_to_metadata = os.path.join(path_to_dataset, "split", "metadata")
     path_to_data_source = os.path.join(data_source, "10")
     path_to_metadata = os.path.join(base_path_to_metadata, path_to_data_source)

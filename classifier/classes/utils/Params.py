@@ -10,20 +10,25 @@ from classifier.classes.binders.ParamsBinder import ParamsBinder
 class Params:
 
     @staticmethod
+    def load() -> tuple:
+        experiment_params = Params.load_experiment_params()
+        train_params = experiment_params["train"]
+        data_params = {
+            "dataset": Params.load_dataset_params(experiment_params["dataset_name"]),
+            "cv": experiment_params["cv"],
+            "batch_size": train_params["batch_size"]
+        }
+        num_seeds = experiment_params["num_seeds"]
+        device_type = experiment_params["device"]
+        return train_params, data_params, num_seeds, device_type
+
+    @staticmethod
     def load_experiment_params() -> dict:
         """
         Loads the parameters stored in the params/experiment.json file
         :return: the loaded experiment parameters in a dict
         """
         return json.load(open(os.path.join("params", "experiment.json"), "r"))
-
-    @staticmethod
-    def load_cv_params() -> dict:
-        """
-        Loads the parameters stored in the params/cross_val.json file
-        :return: the loaded cross val parameters in a dict
-        """
-        return json.load(open(os.path.join("params", "cross_validation.json"), "r"))
 
     @staticmethod
     def load_modality_params(modality: str) -> dict:
@@ -69,38 +74,23 @@ class Params:
         return network_params
 
     @staticmethod
-    def load_dataset_params(dataset_type: str) -> dict:
+    def load_dataset_params(dataset_name: str) -> dict:
         """
         Loads the parameters stored in the params/modules/dataset_name.json file merging the paths
-        :param dataset_type: the type of data to be loaded
+        :param dataset_name: the type of data to be loaded
         :return: the loaded data parameters in a dict
         """
-        params = json.load(open(os.path.join("params", "dataset", dataset_type + ".json"), "r"))
+        params = json.load(open(os.path.join("params", "dataset", dataset_name + ".json"), "r"))
+        params["name"] = dataset_name
 
-        main_modality = ModalityBinder().get(Params.load_experiment_params()["network_type"])
-
-        params["type"] = dataset_type
-        params["main_modality"] = main_modality[0] if isinstance(main_modality, tuple) else main_modality
-
-        dataset_folder = params["paths"]["dataset_folder"]
-        params["paths"]["dataset_metadata"] = os.path.join(dataset_folder, params["paths"]["dataset_metadata"])
-        params["paths"]["cv_metadata"] = os.path.join(dataset_folder, params["paths"]["cv_metadata"])
+        dataset_dir = params["paths"]["dataset_dir"]
+        params["paths"]["dataset_metadata"] = os.path.join(dataset_dir, params["paths"]["dataset_metadata"])
+        params["paths"]["cv_metadata"] = os.path.join(dataset_dir, params["paths"]["cv_metadata"])
+        params["paths"]["main_modality"] = os.path.join(dataset_dir, "modalities", params["paths"]["main_modality"])
         for modality, path_to_modality in params["paths"]["modalities"].items():
-            params["paths"][modality] = os.path.join(params["paths"]["dataset_folder"], "modalities", path_to_modality)
+            params["paths"][modality] = os.path.join(params["paths"]["dataset_dir"], "modalities", path_to_modality)
 
         return params
-
-    @staticmethod
-    def load_cv_metadata(path_to_cv_metadata: str) -> list:
-        """
-        Loads the CV metadata, i.e. file(s) describing the splits for the val procedure
-        :param path_to_cv_metadata: the path to the CV metadata (to a single file or folder)
-        :return: the CV metadata in a list
-        """
-        if os.path.isdir(path_to_cv_metadata):
-            sorted_cv_files = sorted(os.listdir(path_to_cv_metadata), key=lambda x: int(x.split('.')[0].split('_')[2]))
-            return [os.path.join(path_to_cv_metadata, file) for file in sorted_cv_files]
-        return [path_to_cv_metadata]
 
     @staticmethod
     def save(data: dict, path_to_destination):
@@ -112,15 +102,15 @@ class Params:
         json.dump(data, open(path_to_destination, 'w'), indent=2)
 
     @staticmethod
-    def save_experiment_params(path_to_results: str, network_type: str, dataset_type: str):
+    def save_experiment_params(path_to_results: str, network_type: str, dataset_name: str):
         """
         Saves the configuration for the current experiment to file at the given path
         :param path_to_results: the path where to save the configuration of the experiment at
         :param network_type: the type of network used for the experiment
-        :param dataset_type: the type of data used for the experiment
+        :param dataset_name: the type of data used for the experiment
         """
-        Params.save(Params.load_experiment_params(), os.path.join(path_to_results, "experiment_setting.json"))
-        Params.save(Params.load_dataset_params(dataset_type), os.path.join(path_to_results, "data.json"))
+        Params.save(Params.load_experiment_params(), os.path.join(path_to_results, "experiment.json"))
+        Params.save(Params.load_dataset_params(dataset_name), os.path.join(path_to_results, "data.json"))
         Params.save(Params.load_network_params(network_type), os.path.join(path_to_results, "network_params.json"))
 
     @staticmethod
@@ -133,4 +123,4 @@ class Params:
         """
         for set_type in ["train", "val", "test"]:
             path_to_csv = os.path.join(path_to_preds, "fold_" + str(fold_number) + "_" + set_type + "_preds.csv")
-            pd.DataFrame(fold_evaluation[set_type]["preds"]).to_csv(path_to_csv, index=False)
+            pd.DataFrame(fold_evaluation["preds"][set_type]).to_csv(path_to_csv, index=False)

@@ -70,7 +70,7 @@ class Model:
         :param learning_rate: the initial learning rate
         :return: an optimizer in {Adam, SGD}
         """
-        print("\n Optimizer: {} (initial learning rate is {})".format(optimizer_type, learning_rate))
+        print("\n Optimizer: {} (learning rate is {})".format(optimizer_type, learning_rate))
         self.__optimizer = OptimizerFactory(list(self._network.parameters()), learning_rate).get(optimizer_type)
 
     def set_criterion(self, criterion_type: str):

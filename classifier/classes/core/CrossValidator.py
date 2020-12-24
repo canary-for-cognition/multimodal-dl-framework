@@ -22,9 +22,7 @@ class CrossValidator:
         self.__data_manager = data_manager
         self.__path_to_results = path_to_results
         self.__train_params = train_params
-        self.__network_type = train_params["network_type"]
         self.__evaluator = Evaluator(train_params["device"])
-        self.__seed, self.__iteration = None, None
         self.__paths_to_results = {}
 
     @staticmethod
@@ -37,20 +35,7 @@ class CrossValidator:
         """
         return {k: np.array([m[set_type][k] for m in metrics]).mean() for k in metrics[0][set_type].keys()}
 
-    @staticmethod
-    def __fetch_best_model_metrics(best_model_evaluation: dict) -> dict:
-        """
-        Fetches the metrics from the dictionary containing the evaluation of the best model
-        :param best_model_evaluation: a dict containing the full evaluation of the best model
-        :return: a dict containing the metrics of the best model
-        """
-        return {
-            "train": best_model_evaluation["train"]["metrics"],
-            "val": best_model_evaluation["val"]["metrics"],
-            "test": best_model_evaluation["test"]["metrics"]
-        }
-
-    def __avg_iteration_metrics(self, cv_metrics: list, save: bool = False, inplace: bool = False) -> Union[dict, None]:
+    def __avg_metrics(self, cv_metrics: list, save: bool = False, inplace: bool = False) -> Union[dict, None]:
         """
         Computes the average metrics for the current CV iteration
         :param cv_metrics: the list of metrics for each processed fold of the CV iteration
@@ -70,23 +55,12 @@ class CrossValidator:
         if not inplace:
             return avg_scores
 
-    def __create_paths_to_results(self):
+    def __create_paths_to_results(self, seed: int):
         """
         Creates the paths to the "metrics", "models", "preds" and "plots" folder for the current experiment.
-        If multiple iterations of CV are performed, the nesting of the directories is the following:
-        + cv_type_network_type_timestamp
-            + seed_n
-                + iteration_n
-                    - metrics
-                    - models
-                    - plots
-                    - preds
-        Otherwise, the iteration_n folder is skipped and the sub-folders belong to the seed_n directory
+        @param seed: the current random seed
         """
-        path_to_main_dir = os.path.join(self.__path_to_results, "seed_" + str(self.__seed))
-
-        if self.__iteration is not None:
-            path_to_main_dir = os.path.join(path_to_main_dir, "iteration_" + str(self.__iteration))
+        path_to_main_dir = os.path.join(self.__path_to_results, "seed_" + str(seed))
 
         self.__paths_to_results = {
             "metrics": os.path.join(path_to_main_dir, "metrics"),
@@ -98,14 +72,12 @@ class CrossValidator:
         for path in self.__paths_to_results.values():
             os.makedirs(path)
 
-    def validate(self, seed: int, iteration: int = None):
+    def validate(self, seed: int):
         """
         Performs an iteration of CV for the given random seed
         :param seed: the seed number of the CV
-        :param iteration: the iteration number of the CV (None for single-iterations experiments)
         """
-        self.__seed, self.__iteration = seed, iteration
-        self.__create_paths_to_results()
+        self.__create_paths_to_results(seed)
 
         cv_metrics, folds_times = [], []
         plotter = Plotter(self.__paths_to_results["plots"])
@@ -113,10 +85,8 @@ class CrossValidator:
 
         k = self.__data_manager.get_k()
 
-        for fold in range(1, k + 1):
-            fold_heading = "\n * Processing fold {} / {} - seed {} ".format(fold, k, self.__seed)
-            fold_heading += "* \n" if self.__iteration is None else "- iteration {} * \n".format(self.__iteration)
-            print(fold_heading)
+        for fold in range(k):
+            print("\n * Processing fold {} / {} - seed {} * \n".format(fold + 1, k, seed))
 
             model_name = self.__train_params["network_type"] + "_fold_" + str(fold)
             path_to_best_model = os.path.join(self.__paths_to_results["models"], model_name + ".pth")
@@ -125,28 +95,28 @@ class CrossValidator:
             data = self.__data_manager.load_split(fold)
 
             start_time = time.time()
-            model, metrics = trainer.train(self.__data_manager.load_split(fold))
+            model, evaluations = trainer.train(data)
             end_time = time.time()
 
-            best_model_evaluation = self.__evaluator.evaluate_model(data, model, path_to_best_model)
+            best_eval = self.__evaluator.evaluate(data, model, path_to_best_model)
 
             print("\n *** Finished iteration {} of CV! ***".format(fold))
 
             print("\n Saving metrics...")
-            best_metrics = self.__fetch_best_model_metrics(best_model_evaluation)
-            Params.save(best_metrics, os.path.join(self.__paths_to_results["metrics"], "fold_" + str(fold) + ".json"))
-            cv_metrics.append(best_metrics)
+            metrics_log = "fold_" + str(fold) + ".json"
+            Params.save(best_eval["metrics"], os.path.join(self.__paths_to_results["metrics"], metrics_log))
+            cv_metrics.append(best_eval["metrics"])
             print("-> Metrics saved!")
 
             print("\n Saving preds...")
-            Params.save_experiment_preds(best_model_evaluation, self.__paths_to_results["preds"], fold)
+            Params.save_experiment_preds(best_eval, self.__paths_to_results["preds"], fold + 1)
             print("-> Predictions saved!")
 
-            print("\n Saving plots...")
-            plotter.plot_metrics(metrics, fold)
-            print("-> Plots saved!")
+            # print("\n Saving plots...")
+            # plotter.plot_metrics(metrics, fold + 1)
+            # print("-> Plots saved!")
 
-            self.__avg_iteration_metrics(cv_metrics, inplace=True)
+            self.__avg_metrics(cv_metrics, inplace=True)
 
             folds_times.append((start_time - end_time) / 60)
             estimated_time = (np.mean(np.array(folds_times)) * (k - fold))
@@ -156,4 +126,4 @@ class CrossValidator:
             print("\t - Estimated time of completion ... : {:.2f}m".format(estimated_time))
             print("\n----------------------------------------------------------------\n")
 
-        return self.__avg_iteration_metrics(cv_metrics, save=True)["test"]
+        return self.__avg_metrics(cv_metrics, save=True)["test"]

@@ -175,9 +175,9 @@ These parameters define the general setting of the experiments and the configura
 
 | Name           | Type  | Values                                                       | Description                                                  |
 | -------------- | ----- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `id`           | `str` | Any string including the empty string                        | An optional ID for the experiment which the folder reporting the results will be named after (including a timestamp at the tail). If the empty string is provided then the ID defaults to `[dataset_type]_[val_type]_[network_type]_[timestamp]`. |
+| `id`           | `str` | Any string including the empty string                        | An optional ID for the experiment which the folder reporting the results will be named after (including a timestamp at the tail). If the empty string is provided then the ID defaults to `[dataset_name]_[val_type]_[network_type]_[timestamp]`. |
 | `device`       | `str` | `cpu` or a string matching the regex `\bcuda:\b\d+`          | The device to be used when performing the train procedure. If a selected CUDA device is not available, defaults to CPU. |
-| `dataset_type` | `str` | Any dataset name having corresponding parameters in the `params/dataset/` folder | The dataset to be used to train and evaluate the model.      |
+| `dataset_name` | `str` | Any dataset name having corresponding parameters in the `params/dataset/` folder | The dataset to be used to train and evaluate the model.      |
 | `network_type` | `str` | Any network name having corresponding parameters in the `params/networks/` folder | The network to be used to train and evaluate the model.      |
 | `num_seeds`    | `int` | Any pos integer number                                  | The number of different random seeds for which the CV procedure on each selected split must be run. The random seeds are generated increasing the `base_seed` by one unit at a time (e.g. `num_seed = 3` and `base_seed = 1` implies seeds ranging from 1 to 3 included). |
 | `base_seed`    | `int` | Any integer number                                           | The base random seed value increased by one unit at a time for `num_seeds` times. |
@@ -218,7 +218,7 @@ These parameters define the general setting of the experiments and the configura
 {
   "id": "10_iterations_cnn_scan_paths_augmented_1",
   "device": "cuda:3",
-  "dataset_type": "alzheimer",
+  "dataset_name": "alzheimer",
   "network_type": "cnn",
   "num_seeds": 1,
   "base_seed": 1,
@@ -287,7 +287,7 @@ These parameters define how the cross val should be performed and whether or not
   "force_deletion": true,
   "use_cv_metadata": true,
   "save_split_metadata": false,
-  "reload_split": {
+  "__reload_split": {
     "train_test": false,
     "folds": false
   }
@@ -315,7 +315,7 @@ These parameters define how the cross val should be performed and whether or not
 
 | Name               | Type  | Values                          | Description                                                  |
 | ------------------ | ----- | ------------------------------- | ------------------------------------------------------------ |
-| `dataset_folder`   | `str` | Any string but the empty string | The path to the main datasets folder (containing all the datasets, including the one whose parameters are being set in the present configuration file). |
+| `dataset_dir`   | `str` | Any string but the empty string | The path to the main datasets folder (containing all the datasets, including the one whose parameters are being set in the present configuration file). |
 | `dataset_metadata` | `str` | Any string but the empty string | The path to the folder containing general metadata for the specific dataset. |
 | `cv_metadata`      | `str` | Any string but the empty string | The path to the folder containing CV-splits-related metadata for the specific dataset. |
 
@@ -340,7 +340,7 @@ File `alzheimer.json` with respect to the Alzheimer dataset stored at `../datase
     "neg": "healthy"
   },
   "paths": {
-    "dataset_folder": "../dataset",
+    "dataset_dir": "../dataset",
     "dataset_metadata": "metadata",
     "cv_metadata": "split/metadata/eye_tracking/5_1",
     "modalities": {

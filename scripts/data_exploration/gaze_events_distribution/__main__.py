@@ -40,14 +40,14 @@ def group_by_event(path_to_items: str) -> pd.DataFrame:
 
 
 def main():
-    dataset_type = "alzheimer"
+    dataset_name = "alzheimer"
     data_source = "eye_tracking"
     labels = {
         "pos": "1_alzheimer",
         "neg": "0_healthy",
     }
 
-    path_to_modalities = os.path.join("..", "..", "..", "dataset", dataset_type, "modalities")
+    path_to_modalities = os.path.join("..", "..", "..", "dataset", dataset_name, "modalities")
     path_to_sequences = os.path.join(path_to_modalities, "sequences", data_source, "raw")
     paths_to_sequences = {
         "pos": os.path.join(path_to_sequences, labels["pos"]),

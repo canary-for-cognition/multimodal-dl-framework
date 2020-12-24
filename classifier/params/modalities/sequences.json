@@ -1,10 +1,7 @@
 {
-  "type": "",
-  "data_source": "eye_tracking",
+  "path_to_data": "eye_tracking/augmented",
   "file_format": "pkl",
   "num_features": 14,
-  "augment": true,
   "length": 150,
-  "truncate_from": "head",
-  "truncation_offset": 0
+  "truncate_from": "tail"
 }

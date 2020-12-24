@@ -90,11 +90,11 @@ def convert_files(file_base_names: list, dataset: pd.DataFrame) -> list:
     return unique_items
 
 
-def print_dataset_overview(dataset: pd.DataFrame, dataset_type: str):
+def print_dataset_overview(dataset: pd.DataFrame, dataset_name: str):
     print("The {dt} counts {n} items:\n"
           "\t + Alzheimer ... : {num_pos}\n"
           "\t - Healthy ..... : {num_neg}\n"
-          "\t § Dirty ....... : {dirty}\n".format(dt=dataset_type,
+          "\t § Dirty ....... : {dirty}\n".format(dt=dataset_name,
                                                   n=dataset.shape[0],
                                                   num_pos=len(dataset[dataset["Label"] == "pos"]),
                                                   num_neg=len(dataset[dataset["Label"] == "neg"]),
@@ -127,9 +127,9 @@ def main():
     columns = ["PID", "ParticipantType", "DataClean", "RestPupil", "Label"]
     dataset = pd.read_csv(path_to_participants, usecols=columns, index_col=False)
 
-    print_dataset_overview(dataset=dataset, dataset_type="full data")
-    print_dataset_overview(dataset=dataset[dataset["DataClean"] == "YES"], dataset_type="clean subset")
-    print_dataset_overview(dataset=dataset[dataset["DataClean"] == "NO"], dataset_type="dirty subset")
+    print_dataset_overview(dataset=dataset, dataset_name="full data")
+    print_dataset_overview(dataset=dataset[dataset["DataClean"] == "YES"], dataset_name="clean subset")
+    print_dataset_overview(dataset=dataset[dataset["DataClean"] == "NO"], dataset_name="dirty subset")
 
     print("\n------------------------------------------------------------")
 

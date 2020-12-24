@@ -16,17 +16,16 @@ class TextLoader(Loader):
         super().__init__("text", for_submodule)
 
         if self._network_type == "transformer":
-            self._network_type = self._network_params["model_type"]
-
-        self.__word_embeddings = pd.read_csv(os.path.join(self._dataset_params["paths"]["text"], "text.csv"))
-        self.__embedding_size = Params.load_modality_params("text")["embedding_size"]
+            network_params = Params.load_network_params(self._network_type)
+            self._network_type = network_params["model_type"]
+            self.__pretrained_model = network_params["pretrained_model"]
+        else:
+            self.__word_embeddings = pd.read_csv(os.path.join(self._path_to_modalities["text"], "text.csv"))
+            self.__embedding_size = Params.load_modality_params("text")["embedding_size"]
 
     def __get_tokenizer(self) -> PreTrainedTokenizer:
-        tokenizers = {
-            "bert": BertTokenizer,
-            "roberta": RobertaTokenizer
-        }
-        return tokenizers[self._network_type].from_pretrained(self._network_params["pretrained_model"])
+        tokenizers = {"bert": BertTokenizer, "roberta": RobertaTokenizer}
+        return tokenizers[self._network_type].from_pretrained(self.__pretrained_model)
 
     def __load_bert_encoding(self, path_to_input: str) -> tuple:
         """
@@ -50,25 +49,13 @@ class TextLoader(Loader):
         encoding = np.array(eval(self.__word_embeddings[self.__word_embeddings["pid"] == item_id]["tokens"].values[0]))
         return torch.from_numpy(encoding)
 
-    def __encode(self, path_to_input: str) -> callable:
+    def load(self, path_to_input: str) -> Union[torch.Tensor, tuple]:
         """
         Encodes the input for either a pre-trained or custom model
         :param path_to_input: the path to the data item to be encoded (related to the main modality)
         :return: the encoded text for the input data item
         """
-        encodings_map = {
-            "bert": self.__load_bert_encoding,
-            "roberta": self.__load_bert_encoding
-        }
-        if self._network_type in encodings_map.keys():
-            return encodings_map[self._network_type](path_to_input)
-        else:
-            return self.__load_custom_encoding(path_to_input)
+        if self._network_type == "transformer":
+            return self.__load_bert_encoding(path_to_input)
 
-    def load(self, path_to_input: str) -> Union[torch.Tensor, tuple]:
-        """
-        Loads a text data item and creates its embedding
-        :param path_to_input: the path to the data item to be loaded (related to the main modality)
-        :return: the embedding for the loaded data item
-        """
-        return self.__encode(path_to_input)
+        return self.__load_custom_encoding(path_to_input)

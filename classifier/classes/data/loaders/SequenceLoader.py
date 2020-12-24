@@ -11,13 +11,9 @@ class SequenceLoader(Loader):
 
     def __init__(self, for_submodule: bool = False):
         super().__init__("sequences", for_submodule)
-
-        self.__data_source = self._modality_params["data_source"]
-        self.__data_type = self._modality_params["type"]
         self.__max_sequence_length = self._modality_params["length"]
         self.__num_features = self._modality_params["num_features"]
         self.__truncate_from = self._modality_params["truncate_from"]
-        self.__truncation_offset = self._modality_params["truncation_offset"]
 
     def __pad_sequences(self, sequences: np.array) -> np.array:
         """
@@ -37,13 +33,11 @@ class SequenceLoader(Loader):
         :param sequence: the sequence to be truncated
         :return: the truncated sequence
         """
-        seq_length = self.__truncation_offset + self.__max_sequence_length
         truncations_map = {
-            "head": sequence[self.__truncation_offset:seq_length, :],
-            "tail": sequence[-seq_length:-self.__truncation_offset if self.__truncation_offset else None, :]
+            "head": sequence[:self.__max_sequence_length, :],
+            "tail": sequence[-self.__max_sequence_length:, :]
         }
-        truncated_sequence = truncations_map[self.__truncate_from]
-        return truncated_sequence[:, :self.__num_features].astype(float)
+        return truncations_map[self.__truncate_from][:, :self.__num_features]
 
     def load(self, path_to_input: str) -> torch.Tensor:
         """
@@ -52,7 +46,7 @@ class SequenceLoader(Loader):
         :param path_to_input: the path to the data item to be loaded referred to the main modality
         :return: the fully processed data item
         """
-        path_to_item = self._get_path_to_item(path_to_input, self.__data_source, self.__data_type)
+        path_to_item = self._get_path_to_item(path_to_input)
         sequence = pickle.load(open(path_to_item, 'rb')) if self._file_format == "pkl" else pd.read_csv(path_to_item)
         sequence = self.__truncate(sequence.values)
 

@@ -1,8 +1,6 @@
 {
-  "type": "scanpaths",
-  "data_source": "eye_tracking",
+  "path_to_data": "eye_tracking/scanpaths/augmented",
   "file_format": "png",
-  "augment": true,
   "num_channels": 3,
   "size": {
     "width": 150,

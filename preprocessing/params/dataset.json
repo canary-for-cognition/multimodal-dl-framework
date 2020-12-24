@@ -1,5 +1,5 @@
 {
-  "dataset_type": "alzheimer",
+  "dataset_name": "alzheimer",
   "labels": {
     "positive": "1_alzheimer",
     "negative": "0_healthy"

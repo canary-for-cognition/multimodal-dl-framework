@@ -1,26 +1,25 @@
 {
   "device": "cuda:3",
-  "dataset_type": "confusion",
-  "network_type": "rnn",
+  "dataset_name": "confusion",
   "num_seeds": 1,
-  "base_seed": 1,
   "train": {
+    "network_type": "rnn",
     "epochs": 100,
     "optimizer": "Adam",
     "criterion": "CrossEntropyLoss",
     "batch_size": 256,
+    "learning_rate": 3e-5,
+    "log_every": 1,
+    "evaluate_every": 1,
     "early_stopping": {
       "patience": 50,
-      "log_every": 1,
-      "evaluate_every": 1,
       "metrics": "auc",
       "metrics_trend": "increasing"
-    },
-    "learning_rate": {
-      "initial_value": 3e-5,
-      "decay_ratio": 0.5,
-      "decay_patience": 100,
-      "max_decreases": 3
     }
+  },
+  "cv": {
+    "k": 10,
+    "down_sample_rate": 3,
+    "use_cv_metadata": false
   }
 }

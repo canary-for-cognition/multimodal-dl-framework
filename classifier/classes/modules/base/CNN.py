@@ -9,12 +9,12 @@ class CNN(nn.Module):
         super().__init__()
 
         input_size = network_params["input_size"]
-        self.__output_size = network_params["output_size"]
+        output_size = network_params["output_size"]
         self.__num_conv_blocks = network_params["num_conv_blocks"]
         self.__num_conv = network_params["num_conv"]
         self.__conv_block_params = network_params["layers"]["conv_block"]
-        self.__classifier_params = network_params["layers"]["classifier"]
-        self.__output_size = self.__classifier_params["linear_1"]["out_features"]
+        classifier_params = network_params["layers"]["classifier"]
+        bottleneck_output_size = classifier_params["linear_1"]["out_features"]
         self.__activation = activation
 
         conv_blocks, last_conv_out_channels = self._generate_conv_blocks()
@@ -23,20 +23,21 @@ class CNN(nn.Module):
         self.__linear_size = self._compute_linear_size(input_size, output_size=last_conv_out_channels)
 
         self.fc = nn.Sequential(
-            nn.Linear(self.__linear_size, self.__output_size),
+            nn.Linear(self.__linear_size, bottleneck_output_size),
             nn.ReLU()
         )
 
         if self.__activation:
-            self.classifier = self.__generate_classifier()
+            self.classifier = self.__generate_classifier(classifier_params, output_size)
 
-    def __generate_classifier(self) -> nn.Sequential:
+    @staticmethod
+    def __generate_classifier(params: dict, output_size: int) -> nn.Sequential:
         """
         Generates the layers for the classifier as specified in the configuration of the network
         :return: the generated layers as a sequential model
         """
-        layers_names = self.__classifier_params.keys()
-        out_features = [self.__classifier_params[layer_name]["out_features"] for layer_name in layers_names]
+        layers_names = params.keys()
+        out_features = [params[layer_name]["out_features"] for layer_name in layers_names]
 
         linear_layers = []
         for i in range(len(out_features)):
@@ -44,7 +45,7 @@ class CNN(nn.Module):
                 linear_layers.append(nn.Linear(out_features[i], out_features[i + 1]))
                 linear_layers.append(nn.ReLU())
             else:
-                linear_layers.append(nn.Linear(out_features[i], self.__output_size))
+                linear_layers.append(nn.Linear(out_features[i], output_size))
 
         return nn.Sequential(*linear_layers)
 
@@ -162,9 +163,6 @@ class CNN(nn.Module):
             conv_blocks.append(max_pool(pooling_kernel_size, pooling_stride))
 
         return conv_blocks, last_conv_out_channels
-
-    def get_pre_activation_size(self) -> int:
-        return self.__output_size
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.conv_and_pool_layers(x)

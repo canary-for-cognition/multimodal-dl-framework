@@ -15,7 +15,7 @@ def get_avg_coords(path_to_items: str) -> tuple:
 
 
 def main():
-    dataset_type = "confusion"
+    dataset_name = "confusion"
     data_source = "eye_tracking"
     data_type = ""
     data_dimension = "augmented"
@@ -24,7 +24,7 @@ def main():
         "neg": "0_not_confused",
     }
 
-    path_to_modalities = os.path.join("..", "..", "..", "dataset", dataset_type, "modalities")
+    path_to_modalities = os.path.join("..", "..", "..", "dataset", dataset_name, "modalities")
     path_to_sequences = os.path.join(path_to_modalities, "sequences", data_source, data_type, data_dimension)
     paths_to_sequences = {
         "pos": os.path.join(path_to_sequences, labels["pos"]),

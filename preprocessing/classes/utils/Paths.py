@@ -9,7 +9,7 @@ class Paths:
     def __init__(self):
         params = Params.load_dataset_params()
 
-        self.__dataset_type = params["dataset_type"]
+        self.__dataset_type = params["dataset_name"]
         self.__labels = params["labels"]
 
         path_to_dataset = os.path.join("..", "dataset", self.__dataset_type)

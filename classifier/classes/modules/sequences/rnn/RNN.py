@@ -14,9 +14,9 @@ class RNN(nn.Module):
         self.__num_layers = network_params["num_layers"]
         self.__bidirectional = network_params["bidirectional"]
         self.__hidden_size = network_params["hidden_size"]
+        dropout = network_params["dropout"]
         input_size = network_params["input_size"]
         output_size = network_params["output_size"] if "output_size" in network_params.keys() else None
-        dropout = network_params["dropout"]
 
         self._activation = activation
 
