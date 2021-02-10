@@ -1,4 +1,4 @@
-# Neural Networks for binary classification on multiple data modalities
+# Neural Networks for Binary Classification on Multimodal Data
 
 An extensible PyTorch framework to experiment with neural-networks-based deep learning algorithms on multiple data modalities for binary classification.
 
