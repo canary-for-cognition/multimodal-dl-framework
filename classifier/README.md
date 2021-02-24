@@ -372,7 +372,7 @@ Note that the constructor of the network classes must have the following signatu
 def __init__(network_params: dict, activation: bool)
 	"""
 	@param network_params: dictionary contatining both the parameters listed in the configuration file of the module and the parameters listed in the configuration file of the corresponding modality
-    @param activation: whether or not the architecture will feature classification layers (set to None for implementing some features fusion policies in multimodal networks)
+    	@param activation: whether or not the architecture will feature classification layers (set to None for implementing some features fusion policies in multimodal networks)
 	"""
 ```
 
