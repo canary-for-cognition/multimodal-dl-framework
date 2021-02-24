@@ -39,7 +39,7 @@ class HeatmapsGenerator(Generator):
         return (p - p_min) / (p_max - p_min) * resolution
 
     @staticmethod
-    def __nearest_neighbour_density(xv, yv, resolution, neighbours, dim=2) -> np.array:
+    def __nearest_neighbour_density(xv, yv, resolution, neighbours, dim=2) -> np.ndarray:
         # Find the closest nn_max-1 neighbors (first entry is the point itself)
         grid = np.mgrid[0:resolution, 0:resolution].T.reshape(resolution ** 2, dim)
         dists = cKDTree(np.array([xv, yv]).T).query(grid, neighbours)
@@ -62,7 +62,7 @@ class HeatmapsGenerator(Generator):
     #     dn = d / h
     #     return (15 / 16) * (1 - dn ** 2) ** 2
     #
-    # def __generate_heatmap_with_proportions(self, x: np.array, y: np.array, path_to_heatmap: str):
+    # def __generate_heatmap_with_proportions(self, x: np.ndarray, y: np.ndarray, path_to_heatmap: str):
     #     x = list(x.astype(int))
     #     y = list(y.astype(int))
     #
@@ -106,7 +106,7 @@ class HeatmapsGenerator(Generator):
     #
     #     plt.savefig(path_to_heatmap, bbox_inches='tight')
 
-    def __generate_heatmap_with_proportions(self, x: np.array, y: np.array, path_to_heatmap: str):
+    def __generate_heatmap_with_proportions(self, x: np.ndarray, y: np.ndarray, path_to_heatmap: str):
         extent = [0, self.__width, 0, self.__height]
         fig, ax = plt.subplots()
 
@@ -130,7 +130,7 @@ class HeatmapsGenerator(Generator):
         plt.savefig(path_to_heatmap, bbox_inches='tight')
         plt.clf()
 
-    def __generate_heatmap(self, x: np.array, y: np.array, path_to_heatmap: str):
+    def __generate_heatmap(self, x: np.ndarray, y: np.ndarray, path_to_heatmap: str):
         fig, ax = plt.subplots()
 
         heat_map, _, _ = np.histogram2d(x, y, bins=100)
@@ -146,7 +146,7 @@ class HeatmapsGenerator(Generator):
         plt.clf()
 
     @staticmethod
-    def __fetch_confusion_coords(item: np.array, file_name: str) -> tuple:
+    def __fetch_confusion_coords(item: np.ndarray, file_name: str) -> tuple:
         # Column 0 is now avg Gx
         item[:, 0] = (item[:, 0] + item[:, 7]) / 2
 
@@ -171,7 +171,7 @@ class HeatmapsGenerator(Generator):
 
         return item[:, 0], item[:, 1]
 
-    def __fetch_alzheimer_coords(self, item: np.array) -> tuple:
+    def __fetch_alzheimer_coords(self, item: np.ndarray) -> tuple:
         if self.__filter_out_non_fixations:
             item = item[item[:, 18] == "Fixation"]
             # Fixations x, y coordinates

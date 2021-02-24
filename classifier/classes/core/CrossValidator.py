@@ -1,8 +1,8 @@
 import os
 import time
-from typing import Union
 
 import numpy as np
+from typing import Union
 
 from classifier.classes.core.Evaluator import Evaluator
 from classifier.classes.core.Trainer import Trainer
@@ -33,7 +33,7 @@ class CrossValidator:
         :param set_type: set code in ["train", "val", "test"]
         :return: the input metrics averaged by set type
         """
-        return {k: np.array([m[set_type][k] for m in metrics]).mean() for k in metrics[0][set_type].keys()}
+        return {k: np.ndarray([m[set_type][k] for m in metrics]).mean() for k in metrics[0][set_type].keys()}
 
     def __avg_metrics(self, cv_metrics: list, save: bool = False, inplace: bool = False) -> Union[dict, None]:
         """

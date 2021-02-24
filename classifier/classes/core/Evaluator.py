@@ -71,7 +71,7 @@ class Evaluator:
         return accuracy.item()
 
     @staticmethod
-    def __compute_metrics(y_true: np.array, y_pred: np.array, y_1_scores: np.array) -> dict:
+    def __compute_metrics(y_true: np.ndarray, y_pred: np.ndarray, y_1_scores: np.ndarray) -> dict:
         """
         Computes the metrics for the given preds and labels
         :param y_true: the ground-truth labels
@@ -90,7 +90,7 @@ class Evaluator:
         }
 
     @staticmethod
-    def __optimal_roc_threshold(y_true: np.array, y_1_scores: np.array) -> float:
+    def __optimal_roc_threshold(y_true: np.ndarray, y_1_scores: np.ndarray) -> float:
         """
         Computes the optimal ROC threshold (defined for more than one sample)
         :param y_true: the ground truth

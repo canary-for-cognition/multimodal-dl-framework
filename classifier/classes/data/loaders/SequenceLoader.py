@@ -15,7 +15,7 @@ class SequenceLoader(Loader):
         self.__num_features = self._modality_params["num_features"]
         self.__truncate_from = self._modality_params["truncate_from"]
 
-    def __pad_sequences(self, sequences: np.array) -> np.array:
+    def __pad_sequences(self, sequences: np.ndarray) -> np.ndarray:
         """
         Pads the sequences to match the maximum sequence length
         :param sequences: the sequences involving only the selected features
@@ -24,7 +24,7 @@ class SequenceLoader(Loader):
         padding = np.zeros((self.__max_sequence_length - len(sequences), self.__num_features))
         return np.append(padding, sequences, axis=0)
 
-    def __truncate(self, sequence: np.array) -> np.array:
+    def __truncate(self, sequence: np.ndarray) -> np.ndarray:
         """
         Truncates the sequences according to two axis:
             1. Time steps: according to the truncation starting point (i.e. head or tail) and offset. In case the

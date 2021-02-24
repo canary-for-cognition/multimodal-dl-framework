@@ -22,7 +22,7 @@ class AudioSequencesGenerator(Generator):
         self.__paths_to_base_sequences = self._paths.get_paths_to_modality(self._params["paths"]["destination"])
 
     @staticmethod
-    def __get_summary_stats(key: str, data: np.array, coefficient: int) -> dict:
+    def __get_summary_stats(key: str, data: np.ndarray, coefficient: int) -> dict:
         return {
             key + "_mean": data[:, coefficient].mean(),
             key + "_variance": data[:, coefficient].var(),
@@ -53,7 +53,7 @@ class AudioSequencesGenerator(Generator):
 
         return features
 
-    def __extract_mfcc_data(self, audio_data: np.array) -> dict:
+    def __extract_mfcc_data(self, audio_data: np.ndarray) -> dict:
         """
         Returns the MFCC data with respect to the input audio data
         :param audio_data: audio data extracted from a WAV file

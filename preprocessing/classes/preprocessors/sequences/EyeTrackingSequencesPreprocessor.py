@@ -57,7 +57,7 @@ class EyeTrackingSequencesPreprocessor(Preprocessor):
         self.__update_idxes(features)
         return features
 
-    def __percentage_partially_invalid_rows(self, data: np.array) -> float:
+    def __percentage_partially_invalid_rows(self, data: np.ndarray) -> float:
         """
         Checks the percentage of invalid rows in a data item where at least one eye is invalid.
         We define a row as invalid if all of the features named below contain invalid values
@@ -72,14 +72,14 @@ class EyeTrackingSequencesPreprocessor(Preprocessor):
         return (num_invalid / total_rows) * 100
 
     @staticmethod
-    def __fix_eye_side(data: np.array, invalid_idxes: list, side_idxes: list, opposite_idxes: list) -> np.array:
+    def __fix_eye_side(data: np.ndarray, invalid_idxes: list, side_idxes: list, opposite_idxes: list) -> np.ndarray:
         idxes = [i for i in range(len(invalid_idxes)) if invalid_idxes[i]]
         if idxes:
             fix = data[np.array(idxes)[:, None], np.array(opposite_idxes)]
             data[np.array(idxes)[:, None], np.array(side_idxes)] = fix
         return data
 
-    def __fix_missing_eyes(self, data: np.array) -> pd.DataFrame:
+    def __fix_missing_eyes(self, data: np.ndarray) -> pd.DataFrame:
         """
         Copies values from valid columns to invalid ones in the same row.
         If values are missing for one eye (ValidityX = 4) but present for the other
@@ -100,14 +100,14 @@ class EyeTrackingSequencesPreprocessor(Preprocessor):
         return data
 
     @staticmethod
-    def __replace_invalid_side(data: np.array, validity_side_idx: int) -> np.array:
+    def __replace_invalid_side(data: np.ndarray, validity_side_idx: int) -> np.ndarray:
         invalid_rows = (data[:, validity_side_idx] == 4.0)
         invalid_idxes = [i for i in range(len(invalid_rows)) if invalid_rows[i]]
         if invalid_idxes:
             data[np.array(invalid_idxes)[:, None], :] = np.NaN
         return data
 
-    def __fix_invalid_rows(self, data: np.array) -> pd.DataFrame:
+    def __fix_invalid_rows(self, data: np.ndarray) -> pd.DataFrame:
         """
         Replace values corresponding to an invalid eye with -1 everywhere
         :param data: item whose invalid rows will be fixed
@@ -136,7 +136,7 @@ class EyeTrackingSequencesPreprocessor(Preprocessor):
             sampled_sequence = sequence[i::self.__split_step]
             sampled_sequence.to_pickle(os.path.join(path_to_preprocessed_augmented, file_name))
 
-    def __adjust(self, item: np.array) -> np.array:
+    def __adjust(self, item: np.ndarray) -> np.ndarray:
         """
         Adjusts gaze coordinates according to validity scores
         :param item: a data item made up of sequences
