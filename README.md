@@ -21,5 +21,5 @@ Main high-level packages:
 * `preprocessing`. A pipeline-structured utility that allows for the generation and preprocessing of the data. For
   instance, image representations of eye-tracking data can be produced from the corresponding sequences, while the
   latter need to be adjusted and polished before being fed to a model;
-* `scripts`. Various utility scripts for post-processing the results (e.g. aggregating the scores produced by multiple
+* `utils`. Various utility scripts for post-processing the results (e.g. aggregating the scores produced by multiple
   iterations of CV).
