@@ -127,12 +127,17 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-/dataset/
 .idea/.gitignore
 .idea/inspectionProfiles/
 .idea/misc.xml
 .idea/modules.xml
 .idea/multimodal-nn-framework.iml
 .idea/vcs.xml
+
 /classifier/experiments/
 /classifier/results/
+/dataset/alzheimer/metadata/
+/dataset/alzheimer/raw/
+/dataset/alzheimer/tasks/
+/dataset/cognitive_abilities/
+/dataset/confusion/
