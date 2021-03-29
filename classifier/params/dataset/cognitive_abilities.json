@@ -1,0 +1,17 @@
+{
+  "classes": {
+    "pos": "high",
+    "neg": "low"
+  },
+  "paths": {
+    "dataset_dir": "../dataset/cognitive_abilities/meara/1_sec",
+    "dataset_metadata": "metadata",
+    "cv_metadata": "split/metadata/split_metadata.csv",
+    "modalities": {
+      "images": "images",
+      "sequences": "sequences",
+      "text": "text",
+      "audio": "audio"
+    }
+  }
+}

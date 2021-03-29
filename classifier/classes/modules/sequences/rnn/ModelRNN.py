@@ -1,3 +1,5 @@
+from typing import Dict
+
 import torch
 
 from classifier.classes.core.Model import Model
@@ -6,7 +8,7 @@ from classifier.classes.modules.sequences.rnn.RNN import RNN
 
 class ModelRNN(Model):
 
-    def __init__(self, network_params: dict):
+    def __init__(self, network_params: Dict):
         super().__init__(device=network_params["device"])
         network_params["input_size"] = network_params["modality"]["num_features"]
         self._network = RNN(network_params).float().to(self._device)

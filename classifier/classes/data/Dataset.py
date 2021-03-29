@@ -1,10 +1,12 @@
+from typing import List, Callable
+
 import torch
 from torch.utils.data import DataLoader
 
 
 class Dataset(torch.utils.data.Dataset):
 
-    def __init__(self, data_paths: list, labels: list, loader: callable):
+    def __init__(self, data_paths: List, labels: List, loader: Callable):
         """
         @param data_paths: list of paths to sequences
         @param labels: list of corresponding labels

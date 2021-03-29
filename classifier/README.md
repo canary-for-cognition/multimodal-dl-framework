@@ -1,12 +1,14 @@
 # Classifier
 
-> This code is part of the project “Neural Networks for binary classification on multiple data modalities”. 
+> This code is part of the project “Neural Networks for binary classification on multiple data modalities”.
 
-The `classifier` package is the core of the project, including the fundamental classes which handle the datasets and the train and evaluation of the models as well as the Neural Networks (NNs) architectures.
+The `classifier` package is the core of the project, including the fundamental classes which handle the datasets and the
+train and evaluation of the models as well as the Neural Networks (NNs) architectures.
 
 ## Requirements
 
-The code is based on PyTorch and can run both on CPU and GPU supporting CUDA. In order to run the software, please install the requirements listed in the `requirements.txt` file. The code has been tested using PyTorch 1.4.0.
+The code is based on PyTorch and can run both on CPU and GPU supporting CUDA. In order to run the software, please
+install the requirements listed in the `requirements.txt` file. The code has been tested using PyTorch 1.4.0.
 
 ## Framework Components
 
@@ -14,25 +16,32 @@ The code is based on PyTorch and can run both on CPU and GPU supporting CUDA. In
 
 ### Core
 
-The **core** component runs an experiment, which is a series of Cross-Validation (CV) procedures. It interacts with `data` and networks-related classes to fetch the data from the dataset and to train the model respectively. The main classes of the package are:
+The **core** component runs an experiment, which is a series of Cross-Validation (CV) procedures. It interacts
+with `data` and networks-related classes to fetch the data from the dataset and to train the model respectively. The
+main classes of the package are:
 
-* `Trainer`: receives the `train_params` saved in the `experiment.json` file and handles the train of the model; 
-* `Evaluator`: evaluates the model computing the reported metrics; 
-* `Model`: takes care of prediction and weight update and is subclassed by each new module. 
+* `Trainer`: receives the `train_params` saved in the `experiment.json` file and handles the train of the model;
+* `Evaluator`: evaluates the model computing the reported metrics;
+* `Model`: takes care of prediction and weight update and is subclassed by each new module.
 
 ### Modules
 
 Modules consist of two parts:
 
-* A *network* (subclassing torch `nn.Module`) defining the architecture of the NN and its forward phase (e.g. `GRU(nn.Module)`)
-* A *model* (subclassing the base `Model` in the core component) defining how the input is fed to the network for the prediction (e.g. `ModelGRU(Model)`)
+* A *network* (subclassing torch `nn.Module`) defining the architecture of the NN and its forward phase (
+  e.g. `GRU(nn.Module)`)
+* A *model* (subclassing the base `Model` in the core component) defining how the input is fed to the network for the
+  prediction (e.g. `ModelGRU(Model)`)
 
 They can either handle:
 
 * *Single modalities* (e.g. text as in BERT), or
 * *Multiple modalities* (e.g. eye-tracking sequences and images as in the VisTempNet).
 
-Multi modal networks must subclass the base `MultimodalNetwork` stored at `modules/base/networks`. Networks handling multiple modalities are built combining submodules (i.e. networks handling single modalities, e.g. VisTempNet = CNN + GRU) according to a features fusion policy (i.e. early fusion, late model blending, etc…) as exemplified by the following scheme. 
+Multi modal networks must subclass the base `MultimodalNetwork` stored at `modules/base/networks`. Networks handling
+multiple modalities are built combining submodules (i.e. networks handling single modalities, e.g. VisTempNet = CNN +
+GRU) according to a features fusion policy (i.e. early fusion, late model blending, etc…) as exemplified by the
+following scheme.
 
 <img src="docs/gallery/multimodal-architecture.png" alt="image-20200715124444532" style="zoom:67%;" />
 
@@ -56,9 +65,11 @@ In order to be used together with this project, a dataset must follow a precise 
 
    * *Text*: word sequences properly encoded depending on the network which is processing them.
 
-2. Each modality may have one or more **data sources** (e.g. the images may have two data sources: audio and eye-tracking;
+2. Each modality may have one or more **data sources** (e.g. the images may have two data sources: audio and
+   eye-tracking;
 
-3. Each data source may have one ore more **representations** (e.g. the eye-tracking images may be either scan-paths or heatmaps). 
+3. Each data source may have one ore more **representations** (e.g. the eye-tracking images may be either scan-paths or
+   heatmaps).
 
 The following scheme exemplifies the relationship among modalities, data sources and representations.
 
@@ -69,12 +80,13 @@ The dataset must also contain:
 * A `metadata` folder where a `dataset.csv` file summarising the information about the data is dynamically generated;
 * A `split` folder containing the metadata for the CV and where the data split is dynamically generated.
 
-The metadata for generating the splits are CSV files stating which items belong to each set in each split and where each row correspond to a CV split. The metadata must be structured as follows:
+The metadata for generating the splits are CSV files stating which items belong to each set in each split and where each
+row correspond to a CV split. The metadata must be structured as follows:
 
 ```csv
-train_pos , train_neg , test_pos  , test_neg
-EO-083 ..., HE-099 ..., EA-084 ..., HP-138 ...
-EO-091 ..., HA-113 ..., EE-190 ..., HH-055 ...
+train_pos ,train_neg ,test_pos  ,test_neg
+EO-083 ...,HE-099 ...,EA-084 ...,HP-138 ...
+EO-091 ...,HA-113 ...,EE-190 ...,HH-055 ...
 ...
 ```
 
@@ -155,12 +167,15 @@ For example:
 
 ## Configuration of the Experiment
 
-In order to run an experiment, one has to manually edit the configuration JSON files (stored in `params`) related to some core aspects of the analysis. The core aspects of an experiments are the following:
+In order to run an experiment, one has to manually edit the configuration JSON files (stored in `params`) related to
+some core aspects of the analysis. The core aspects of an experiments are the following:
 
-1. **Experimental setting** (`experiment.json`): NN architecture and dataset, parameters related to the the training procedure;
-3. **Network** (`networks/`): architecture-specific parameters for the selected NN (or for the submodules in case of multi-modal architectures);
+1. **Experimental setting** (`experiment.json`): NN architecture and dataset, parameters related to the the training
+   procedure;
+3. **Network** (`networks/`): architecture-specific parameters for the selected NN (or for the submodules in case of
+   multi-modal architectures);
 4. **Dataset** (`dataset/`): paths to the data modalities involved in the experiment;
-5. **Modality** (`modalities/`):  modality-specific parameters for the modalities handled by the selected NN. 
+5. **Modality** (`modalities/`):  modality-specific parameters for the modalities handled by the selected NN.
 
 ### Experimental Setting
 
@@ -192,7 +207,7 @@ These parameters define the general setting of the experiments and the configura
 
 | Name            | Type  | Values                                                       | Description                                                  |
 | --------------- | ----- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `patience`      | `int` | Any pos integer number greater than zero                     | The number of iterations for which a non-improvement of the monitored metrics is tolerated. |
+| `patience`      | `int` | Any integer number greater than zero                     | The number of iterations for which a non-improvement of the monitored metrics is tolerated. |
 | `metrics`       | `str` | Any metrics name from those implemented in `classes/core/Evaluator.py ` | The monitored val metrics (e.g. `auc`, `f1`, `loss`, etc…)   |
 | `metrics_trend` | `str` | `increasing` or `decreasing`                                 | Whether the monitored metrics is supposed to increase or decrease (e.g. `auc` should increase while `loss` should decrease). |
 
@@ -200,8 +215,8 @@ These parameters define the general setting of the experiments and the configura
 
 | Name              | Type   | Values                      | Description                                                  |
 | ----------------- | ------ | --------------------------- | ------------------------------------------------------------ |
-| `k`               | `int`  | Any positive integer number | The number of folds which the dataset must be split into.    |
-| `down_sample`     | `bool` | Any Boolean value           | Whether or not to down_sample the val set to have the same amount of items in the majority class as the train set. |
+| `k`               | `int`  | Any integer number greater than zero | The number of folds which the dataset must be split into.    |
+| `down_sample_rate`     | `bool` | Any integer number greater than zero or -1           | The multiplicative downsampling factor to force the val set to have a similar amount of items in the majority class as the train set. If set to -1, the down sampling is not performed |
 | `use_cv_metadata` | `bool` | Any Boolean value           | Whether or not to use metadata information for the split instead of generating it anew. |
 
 #### Example
@@ -326,7 +341,8 @@ File `alzheimer.json` with respect to the Alzheimer dataset stored at `../datase
 
 ## Report of the Experiments
 
-The results of the experiments are saved in a user-named folder, referred to as "report". The information in the report is nested by seed and iteration and include, for each fold:
+The results of the experiments are saved in a user-named folder, referred to as "report". The information in the report
+is nested by seed and iteration and include, for each fold:
 
 * Training, validation and test metrics;
 * Training, validation and test plots of metrics over epochs;
@@ -334,7 +350,8 @@ The results of the experiments are saved in a user-named folder, referred to as 
 
 All the parameters involved in the experiment are dumped into the main folder of the report, namely in three files:
 
-1. `data.json`: data-related parameters such as dataset parameters (including name and main modality used for the experiment);
+1. `data.json`: data-related parameters such as dataset parameters (including name and main modality used for the
+   experiment);
 2. `experiment.json`: general configuration of the experiment included in the `experiment.json` configuration file;
 3. `network_params`: network-related parameters and configuration for the corresponding modality.
 
@@ -344,56 +361,80 @@ All the parameters involved in the experiment are dumped into the main folder of
 
 The procedure to add a new dataset is the following:
 
-1. **Creating the dataset ID**. Each new dataset is associated to a unique ID (e.g. Alzheimer >> `alzheimer`) to allow for it to be referenced in the configuration of the experiment. New datasets must be included in the `dataset` folder in a subdirectory named after their IDs (e.g. Alzheimer >> `dataset/alzheimer/...`). Note that case sensitivity matters;
+1. **Creating the dataset ID**. Each new dataset is associated to a unique ID (e.g. Alzheimer >> `alzheimer`) to allow
+   for it to be referenced in the configuration of the experiment. New datasets must be included in the `dataset` folder
+   in a subdirectory named after their IDs (e.g. Alzheimer >> `dataset/alzheimer/...`). Note that case sensitivity
+   matters;
 2. **Structuring the dataset**. The dataset must be structured as described in *§ Dataset* in this document;
-3. **Defining the grouper**. Each dataset must be coupled with a specific class defining its data grouping policy within the splits for the CV (e.g. group patients by sub-tasks or by cyclic split). This class must be defined at `classes/data/groupers` and must subclass `DataGrouper`. After defining the new grouper class, make sure to update the factory for the groupers at `classes/factories`.
+3. **Defining the grouper**. Each dataset must be coupled with a specific class defining its data grouping policy within
+   the splits for the CV (e.g. group patients by sub-tasks or by cyclic split). This class must be defined
+   at `classes/data/groupers` and must subclass `DataGrouper`. After defining the new grouper class, make sure to update
+   the factory for the groupers at `classes/factories`.
 
-Note that if manually augmented data is used, the corresponding files must be indexed according to and increasing integer value greater than zero.  If for example a sequence stored in a file named L1-5.csv is split in 4 different subsequences, the 4 corresponding files must be named as L1-5-1.csv, L1-5-2.csv, L1-5-3.csv, L1-5-4.csv (the “-” character dividing the item ID and the augmentation index matters).
+Note that if manually augmented data is used, the corresponding files must be indexed according to and increasing
+integer value greater than zero. If for example a sequence stored in a file named L1-5.csv is split in 4 different
+subsequences, the 4 corresponding files must be named as L1-5-1.csv, L1-5-2.csv, L1-5-3.csv, L1-5-4.csv (the “-”
+character dividing the item ID and the augmentation index matters).
 
 ### Adding a Modality
 
-Each new modality is associated to a unique ID (e.g. sequences >> `sequences`) to allow for it to be referenced in the configuration of the experiment. New modalities must be included in the `dataset/specific_dataset/modalities` folder and may include specific data sources and representations. The procedure to add a new modality is the following:
+Each new modality is associated to a unique ID (e.g. sequences >> `sequences`) to allow for it to be referenced in the
+configuration of the experiment. New modalities must be included in the `dataset/specific_dataset/modalities` folder and
+may include specific data sources and representations. The procedure to add a new modality is the following:
 
-1. Move the data for the new modality at `dataset/specific_dataset/modalities/data_source[optional]/new_modality/representation[optional]` making sure the folder is structured as described at *§ Dataset* of this document;
-2. Write a new data loader at `classes/data/loaders` defining how the data items belonging to the new modality must be loaded (note that the new class must subclass `data.Loader` ;
-3. Update the `factories.LoaderFactory` inserting a new key value pair in the corresponding map binding the ID of the modality to its loader;
-4. Write a new file at `parameters/modalities` named as the ID of the modality including the modality-specific parameters.
+1. Move the data for the new modality
+   at `dataset/specific_dataset/modalities/data_source[optional]/new_modality/representation[optional]` making sure the
+   folder is structured as described at *§ Dataset* of this document;
+2. Write a new data loader at `classes/data/loaders` defining how the data items belonging to the new modality must be
+   loaded (note that the new class must subclass `data.Loader` ;
+3. Update the `factories.LoaderFactory` inserting a new key value pair in the corresponding map binding the ID of the
+   modality to its loader;
+4. Write a new file at `parameters/modalities` named as the ID of the modality including the modality-specific
+   parameters.
 
 ### Adding a New Module
 
-Each module is associated to an ID that allows for it to be referenced in the configuration of the experiment (e.g. Hierarchical Attention Network >> `han`). To add a new network, a new module must be defined. Modules are stored at `classes/modules` and include two classes:
+Each module is associated to an ID that allows for it to be referenced in the configuration of the experiment (e.g.
+Hierarchical Attention Network >> `han`). To add a new network, a new module must be defined. Modules are stored
+at `classes/modules` and include two classes:
 
 1. The network class defining the NN architecture and its forward phase (i.e. a subclass of `nn.Module`);
-2. The model class defining how the network is instantiated an how the inputs are fed to it. This must subclass `classes.core.Model`.
+2. The model class defining how the network is instantiated an how the inputs are fed to it. This must
+   subclass `classes.core.Model`.
 
 Note that the constructor of the network classes must have the following signature:
 
 ```python
-def __init__(network_params: dict, activation: bool)
-	"""
-	@param network_params: dictionary contatining both the parameters listed in the configuration file of the module and the parameters listed in the configuration file of the corresponding modality
-    	@param activation: whether or not the architecture will feature classification layers (set to None for implementing some features fusion policies in multimodal networks)
-	"""
+def __init__(network_params: Dict, activation: bool)
+    """
+    @param network_params: dictionary contatining both the parameters listed in the configuration file of the module and the parameters listed in the configuration file of the corresponding modality
+        @param activation: whether or not the architecture will feature classification layers (set to None for implementing some features fusion policies in multimodal networks)
+    """
 ```
 
-After writing the new module, the following factories must be updated inserting a new key value pair in the corresponding map:
+After writing the new module, the following factories must be updated inserting a new key value pair in the
+corresponding map:
 
 * `factories.ModelFactory`, binding the ID of the new module to the corresponding model;
 * `factories.NetworkFactory`, binding the ID of the new module to the corresponding network.
 
-Next, the new module must be bounded to a modality (or to multiple modalities in case of multimodal networks). This can be done updating the corresponding map at `binders.ModalityBinder`.
+Next, the new module must be bounded to a modality (or to multiple modalities in case of multimodal networks). This can
+be done updating the corresponding map at `binders.ModalityBinder`.
 
 Finally, the module can be configured either:
 
-* Using a preexisting  JSON file at `params/networks` binding the two together at `binders.ParamsBinder` , or
+* Using a preexisting JSON file at `params/networks` binding the two together at `binders.ParamsBinder` , or
 * Writing a fresh JSON configuration file for the new module
 
-Note that the binding between the configuration file and the module is optional. If no binding exists, the `binders.ParamsBinder` will search for a configuration file named after the ID of the new module. 
+Note that the binding between the configuration file and the module is optional. If no binding exists,
+the `binders.ParamsBinder` will search for a configuration file named after the ID of the new module.
 
 ### Adding a Criterion
 
-In order to add a new criterion, `factories.CriterionFactory` must be updated inserting a new key value pair in the corresponding map. This binds the ID of the new criterion to its in-place definition.
+In order to add a new criterion, `factories.CriterionFactory` must be updated inserting a new key value pair in the
+corresponding map. This binds the ID of the new criterion to its in-place definition.
 
 ### Adding an Optimiser
 
-In order to add a new optimiser, `factories.OptimizerFactory` must be updated inserting a new key value pair in the corresponding map. This binds the ID of the new optimiser to its in-place definition.
+In order to add a new optimiser, `factories.OptimizerFactory` must be updated inserting a new key value pair in the
+corresponding map. This binds the ID of the new optimiser to its in-place definition.

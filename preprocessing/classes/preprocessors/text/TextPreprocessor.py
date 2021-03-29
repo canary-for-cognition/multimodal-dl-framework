@@ -1,6 +1,7 @@
 import os
 import re
 import string
+from typing import Dict, List
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -17,13 +18,12 @@ class TextPreprocessor(Preprocessor):
         super().__init__("text")
         self.__labels = self._paths.get_labels()
 
-        self.__paths_to_text = self._paths.get_paths_to_modality(self._params["paths"]["source"])
+        self.__paths_to_text = self._paths.create_paths(self._params["path_to_src"])
 
-        base_path_to_text = self._paths.get_paths_to_modality(self._params["paths"]["source"], return_base_path=True)
-        self.__path_to_csv = os.path.join(base_path_to_text, "text.csv")
+        self.__path_to_csv = os.path.join("assets", "cookie_theft_text.csv")
 
-        # To download the tokenizer run the command: "python -m spacy download en"
-        self.__tokenizer = spacy.load('en').tokenizer
+        # To download the tokenizer run the command: "python -m spacy download en_core_web_sm"
+        self.__tokenizer = spacy.load('en_core_web_sm').tokenizer
         self.__stemmer = SnowballStemmer(language='english').stem
 
     def __tokenize(self, text: str):
@@ -32,17 +32,17 @@ class TextPreprocessor(Preprocessor):
         text_without_punctuation = regex.sub(" ", text.lower())
         return [token.text for token in self.__tokenizer(text_without_punctuation) if token.text.strip()]
 
-    def __stem(self, tokens: list) -> list:
+    def __stem(self, tokens: List) -> List:
         return [self.__stemmer(token) for token in tokens]
 
     @staticmethod
-    def __update_max_statistics(sentences: list, max_words: int, max_sentences: int) -> tuple:
+    def __update_max_statistics(sentences: List, max_words: int, max_sentences: int) -> Tuple:
         max_file_words, max_file_sentences = len(max(sentences, key=len)), len(sentences)
         max_words = max_file_words if max_file_words > max_words else max_words
         max_sentences = max_file_sentences if max_file_sentences > max_sentences else max_sentences
         return max_words, max_sentences
 
-    def __extract_vocabulary(self) -> tuple:
+    def __extract_vocabulary(self) -> Tuple:
         positive_vocabulary = self.__analyze_vocabulary(self.__paths_to_text["pos"])
         negative_vocabulary = self.__analyze_vocabulary(self.__paths_to_text["neg"])
         vocabulary = positive_vocabulary["vocabulary"].union(negative_vocabulary["vocabulary"])
@@ -61,7 +61,7 @@ class TextPreprocessor(Preprocessor):
 
         return vocabulary, max_words, max_sentences, avg_words
 
-    def __get_file_tokens(self, path_to_data: str) -> list:
+    def __get_file_tokens(self, path_to_data: str) -> List:
         file_tokens = []
         for line in open(os.path.join(path_to_data)):
             tokens = self.__tokenize(line)
@@ -69,7 +69,7 @@ class TextPreprocessor(Preprocessor):
                 file_tokens += [self.__stem(tokens)]
         return file_tokens
 
-    def __analyze_vocabulary(self, path_to_data: str) -> dict:
+    def __analyze_vocabulary(self, path_to_data: str) -> Dict:
         vocabulary, max_words, max_sentences, num_words = [], 0, 0, []
         text_files = os.listdir(path_to_data)
         for filename in tqdm(text_files, desc="Extracting vocabulary from files at {}".format(path_to_data)):
@@ -87,13 +87,13 @@ class TextPreprocessor(Preprocessor):
         }
 
     @staticmethod
-    def __merge_data(pos_data: dict, neg_data: dict):
+    def __merge_data(pos_data: Dict, neg_data: Dict):
         for k in pos_data.keys():
             pos_data[k] += neg_data[k]
         return pos_data
 
     @staticmethod
-    def __pad_tokens(sentences: list, max_words: int, max_sentences: int) -> list:
+    def __pad_tokens(sentences: List, max_words: int, max_sentences: int) -> List:
         for i, sentence in enumerate(sentences):
             if len(sentence) < max_words:
                 sentences[i] += [0] * (max_words - len(sentence))
@@ -101,7 +101,7 @@ class TextPreprocessor(Preprocessor):
             sentences += [[0] * max_words] * (max_sentences - len(sentences))
         return sentences
 
-    def __get_sentences_tokens(self, word2index: dict, path_to_data: str) -> list:
+    def __get_sentences_tokens(self, word2index: Dict, path_to_data: str) -> List:
         sentences_tokens = []
         for line in open(os.path.join(path_to_data)):
             tokens = self.__tokenize(line)
@@ -110,11 +110,11 @@ class TextPreprocessor(Preprocessor):
         return sentences_tokens
 
     def __process_data(self,
-                       word2index: dict,
+                       word2index: Dict,
                        path_to_text: str,
                        label: str,
                        max_words: int,
-                       max_sentences: int) -> dict:
+                       max_sentences: int) -> Dict:
 
         parsed_data = {"ids": [], "sentences": [], "tokens": [], "labels": []}
 
@@ -127,7 +127,7 @@ class TextPreprocessor(Preprocessor):
 
         return parsed_data
 
-    def __get_processed_data(self, vocabulary: list, max_words: int, max_sentences: int) -> dict:
+    def __get_processed_data(self, vocabulary: List, max_words: int, max_sentences: int) -> Dict:
         word2index = {word: i + 1 for i, word in enumerate(vocabulary)}
 
         pos_data = self.__process_data(word2index,

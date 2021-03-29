@@ -1,19 +1,18 @@
 import os
 import time
+from typing import Union, Dict, List
 
 import numpy as np
-from typing import Union
 
 from classifier.classes.core.Evaluator import Evaluator
 from classifier.classes.core.Trainer import Trainer
 from classifier.classes.data.DataManager import DataManager
 from classifier.classes.utils.Params import Params
-from classifier.classes.utils.Plotter import Plotter
 
 
 class CrossValidator:
 
-    def __init__(self, data_manager: DataManager, path_to_results: str, train_params: dict):
+    def __init__(self, data_manager: DataManager, path_to_results: str, train_params: Dict):
         """
         :param data_manager: an instance of DataManager to load the folds from the filesystem
         :param path_to_results: the path to the directory with the results for the current experiment
@@ -26,7 +25,7 @@ class CrossValidator:
         self.__paths_to_results = {}
 
     @staticmethod
-    def __merge_metrics(metrics: list, set_type: str) -> dict:
+    def __merge_metrics(metrics: List, set_type: str) -> Dict:
         """
         Averages the metrics by set type (in ["train", "val", "test"])
         :param metrics: the metrics of each processed fold
@@ -35,7 +34,7 @@ class CrossValidator:
         """
         return {k: np.ndarray([m[set_type][k] for m in metrics]).mean() for k in metrics[0][set_type].keys()}
 
-    def __avg_metrics(self, cv_metrics: list, save: bool = False, inplace: bool = False) -> Union[dict, None]:
+    def __avg_metrics(self, cv_metrics: List, save: bool = False, inplace: bool = False) -> Union[Dict, None]:
         """
         Computes the average metrics for the current CV iteration
         :param cv_metrics: the list of metrics for each processed fold of the CV iteration
@@ -80,7 +79,7 @@ class CrossValidator:
         self.__create_paths_to_results(seed)
 
         cv_metrics, folds_times = [], []
-        plotter = Plotter(self.__paths_to_results["plots"])
+        # plotter = Plotter(self.__paths_to_results["plots"])
         zero_time = time.time()
 
         k = self.__data_manager.get_k()

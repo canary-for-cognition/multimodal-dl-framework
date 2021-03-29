@@ -1,6 +1,7 @@
 import os
 import pprint
 import random
+from typing import Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
@@ -15,7 +16,7 @@ from classifier.classes.factories.LoaderFactory import LoaderFactory
 
 class DataManager:
 
-    def __init__(self, data_params: dict, network_type: str):
+    def __init__(self, data_params: Dict, network_type: str):
         self.__path_to_main_modality = data_params["dataset"]["paths"]["main_modality"]
         self.__grouper = GroupingPolicyFactory().get(data_params["dataset"]["name"])
         self.__down_sample_rate = data_params["cv"]["down_sample_rate"]
@@ -31,7 +32,7 @@ class DataManager:
     def get_group(self, filename: str) -> str:
         return self.__grouper.group(filename)
 
-    def __read_data(self) -> dict:
+    def __read_data(self) -> Dict:
         data = {}
         for class_dir in os.listdir(self.__path_to_main_modality):
             label = class_dir.split('_')[0]
@@ -101,7 +102,7 @@ class DataManager:
             print('\n')
         print("\n..............................................\n")
 
-    def __down_sample(self, inputs: list, targets: list) -> tuple:
+    def __down_sample(self, inputs: List, targets: List) -> Tuple:
         data = {0: [], 1: []}
         for (x, y) in zip(inputs, targets):
             data[y] += [(x, y)]
@@ -116,13 +117,14 @@ class DataManager:
 
         return inputs, targets
 
-    def load_split(self, fold: int) -> dict:
+    def load_split(self, fold: int) -> Dict:
         """ Loads the data based on the fold paths """
 
         fold_paths = self.__split_data[fold]
 
         x_train_paths, y_train = fold_paths['train']
-        x_train_paths, y_train = self.__down_sample(x_train_paths, y_train)
+        if self.__down_sample_rate != -1:
+            x_train_paths, y_train = self.__down_sample(x_train_paths, y_train)
 
         x_val_paths, y_valid = fold_paths['val']
         x_test_paths, y_test = fold_paths['test']

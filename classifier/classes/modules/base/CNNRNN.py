@@ -1,3 +1,5 @@
+from typing import Dict, Tuple
+
 import torch
 from torch import nn
 
@@ -6,7 +8,7 @@ from classifier.classes.modules.sequences.rnn.RNN import RNN
 
 class CNNRNN(nn.Module):
 
-    def __init__(self, network_params: dict, activate: bool = True):
+    def __init__(self, network_params: Dict, activate: bool = True):
         super().__init__()
 
         rnn_params = network_params["rnn"]
@@ -34,7 +36,7 @@ class CNNRNN(nn.Module):
         x = self.rnn(x.unsqueeze(1))
         return self.classifier(x) if self.__activate else x
 
-    def init_state(self, batch_size: int) -> tuple:
+    def init_state(self, batch_size: int) -> Tuple:
         return self.rnn.init_state(batch_size)
 
     def get_hidden_size(self) -> int:

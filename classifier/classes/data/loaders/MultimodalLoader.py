@@ -1,3 +1,5 @@
+from typing import Dict
+
 from classifier.classes.data.loaders.ImageLoader import ImageLoader
 from classifier.classes.data.loaders.SequenceLoader import SequenceLoader
 from classifier.classes.data.loaders.TextLoader import TextLoader
@@ -12,7 +14,7 @@ class MultimodalLoader:
 
     loaders_map = {"images": ImageLoader, "sequences": SequenceLoader, "text": TextLoader}
 
-    def load(self, path_to_input: str) -> dict:
+    def load(self, path_to_input: str) -> Dict:
         """
         Processes the data items related to the modalities handled by the selected multimodal network
         Example: if VisTextNet is selected, returns images and text

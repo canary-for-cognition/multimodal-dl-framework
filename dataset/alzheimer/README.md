@@ -1,14 +1,32 @@
 # Dataset
 
-This dataset is structured according to the requirements of the project “Neural Networks for binary classification on multiple data modalities”.
+This dataset is based on a study involving a base group of 189 participants, for whom data was recorded in terms of
+eye-tracking and audio. All the information related to the experiment is stored at `metadata_participants_log.csv`,
+which also provide the ground truth for each participant (i.e., whether it is considered a `Patient` or
+a `Healthy Control`).
 
-## Modalities
+## Tasks
+
+Data for Alzheimer’s prediction was collected based on the following tasks that patients performed during the
+experiments.
+
+| Name              | Description                                                  | ID in dataset       | ID in metadata |
+| ----------------- | ------------------------------------------------------------ | ------------------- | -------------- |
+| Cookie Theft      | Describing a picture (involving some kids stealing a cookie from a jar) while looking at it | `cookie_theft`      | `CookieTheft`  |
+| Reading           | Reading aloud a text                                         | `reading`           | `Reading`      |
+| Memory            |                                                              |                     | `Memory`               |
+| Pupil calibration | Staring at a cross place at the centre of the screen to calibrate the eye-tracker | `pupil_calibration` | `PupilCalib`   |
+
+## Data
 
 ### Eye-tracking
 
+Data recorded using the eye-tracker is provided by participant, not by task. For each participant, data related to a
+specific task can be identified using the timestamps provided in `metadata/timestamps.csv`.
+
 #### Sequences
 
-###### Features
+###### Selected features
 
 | Index | Feature                  | Type          |
 | ----- | ------------------------ | ------------- |
@@ -34,3 +52,7 @@ This dataset is structured according to the requirements of the project “Neura
 | 19    | ValidityRight            | Validity \*   |
 
 \* *(0 means that the eye was confidently tracked, 4 means that the eye was lost)*
+
+### Images
+
+The following image representations were generated based on eye-tracking data.

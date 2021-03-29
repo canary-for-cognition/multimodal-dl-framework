@@ -31,8 +31,8 @@ class HeatmapsGenerator(Generator):
             self.__height = self._params["proportions"]["height"]
 
         self.__dataset_type = self._paths.get_dataset_type()
-        self.__paths_to_sequences = self._paths.get_paths_to_modality(self._params["paths"]["source"])
-        self.__paths_to_heatmaps = self._paths.get_paths_to_modality(self._params["paths"]["destination"])
+        self.__paths_to_sequences = self._paths.create_paths(self._params["path_to_src"])
+        self.__paths_to_heatmaps = self._paths.create_paths(self._params["path_to_dest"])
 
     @staticmethod
     def __data_coord2view_coord(p, resolution, p_min, p_max) -> float:
@@ -146,7 +146,7 @@ class HeatmapsGenerator(Generator):
         plt.clf()
 
     @staticmethod
-    def __fetch_confusion_coords(item: np.ndarray, file_name: str) -> tuple:
+    def __fetch_confusion_coords(item: np.ndarray, file_name: str) -> Tuple:
         # Column 0 is now avg Gx
         item[:, 0] = (item[:, 0] + item[:, 7]) / 2
 
@@ -171,7 +171,7 @@ class HeatmapsGenerator(Generator):
 
         return item[:, 0], item[:, 1]
 
-    def __fetch_alzheimer_coords(self, item: np.ndarray) -> tuple:
+    def __fetch_alzheimer_coords(self, item: np.ndarray) -> Tuple:
         if self.__filter_out_non_fixations:
             item = item[item[:, 18] == "Fixation"]
             # Fixations x, y coordinates

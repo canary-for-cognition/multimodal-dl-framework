@@ -1,16 +1,16 @@
 {
   "device": "cuda:3",
-  "dataset_name": "confusion",
+  "dataset_name": "alzheimer",
   "num_seeds": 1,
   "train": {
-    "network_type": "rnn",
+    "network_type": "images_cnn",
     "epochs": 100,
     "optimizer": "Adam",
     "criterion": "CrossEntropyLoss",
     "batch_size": 256,
     "learning_rate": 3e-5,
     "log_every": 1,
-    "evaluate_every": 1,
+    "evaluate_every": 5,
     "early_stopping": {
       "patience": 50,
       "metrics": "auc",
@@ -19,7 +19,7 @@
   },
   "cv": {
     "k": 10,
-    "down_sample_rate": 3,
+    "down_sample_rate": -1,
     "use_cv_metadata": false
   }
 }

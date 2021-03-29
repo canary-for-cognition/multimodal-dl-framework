@@ -53,4 +53,4 @@ class SequenceLoader(Loader):
         if len(sequence) < self.__max_sequence_length:
             sequence = self.__pad_sequences(sequence)
 
-        return torch.from_numpy(sequence)
+        return torch.from_numpy(sequence.astype(np.float32))

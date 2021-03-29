@@ -1,5 +1,6 @@
 import json
 import os
+from typing import Tuple, Dict
 
 import pandas as pd
 
@@ -10,7 +11,7 @@ from classifier.classes.binders.ParamsBinder import ParamsBinder
 class Params:
 
     @staticmethod
-    def load() -> tuple:
+    def load() -> Tuple:
         experiment_params = Params.load_experiment_params()
         train_params = experiment_params["train"]
         data_params = {
@@ -23,28 +24,28 @@ class Params:
         return train_params, data_params, num_seeds, device_type
 
     @staticmethod
-    def load_experiment_params() -> dict:
+    def load_experiment_params() -> Dict:
         """
         Loads the parameters stored in the params/experiment.json file
-        :return: the loaded experiment parameters in a dict
+        :return: the loaded experiment parameters in a Dict
         """
         return json.load(open(os.path.join("params", "experiment.json"), "r"))
 
     @staticmethod
-    def load_modality_params(modality: str) -> dict:
+    def load_modality_params(modality: str) -> Dict:
         """
         Loads the parameters stored in the params/modalities/modality.json file
         :param modality: the modality params to be loaded
-        :return: the loaded cross val parameters in a dict
+        :return: the loaded cross val parameters in a Dict
         """
         return json.load(open(os.path.join("params", "modalities", modality + ".json"), "r"))
 
     @staticmethod
-    def __load_submodules_params(submodules_map: dict) -> dict:
+    def __load_submodules_params(submodules_map: Dict) -> Dict:
         """
         Loads the submodules parameters for a multimodal network
-        :param submodules_map: the dict containing the modalities and corresponding submodules to be loaded
-        :return: the loaded modality-submodule params in a dict
+        :param submodules_map: the Dict containing the modalities and corresponding submodules to be loaded
+        :return: the loaded modality-submodule params in a Dict
         """
         submodules_params = {}
         for modality, network_type in submodules_map.items():
@@ -56,11 +57,11 @@ class Params:
         return submodules_params
 
     @staticmethod
-    def load_network_params(network_type: str) -> dict:
+    def load_network_params(network_type: str) -> Dict:
         """
         Loads and preprocesses the parameters stored in the params/modules/network_type.json file
         :param network_type: the type of network to be loaded
-        :return: the loaded network parameters in a dict
+        :return: the loaded network parameters in a Dict
         """
         network_params = json.load(open(os.path.join("params", "networks", ParamsBinder().get(network_type)), "r"))
 
@@ -74,26 +75,26 @@ class Params:
         return network_params
 
     @staticmethod
-    def load_dataset_params(dataset_name: str) -> dict:
+    def load_dataset_params(dataset_name: str) -> Dict:
         """
         Loads the parameters stored in the params/modules/dataset_name.json file merging the paths
         :param dataset_name: the type of data to be loaded
-        :return: the loaded data parameters in a dict
+        :return: the loaded data parameters in a Dict
         """
         params = json.load(open(os.path.join("params", "dataset", dataset_name + ".json"), "r"))
         params["name"] = dataset_name
 
-        dataset_dir = params["paths"]["dataset_dir"]
+        dataset_dir, modalities_dir = params["paths"]["dataset_dir"], params["paths"]["modalities_dir"]
         params["paths"]["dataset_metadata"] = os.path.join(dataset_dir, params["paths"]["dataset_metadata"])
         params["paths"]["cv_metadata"] = os.path.join(dataset_dir, params["paths"]["cv_metadata"])
-        params["paths"]["main_modality"] = os.path.join(dataset_dir, "modalities", params["paths"]["main_modality"])
+        params["paths"]["main_modality"] = os.path.join(dataset_dir, modalities_dir, params["paths"]["main_modality"])
         for modality, path_to_modality in params["paths"]["modalities"].items():
-            params["paths"][modality] = os.path.join(params["paths"]["dataset_dir"], "modalities", path_to_modality)
+            params["paths"][modality] = os.path.join(params["paths"]["dataset_dir"], modalities_dir, path_to_modality)
 
         return params
 
     @staticmethod
-    def save(data: dict, path_to_destination):
+    def save(data: Dict, path_to_destination):
         """
         Saves the given data into a JSON file at the given destination
         :param data: the data to be saved
@@ -114,7 +115,7 @@ class Params:
         Params.save(Params.load_network_params(network_type), os.path.join(path_to_results, "network_params.json"))
 
     @staticmethod
-    def save_experiment_preds(fold_evaluation: dict, path_to_preds: str, fold_number: int):
+    def save_experiment_preds(fold_evaluation: Dict, path_to_preds: str, fold_number: int):
         """
         Saves the experiments preds in CSV format at the given path
         :param fold_evaluation: the evaluation data for the given fold, including ground truth and preds

@@ -1,19 +1,5 @@
 {
   "sample_rate": 16000,
-  "paths": {
-    "source": {
-      "data_folder": "dataset",
-      "modality": "sequences",
-      "data_source": "audio",
-      "representation": "",
-      "data_dimension": "raw"
-    },
-    "destination": {
-      "data_folder": "preprocessed",
-      "modality": "sequences",
-      "data_source": "audio",
-      "representation": "",
-      "data_dimension": "base"
-    }
-  }
+  "path_to_src": "",
+  "path_to_dest": ""
 }

@@ -12,20 +12,6 @@
     "width": 1280,
     "height": 1024
   },
-  "paths": {
-    "source": {
-      "data_folder": "dataset",
-      "modality": "sequences",
-      "data_source": "eye_tracking",
-      "representation": "random_sampled_gaze_fixations_400",
-      "data_dimension": "augmented"
-    },
-    "destination": {
-      "data_folder": "preprocessed",
-      "modality": "images",
-      "data_source": "eye_tracking",
-      "representation": "heatmaps_random_sampled_gaze_fixations_400",
-      "data_dimension": "augmented"
-    }
-  }
+  "path_to_src": "",
+  "path_to_dest": ""
 }

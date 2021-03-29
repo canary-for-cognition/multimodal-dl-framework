@@ -1,3 +1,5 @@
+from typing import Dict
+
 import numpy as np
 import torch
 import torch.utils.data
@@ -14,7 +16,7 @@ class Evaluator:
         """
         self.__device = device
 
-    def evaluate(self, data: dict, model: Model, path_to_model: str = "") -> dict:
+    def evaluate(self, data: Dict, model: Model, path_to_model: str = "") -> Dict:
         """
         Evaluates the saved best model against train, val and test data
         :param data: a dictionary tuple containing the data loaders for train, val and test
@@ -71,13 +73,13 @@ class Evaluator:
         return accuracy.item()
 
     @staticmethod
-    def __compute_metrics(y_true: np.ndarray, y_pred: np.ndarray, y_1_scores: np.ndarray) -> dict:
+    def __compute_metrics(y_true: np.ndarray, y_pred: np.ndarray, y_1_scores: np.ndarray) -> Dict:
         """
         Computes the metrics for the given preds and labels
         :param y_true: the ground-truth labels
         :param y_pred: the preds of the model
         :param y_1_scores: the probabilities for the pos class
-        :return: the following metrics in a dict: Sensitivity (TP rate) / Specificity (FP rate) / Combined  F1 / AUC
+        :return: the following metrics in a Dict: Sensitivity (TP rate) / Specificity (FP rate) / Combined  F1 / AUC
         """
         sensitivity = recall_score(y_true, y_pred, pos_label=1)
         specificity = recall_score(y_true, y_pred, pos_label=0)

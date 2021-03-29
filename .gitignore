@@ -134,11 +134,5 @@ dmypy.json
 .idea/modules.xml
 .idea/multimodal-nn-framework.iml
 .idea/vcs.xml
-classifier/experiments/
-/classifier/params/
-/dataset/alzheimer/split/
-/dataset/confusion/split/
-/docs/data_exploration/
-/scripts/utility/
+/classifier/experiments/
 /classifier/results/
-/dataset/

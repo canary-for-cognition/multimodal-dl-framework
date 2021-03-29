@@ -1,4 +1,5 @@
 import os
+from typing import Dict, List
 
 import matplotlib
 
@@ -25,10 +26,10 @@ class Plotter:
         self.fold = fold
 
     @staticmethod
-    def __fetch_metrics(metrics: dict, metric_type: str, data_type: str):
+    def __fetch_metrics(metrics: Dict, metric_type: str, data_type: str):
         return [epoch_metrics[metric_type] for epoch_metrics in metrics[data_type]]
 
-    def plot_metrics(self, metrics: dict, fold: int):
+    def plot_metrics(self, metrics: Dict, fold: int):
         self.__set_fold(fold)
         self.__set_range(len(metrics["train"]))
 
@@ -52,7 +53,7 @@ class Plotter:
 
         self.plot_sensitivity_vs_specificity(sensitivity, specificity)
 
-    def plot_sensitivity_vs_specificity(self, sensitivity: dict, specificity: dict):
+    def plot_sensitivity_vs_specificity(self, sensitivity: Dict, specificity: Dict):
         fig, ax = plt.subplots()
 
         ax.plot(self.range, sensitivity["train"], self.color_1, label="train sensitivity")
@@ -70,7 +71,7 @@ class Plotter:
         fig.savefig(os.path.join(self.plots_folder, "fold_" + str(self.fold) + "_sensibility_specificity.png"))
         plt.close(fig)
 
-    def plot_metric(self, train: list, val: list, test: list, metric: str):
+    def plot_metric(self, train: List, val: List, test: List, metric: str):
         fig, ax = plt.subplots()
 
         ax.plot(self.range, train, self.color_1, label="train")

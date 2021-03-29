@@ -1,3 +1,5 @@
+from typing import Dict
+
 from classifier.classes.core.Model import Model
 from classifier.classes.modules.images.images_cnn.ModelImagesCNN import ModelImagesCNN
 from classifier.classes.modules.images.images_cnn_rnn.ModelImagesCNNRNN import ModelImagesCNNRNN
@@ -23,7 +25,7 @@ class ModelFactory:
         "transformer": ModelTransformer,
     }
 
-    def get(self, model_type: str, model_params: dict) -> Model:
+    def get(self, model_type: str, model_params: Dict) -> Model:
         if model_type not in self.models_map.keys():
             raise ValueError("Model {} is not implemented!".format(model_type))
         return self.models_map[model_type](model_params)

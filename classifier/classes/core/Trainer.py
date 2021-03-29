@@ -1,3 +1,5 @@
+from typing import Dict, Tuple
+
 from classifier.classes.core.Evaluator import Evaluator
 from classifier.classes.factories.ModelFactory import ModelFactory
 from classifier.classes.utils.Params import Params
@@ -5,7 +7,7 @@ from classifier.classes.utils.Params import Params
 
 class Trainer:
 
-    def __init__(self, train_params: dict, path_to_best_model: str):
+    def __init__(self, train_params: Dict, path_to_best_model: str):
         """
         :param train_params: the train related params in the experiment.json file
         :param path_to_best_model: the path at which the best model is saved during train
@@ -37,7 +39,7 @@ class Trainer:
 
         self.__evaluator = Evaluator(self.__device)
 
-    def train(self, data: dict) -> tuple:
+    def train(self, data: Dict) -> Tuple:
         """
         Trains the model according to the established parameters and the given data
         :param data: a dictionary of data loaders containing train, val and test data

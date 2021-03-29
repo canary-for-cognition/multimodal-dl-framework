@@ -1,5 +1,5 @@
 import os
-from typing import Union
+from typing import Union, Tuple
 
 import numpy as np
 import pandas as pd
@@ -27,7 +27,7 @@ class TextLoader(Loader):
         tokenizers = {"bert": BertTokenizer, "roberta": RobertaTokenizer}
         return tokenizers[self._network_type].from_pretrained(self.__pretrained_model)
 
-    def __load_bert_encoding(self, path_to_input: str) -> tuple:
+    def __load_bert_encoding(self, path_to_input: str) -> Tuple:
         """
         Preprocesses the text converting it into a BERT-friendly format
         :param path_to_input: the path to the data item to be loaded (related to the main modality)

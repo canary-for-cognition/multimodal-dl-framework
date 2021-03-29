@@ -1,3 +1,5 @@
+from typing import Dict, Tuple
+
 import torch
 import torch.nn as nn
 
@@ -7,7 +9,7 @@ from classifier.classes.modules.base.MultimodalNN import MultimodalNN
 
 class VisTempNet(MultimodalNN):
 
-    def __init__(self, network_params: dict, activation: bool = True):
+    def __init__(self, network_params: Dict, activation: bool = True):
         super().__init__(network_params["fusion_policy"], activation)
 
         images_params = network_params["submodules"]["images"]
@@ -55,7 +57,7 @@ class VisTempNet(MultimodalNN):
         if self.__stateful_image_model:
             self.images_network.set_state(img_state)
 
-    def init_state(self, batch_size: int) -> tuple:
+    def init_state(self, batch_size: int) -> Tuple:
         seq_state = self.sequences_network.init_state(batch_size)
         img_state = self.images_network.init_state(batch_size) if self.__stateful_image_model else None
         return seq_state, img_state

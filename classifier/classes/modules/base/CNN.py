@@ -1,3 +1,5 @@
+from typing import Dict, Tuple, Callable
+
 import numpy as np
 import torch
 from torch import nn
@@ -5,7 +7,7 @@ from torch import nn
 
 class CNN(nn.Module):
 
-    def __init__(self, network_params: dict, activation: bool = True):
+    def __init__(self, network_params: Dict, activation: bool = True):
         super().__init__()
 
         input_size = network_params["input_size"]
@@ -31,7 +33,7 @@ class CNN(nn.Module):
             self.classifier = self.__generate_classifier(classifier_params, output_size)
 
     @staticmethod
-    def __generate_classifier(params: dict, output_size: int) -> nn.Sequential:
+    def __generate_classifier(params: Dict, output_size: int) -> nn.Sequential:
         """
         Generates the layers for the classifier as specified in the configuration of the network
         :return: the generated layers as a sequential model
@@ -50,7 +52,7 @@ class CNN(nn.Module):
         return nn.Sequential(*linear_layers)
 
     @staticmethod
-    def __compute_layer_out_dim(input_dim: int, layer_params: dict) -> int:
+    def __compute_layer_out_dim(input_dim: int, layer_params: Dict) -> int:
         """
         Computes the output size of a layer of the CNN (convolutional or pooling) as: [(W − K + 2P) / S] + 1
         Where:
@@ -83,7 +85,7 @@ class CNN(nn.Module):
             output_dim = self.__compute_layer_out_dim(output_dim, self.__conv_block_params["pool"])
         return int(output_dim)
 
-    def _compute_linear_size(self, input_size: tuple, output_size: int) -> int:
+    def _compute_linear_size(self, input_size: Tuple, output_size: int) -> int:
         """
         Computes the input size for the fully connected layer
         :param input_size: the size of the input (W x H in case of images). If an element of the tuple is equal to -1,
@@ -95,7 +97,7 @@ class CNN(nn.Module):
         return output_dim * output_size
 
     @staticmethod
-    def __select_max_pool_type(max_pool_type: str) -> callable:
+    def __select_max_pool_type(max_pool_type: str) -> Callable:
         """
         Fetches the callable max pooling layer from a map of supported layers type (e.g. "MaxPool1d", etc...)
         :param max_pool_type: the desired type of max pooling layer (e.g. max_pool_type = 1d -> nn.MaxPool1d)
@@ -113,7 +115,7 @@ class CNN(nn.Module):
         return max_pool_types_map[max_pool_type]
 
     @staticmethod
-    def __select_conv_type(conv_type: str) -> callable:
+    def __select_conv_type(conv_type: str) -> Callable:
         """
         Fetches the callable convolutional layer from a map of supported layers type (e.g. "Conv1d", "Conv2d", etc...)
         :param conv_type: the desired type of convolutional layer (e.g. conv_type = 1d -> nn.Conv1d)
@@ -130,7 +132,7 @@ class CNN(nn.Module):
 
         return conv_types_map[conv_type]
 
-    def _generate_conv_blocks(self) -> tuple:
+    def _generate_conv_blocks(self) -> Tuple:
         """
         Generates num_conv_block convolutional layers with num_conv convolutional layers each
         followed by a max pooling layer

@@ -1,3 +1,5 @@
+from typing import Dict
+
 from torch import nn
 
 from classifier.classes.modules.images.images_cnn.ImagesCNN import ImagesCNN
@@ -20,7 +22,7 @@ class NetworkFactory:
         "transformer": Transformer
     }
 
-    def get(self, network_type: str, module_params: dict, activation: bool = False) -> nn.Module:
+    def get(self, network_type: str, module_params: Dict, activation: bool = False) -> nn.Module:
         if network_type not in self.networks_map.keys():
             raise ValueError("Network {} is not implemented, could not fetch nn.Module!".format(network_type))
         return self.networks_map[network_type](module_params, activation)

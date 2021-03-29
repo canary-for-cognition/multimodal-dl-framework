@@ -3,5 +3,5 @@
   "file_format": "pkl",
   "num_features": 14,
   "length": 150,
-  "truncate_from": "tail"
+  "truncate_from": "head"
 }

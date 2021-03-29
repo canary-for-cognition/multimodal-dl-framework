@@ -1,18 +1,4 @@
 {
-  "paths": {
-    "source": {
-      "data_folder": "dataset",
-      "modality": "audio",
-      "data_source": "",
-      "representation": "",
-      "data_dimension": "base"
-    },
-    "destination": {
-      "data_folder": "preprocessed",
-      "modality": "images",
-      "data_source": "audio",
-      "representation": "mel_spectrograms",
-      "data_dimension": "base"
-    }
-  }
+  "path_to_src": "",
+  "path_to_dest": ""
 }

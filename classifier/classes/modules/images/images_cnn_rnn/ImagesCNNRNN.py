@@ -1,10 +1,12 @@
+from typing import Dict
+
 from classifier.classes.modules.base.CNNRNN import CNNRNN
 from classifier.classes.modules.images.images_cnn.ImagesCNN import ImagesCNN
 
 
 class ImagesCNNRNN(CNNRNN):
 
-    def __init__(self, network_params: dict, activate: bool = True):
+    def __init__(self, network_params: Dict, activate: bool = True):
         super().__init__(network_params, activate)
 
         cnn_params = network_params["cnn"]

@@ -1,3 +1,5 @@
+from typing import List
+
 import torch
 from PIL import Image
 from torchvision.transforms import transforms
@@ -12,7 +14,7 @@ class ImageLoader(Loader):
         self.__num_channels = self._modality_params["num_channels"]
         self.__img_size = (self._modality_params["size"]["width"], self._modality_params["size"]["height"])
 
-    def __get_transformations(self) -> list:
+    def __get_transformations(self) -> List:
         """
         Creates a list of transformations to be applied to the inputs
         :return: a list of transformations to be applied to the inputs

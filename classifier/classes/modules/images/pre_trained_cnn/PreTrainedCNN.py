@@ -1,3 +1,5 @@
+from typing import Dict
+
 import torch
 import torch.nn as nn
 from torchvision import models
@@ -5,7 +7,7 @@ from torchvision import models
 
 class PreTrainedCNN(nn.Module):
 
-    def __init__(self, network_params: dict, activation: bool = True):
+    def __init__(self, network_params: Dict, activation: bool = True):
         super().__init__()
 
         pre_trained_type = network_params["pretrained_model"]

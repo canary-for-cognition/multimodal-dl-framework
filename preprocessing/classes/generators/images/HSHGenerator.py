@@ -13,8 +13,8 @@ class HSHGenerator(Generator):
 
     def __init__(self):
         super().__init__("hsh")
-        self.__paths_to_sequences = self._paths.get_paths_to_modality(self._params["paths"]["source"])
-        self.__paths_to_hsh = self._paths.get_paths_to_modality(self._params["paths"]["destination"])
+        self.__paths_to_sequences = self._paths.create_paths(self._params["path_to_src"])
+        self.__paths_to_hsh = self._paths.create_paths(self._params["path_to_dest"])
 
     @staticmethod
     def __generate(path_to_src: str, path_to_destination: str):

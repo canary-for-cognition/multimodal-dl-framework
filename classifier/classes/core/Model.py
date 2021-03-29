@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Dict
 
 import torch
 
@@ -12,7 +12,7 @@ class Model:
         self._device = device
         self._network, self.__optimizer, self.__criterion = None, None, None
 
-    def predict(self, x: Union[torch.Tensor, dict], *args: any, **kwargs: any) -> Union[tuple, torch.Tensor]:
+    def predict(self, x: Union[torch.Tensor, Dict], *args: any, **kwargs: any) -> Union[tuple, torch.Tensor]:
         """
         Performs a prediction using the network and returns the output logits
         """

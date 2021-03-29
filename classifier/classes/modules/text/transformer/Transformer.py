@@ -1,4 +1,5 @@
 import os
+from typing import Dict
 
 import torch
 from torch import nn
@@ -7,7 +8,7 @@ from transformers import BertModel, RobertaModel
 
 class Transformer(nn.Module):
 
-    def __init__(self, network_params: dict, activation: bool = True):
+    def __init__(self, network_params: Dict, activation: bool = True):
         super().__init__()
 
         model_type = network_params["model_type"]

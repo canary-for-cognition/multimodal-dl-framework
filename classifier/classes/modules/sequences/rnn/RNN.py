@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Dict, Tuple
 
 import torch
 from torch import nn
@@ -6,7 +6,7 @@ from torch import nn
 
 class RNN(nn.Module):
 
-    def __init__(self, network_params: dict, activation: bool = True):
+    def __init__(self, network_params: Dict, activation: bool = True):
         super().__init__()
 
         self.__device = network_params["device"]
@@ -35,7 +35,7 @@ class RNN(nn.Module):
         s = torch.zeros(num_layers, batch_size, self.__hidden_size)
         return s.to(self.__device) if self.__rnn_type != "LSTM" else (s.to(self.__device), s.to(self.__device))
 
-    def forward(self, x: torch.Tensor, s: Union[torch.Tensor, tuple]) -> torch.Tensor:
+    def forward(self, x: torch.Tensor, s: Union[torch.Tensor, Tuple]) -> torch.Tensor:
         """
         :param x: the input sequences of shape [batch_size, sequence_length, num_features]
         :param s: the hidden state of the RNN [num_layers, batch_size, hidden_size]
