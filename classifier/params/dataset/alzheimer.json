@@ -6,7 +6,7 @@
   "paths": {
     "dataset_dir": "../dataset/alzheimer/tasks/reading",
     "dataset_metadata": "metadata",
-    "cv_metadata": "split/metadata/eye_tracking/5_1",
+    "cv_metadata": "metadata/cv_splits",
     "main_modality": "sequences/eye_tracking/augmented",
     "modalities_dir": "modalities/preprocessed",
     "modalities": {

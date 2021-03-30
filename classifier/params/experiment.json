@@ -20,6 +20,6 @@
   "cv": {
     "k": 10,
     "down_sample_rate": -1,
-    "use_cv_metadata": false
+    "use_cv_metadata": true
   }
 }

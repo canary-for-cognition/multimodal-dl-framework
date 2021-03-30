@@ -63,14 +63,6 @@ def main():
     os.makedirs(path_to_results)
     Params.save_experiment_params(path_to_results, network_type, dataset_name)
 
-    use_cv_metadata = data_params["cv"]["use_cv_metadata"]
-    path_to_metadata = data_params["dataset"]["paths"]["cv_metadata"]
-
-    data_manager = DataManager(data_params, network_type)
-    data_manager.split(path_to_metadata if use_cv_metadata else "")
-
-    cv = CrossValidator(data_manager, path_to_results, train_params)
-
     test_scores = []
     start_time = time.time()
 
@@ -78,6 +70,20 @@ def main():
         print("\n\n==========================================================\n"
               "                      Seed {} / {}                       \n"
               "==========================================================\n".format(seed + 1, num_seeds))
+
+        data_manager = DataManager(data_params, network_type)
+        use_cv_metadata = data_params["cv"]["use_cv_metadata"]
+
+        if use_cv_metadata:
+            path_to_metadata = data_params["dataset"]["paths"]["cv_metadata"]
+            data_manager.reload_split(path_to_metadata, seed + 1)
+        else:
+            data_manager.generate_split()
+            data_manager.save_split_to_file(path_to_results, seed + 1)
+
+        data_manager.print_split_info()
+
+        cv = CrossValidator(data_manager, path_to_results, train_params)
 
         set_random_seed(seed, device)
         test_scores += [cv.validate(seed + 1)]

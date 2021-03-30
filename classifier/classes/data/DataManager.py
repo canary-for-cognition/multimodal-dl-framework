@@ -44,7 +44,7 @@ class DataManager:
             data[label]['y'] = np.array([int(label)] * len(data[label]['x_paths']))
         return data
 
-    def __generate_split(self):
+    def generate_split(self):
 
         print("\n Generating new splits...")
 
@@ -72,17 +72,13 @@ class DataManager:
                 'test': (x_test_paths, y_test)
             })
 
-    def split(self, path_to_metadata: str = ""):
-        if path_to_metadata:
-            self.__reload_split()
-        else:
-            self.__generate_split()
-        self.__print_split_info()
+    def reload_split(self, path_to_metadata: str, seed: int):
+        """ Reloads the data split from saved metadata in CSV format """
+        saved_data = pd.read_csv(os.path.join(path_to_metadata, "split_{}.csv".format(seed)),
+                                 converters={"train": eval, "val": eval, "test": eval})
+        self.__split_data = saved_data.to_dict("records")
 
-    def __reload_split(self):
-        pass
-
-    def __print_split_info(self):
+    def print_split_info(self):
         """ Shows how the data has been split_data in each fold """
 
         split_info = []
@@ -143,5 +139,9 @@ class DataManager:
             'test': DataLoader(Dataset(x_test_paths, y_test, self.__loader), self.__batch_size)
         }
 
-    def save_split_to_file(self, path_to_saved_folds: str):
-        pd.DataFrame(self.__split_data).to_csv(path_to_saved_folds, index=False)
+    def save_split_to_file(self, path_to_results: str, seed: int):
+        path_to_metadata = os.path.join(path_to_results, "cv_splits")
+        path_to_file = os.path.join(path_to_metadata, "split_{}.csv".format(seed))
+        os.makedirs(path_to_metadata, exist_ok=True)
+        pd.DataFrame(self.__split_data).to_csv(path_to_file, index=False)
+        print("\n CV split metadata written at {}".format(path_to_file))
