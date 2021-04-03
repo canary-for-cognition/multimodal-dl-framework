@@ -1,5 +1,5 @@
 {
   "output_size": 2,
   "features_extraction": false,
-  "pretrained_model": "inception"
+  "pretrained_model": "squeezenet"
 }

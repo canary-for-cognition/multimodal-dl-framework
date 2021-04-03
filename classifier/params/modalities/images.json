@@ -3,7 +3,7 @@
   "file_format": "png",
   "num_channels": 3,
   "size": {
-    "width": 150,
-    "height": 150
+    "width": 224,
+    "height": 224
   }
 }

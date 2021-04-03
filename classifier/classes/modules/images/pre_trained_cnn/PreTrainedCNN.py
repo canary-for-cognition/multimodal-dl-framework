@@ -28,7 +28,7 @@ class PreTrainedCNN(nn.Module):
             "resnet": models.resnet18,
             "alexnet": models.alexnet,
             "vgg": models.vgg11_bn,
-            "squeezenet": models.squeezenet1_0,
+            "squeezenet": models.squeezenet1_1,
             "densenet": models.densenet121,
             "inception": models.inception_v3
         }

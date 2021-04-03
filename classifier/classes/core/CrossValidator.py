@@ -71,7 +71,7 @@ class CrossValidator:
         for path in self.__paths_to_results.values():
             os.makedirs(path)
 
-    def validate(self, seed: int):
+    def validate(self, seed: int) -> Dict:
         """
         Performs an iteration of CV for the given random seed
         :param seed: the seed number of the CV

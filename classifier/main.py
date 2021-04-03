@@ -93,7 +93,7 @@ def main():
               "................................................................\n")
 
     print("\n Aggregated results for {} seeds \n".format(num_seeds))
-    dfs = [pd.concat([pd.DataFrame({"Seed": list(range(1, s.shape[0] + 1))}), s], axis=1) for s in test_scores]
+    dfs = [pd.concat([pd.DataFrame({"Seed": list(range(1, num_seeds + 1))}), s], axis=1) for s in test_scores]
     df = pd.concat(dfs)
     df.to_csv(os.path.join(path_to_results, "avg_seeds_test.csv"), index=False)
     print(df)
