@@ -1,5 +1,6 @@
 {
   "output_size": 2,
   "features_extraction": false,
-  "pretrained_model": "squeezenet"
+  "pretrained_model": "squeezenet",
+  "download_model_locally": true
 }

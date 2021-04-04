@@ -1,13 +1,13 @@
 {
   "device": "cuda:3",
   "dataset_name": "alzheimer",
-  "num_seeds": 1,
+  "num_seeds": 5,
   "train": {
     "network_type": "pre_trained_cnn",
-    "epochs": 1,
+    "epochs": 50,
     "optimizer": "Adam",
     "criterion": "CrossEntropyLoss",
-    "batch_size": 256,
+    "batch_size": 32,
     "learning_rate": 3e-5,
     "log_every": 1,
     "evaluate_every": 1,
