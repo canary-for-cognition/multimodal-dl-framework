@@ -82,7 +82,7 @@ class Trainer:
                 if self.__early_stopping_check(evaluations[-1]["metrics"]["val"][self.__es_metric]):
                     break
 
-        print("\n Finished train! \n")
+        print("\n Finished training! \n")
 
         return self.__model, evaluations
 

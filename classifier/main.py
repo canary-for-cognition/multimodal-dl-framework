@@ -92,11 +92,11 @@ def main():
               "                        Finished CV                  \n"
               "................................................................\n")
 
-    print("\n Aggregated results for {} seeds \n".format(num_seeds))
-    dfs = [pd.concat([pd.DataFrame({"Seed": list(range(1, num_seeds + 1))}), s], axis=1) for s in test_scores]
-    df = pd.concat(dfs)
-    df.to_csv(os.path.join(path_to_results, "avg_seeds_test.csv"), index=False)
-    print(df)
+    print("\n Average test results for {} seeds \n".format(num_seeds))
+    avg_seeds_test = pd.DataFrame(test_scores)
+    avg_seeds_test.insert(0, "seed", list(range(1, num_seeds + 1)))
+    avg_seeds_test.to_csv(os.path.join(path_to_results, "avg_seeds_test.csv"), index=False)
+    print(avg_seeds_test)
 
     print("\n\n==========================================================\n"
           "            Finished experiment in {:.2f}m              \n"

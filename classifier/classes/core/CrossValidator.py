@@ -99,7 +99,7 @@ class CrossValidator:
 
             best_eval = self.__evaluator.evaluate(data, model, path_to_best_model)
 
-            print("\n *** Finished iteration {} of CV! ***".format(fold))
+            print("\n *** Finished processing fold {} / {}! ***".format(fold + 1, k))
 
             print("\n Saving metrics...")
             metrics_log = "fold_" + str(fold) + ".json"
