@@ -1,7 +1,7 @@
 import os
 import re
 import string
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 import matplotlib.pyplot as plt
 import pandas as pd

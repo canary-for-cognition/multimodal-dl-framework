@@ -13,7 +13,7 @@ def main():
         - "generate_mfcc_spectrograms": generates the MFCC spectrogram as a visual representation of audio
         - "generate_audio_sequences": generates the audio sequences from the raw audio WAV files
     """
-    operations = ["generate_scan_paths"]
+    operations = ["preprocess_eye_tracking_sequences", "generate_scan_paths"]
     Pipeline().run(operations)
 
 

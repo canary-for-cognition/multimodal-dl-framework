@@ -1,4 +1,4 @@
 {
   "path_to_src": "preprocessed/sequences/eye_tracking/augmented",
-  "path_to_dest": "preprocessed/images/eye_tracking/augmented"
+  "path_to_dest": "preprocessed/images/eye_tracking/scanpaths/augmented"
 }
