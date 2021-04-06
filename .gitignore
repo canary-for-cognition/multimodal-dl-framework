@@ -141,3 +141,4 @@ dmypy.json
 /dataset/alzheimer/tasks/
 /dataset/cognitive_abilities/
 /dataset/confusion/
+/classifier/trained_models/
