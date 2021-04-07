@@ -4,5 +4,5 @@
   "max_sentences": 75,
   "max_words": 66,
   "vocabulary_size": 1126,
-  "path_to_pretrained_models": "assets/pretrained_models"
+  "embedding_size": 300
 }

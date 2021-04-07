@@ -7,8 +7,8 @@ train and evaluation of the models as well as the Neural Networks (NNs) architec
 
 ## Requirements
 
-The code is based on PyTorch and can run both on CPU and GPU supporting CUDA. In order to run the software, please
-install the requirements listed in the `requirements.txt` file. The code has been tested using PyTorch 1.4.0.
+The code is based on PyTorch and can run both on CPU and GPUs supporting CUDA. In order to run the software, please
+install the requirements listed in the `requirements.txt` file.
 
 ## Framework Components
 

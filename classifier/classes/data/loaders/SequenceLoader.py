@@ -1,7 +1,6 @@
-import pickle
-
 import numpy as np
 import pandas as pd
+import pickle5 as pickle
 import torch
 
 from classifier.classes.data.loaders.Loader import Loader

@@ -4,7 +4,7 @@
     "neg": "healthy"
   },
   "paths": {
-    "dataset_dir": "../dataset/alzheimer/tasks/reading",
+    "dataset_dir": "../dataset/alzheimer/tasks/cookie_theft",
     "dataset_metadata": "metadata",
     "cv_metadata": "metadata/cv_splits",
     "main_modality": "sequences/eye_tracking/augmented",

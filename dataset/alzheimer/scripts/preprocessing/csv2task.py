@@ -6,10 +6,13 @@ from tqdm import tqdm
 
 def main():
     # Either "CookieTheft", "Reading", "Memory" or "PupilCalib"
-    task_code = "Reading"
+    task_code = "CookieTheft"
+
+    # Either "cookie_theft", "reading", "memory" or "pupil_calibration"
+    task_id = "cookie_theft"
 
     # The list of participant ids (PIDs) involved in the selected task
-    path_to_participants = os.path.join("tasks", "reading", "metadata", "participants.csv")
+    path_to_participants = os.path.join("tasks", task_id, "metadata", "participants", "eye_tracking.csv")
 
     # The experimental log providing the participant type (i.e., the ground truth)
     path_to_participants_log = os.path.join("metadata", "participants_log.tsv")
@@ -18,7 +21,7 @@ def main():
     path_to_raw = os.path.join("raw", "eye_tracking_csv")
 
     # Destination path to task
-    path_to_task = os.path.join("tasks", "reading", "modalities", "raw", "seq_eye_tracking")
+    path_to_task = os.path.join("tasks", task_id, "modalities", "raw", "seq_eye_tracking")
 
     # The timestamps defining the tasks for the eye-tracking data
     path_to_timestamps = os.path.join("metadata", "tasks_timestamps.csv")
