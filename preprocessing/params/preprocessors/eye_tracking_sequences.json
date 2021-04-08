@@ -2,8 +2,7 @@
   "verbose": true,
   "features": "all",
   "max_sequence_length": -1,
-  "fill_na_with_mean": false,
-  "collapse_fixations": false,
+  "collapse_fixations": true,
   "filter_by_event": {
     "active": false,
     "type": "fixation"
@@ -13,5 +12,5 @@
     "step": 4
   },
   "path_to_src": "raw/seq_eye_tracking",
-  "path_to_dest": "preprocessed/sequences/eye_tracking"
+  "path_to_dest": "preprocessed/sequences/eye_tracking_coll_fix"
 }

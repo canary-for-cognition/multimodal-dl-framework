@@ -19,7 +19,7 @@ class HeatmapsGenerator(Generator):
 
         self.__debug_mode = self._params["debug_mode"]
         self.__filter_out_non_fixations = self._params["filter_out_non_fixations"]
-        self.__max_sequence_length = self._params["max_sequence_length"]
+        self.__max_seq_len = self._params["max_sequence_length"]
 
         self.__show_bg_image = self._params["bg_image"]["show"]
         if self.__show_bg_image:
@@ -186,7 +186,7 @@ class HeatmapsGenerator(Generator):
         for file_name in tqdm(os.listdir(path_to_src), desc="Generating heatmaps at {}".format(path_to_destination)):
             path_to_heatmap = os.path.join(path_to_destination, file_name.rstrip("pkl") + "png")
             item = pickle.load(open(os.path.join(path_to_src, file_name), "rb"))
-            item = item.values if self.__max_sequence_length == -1 else item.values[-self.__max_sequence_length:, :]
+            item = item.values if self.__max_seq_len == -1 else item.values[-self.__max_seq_len:, :]
 
             if self.__dataset_type == "confusion":
                 x, y = self.__fetch_confusion_coords(item, file_name)

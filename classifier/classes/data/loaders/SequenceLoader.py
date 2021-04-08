@@ -10,7 +10,7 @@ class SequenceLoader(Loader):
 
     def __init__(self, for_submodule: bool = False):
         super().__init__("sequences", for_submodule)
-        self.__max_sequence_length = self._modality_params["length"]
+        self.__max_seq_len = self._modality_params["length"]
         self.__num_features = self._modality_params["num_features"]
         self.__truncate_from = self._modality_params["truncate_from"]
 
@@ -20,7 +20,7 @@ class SequenceLoader(Loader):
         :param sequences: the sequences involving only the selected features
         :return:
         """
-        padding = np.zeros((self.__max_sequence_length - len(sequences), self.__num_features))
+        padding = np.zeros((self.__max_seq_len - len(sequences), self.__num_features))
         return np.append(padding, sequences, axis=0)
 
     def __truncate(self, sequence: np.ndarray) -> np.ndarray:
@@ -33,8 +33,8 @@ class SequenceLoader(Loader):
         :return: the truncated sequence
         """
         truncations_map = {
-            "head": sequence[:self.__max_sequence_length, :],
-            "tail": sequence[-self.__max_sequence_length:, :]
+            "head": sequence[:self.__max_seq_len, :],
+            "tail": sequence[-self.__max_seq_len:, :]
         }
         return truncations_map[self.__truncate_from][:, :self.__num_features]
 
@@ -49,7 +49,7 @@ class SequenceLoader(Loader):
         sequence = pickle.load(open(path_to_item, 'rb')) if self._file_format == "pkl" else pd.read_csv(path_to_item)
         sequence = self.__truncate(sequence.values)
 
-        if len(sequence) < self.__max_sequence_length:
+        if len(sequence) < self.__max_seq_len:
             sequence = self.__pad_sequences(sequence)
 
         return torch.from_numpy(sequence.astype(np.float32))

@@ -3,8 +3,8 @@
   "dataset_name": "alzheimer",
   "num_seeds": 10,
   "train": {
-    "network_type": "pre_trained_cnn",
-    "epochs": 15,
+    "network_type": "rnn",
+    "epochs": 100,
     "optimizer": "Adam",
     "criterion": "CrossEntropyLoss",
     "batch_size": 32,
