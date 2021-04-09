@@ -1,5 +1,5 @@
 {
-  "dataset_name": "alzheimer/tasks/cookie_theft",
+  "dataset_name": "alzheimer/tasks/reading",
   "labels": {
     "positive": "1_alzheimer",
     "negative": "0_healthy"

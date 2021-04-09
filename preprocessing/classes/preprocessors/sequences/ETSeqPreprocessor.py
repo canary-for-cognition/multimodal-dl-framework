@@ -144,16 +144,16 @@ class ETSeqPreprocessor(Preprocessor):
 
         # Generate and save the augmented sequences
         for i in range(0, self.__split_step):
-            item_id += "-" + str(i + 1)
+            augmented_item_id = item_id + "-" + str(i + 1)
             sampled_sequence = seq[i::self.__split_step]
-            self.__save_seq(sampled_sequence, path_to_dest_augmented, item_id)
+            self.__save_seq(sampled_sequence, path_to_dest_augmented, augmented_item_id)
 
     def __save_seq(self, seq: pd.DataFrame, path_to_dest: str, item_id: str):
 
         # Collapse all fixations in one time step and save their length as a new feature
         if self.__collapse_fixations:
-            seq["FixationLength"] = seq.groupby("FixationIndex")["FixationIndex"].transform('count')
-            seq["FixationLength"][seq["FixationIndex"] == -1] = -1
+            seq = seq.assign(FixationLength=seq.groupby("FixationIndex")["FixationIndex"].transform('count').values)
+            seq.loc[seq["FixationIndex"] == -1, "FixationLength"] = -1
             seq = seq.loc[(seq["FixationIndex"] == -1) | ~seq["FixationIndex"].duplicated()]
 
         # Drop useless features

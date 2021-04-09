@@ -1,5 +1,5 @@
 {
-  "verbose": true,
+  "verbose": false,
   "features": "all",
   "max_sequence_length": -1,
   "collapse_fixations": true,
