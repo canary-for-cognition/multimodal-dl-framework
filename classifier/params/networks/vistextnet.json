@@ -1,7 +1,7 @@
 {
   "submodules": {
     "text": "transformer",
-    "images": "images_cnn"
+    "images": "cnn_img"
   },
   "layers": {
     "linear_1": {

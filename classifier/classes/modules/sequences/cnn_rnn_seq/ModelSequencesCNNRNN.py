@@ -1,7 +1,7 @@
 from typing import Dict
 
 from classifier.classes.core.Model import Model
-from classifier.classes.modules.sequences.sequences_cnn_rnn.SequencesCNNRNN import SequencesCNNRNN
+from classifier.classes.modules.sequences.cnn_rnn_seq.SequencesCNNRNN import SequencesCNNRNN
 
 
 class ModelSequencesCNNRNN(Model):

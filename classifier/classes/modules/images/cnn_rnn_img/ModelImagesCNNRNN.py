@@ -1,7 +1,7 @@
 from typing import Dict
 
 from classifier.classes.core.Model import Model
-from classifier.classes.modules.images.images_cnn_rnn.ImagesCNNRNN import ImagesCNNRNN
+from classifier.classes.modules.images.cnn_rnn_img.ImagesCNNRNN import ImagesCNNRNN
 
 
 class ModelImagesCNNRNN(Model):

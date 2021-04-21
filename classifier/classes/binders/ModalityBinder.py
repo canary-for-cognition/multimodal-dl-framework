@@ -1,10 +1,10 @@
 class ModalityBinder:
     modalities_map = {
         "rnn": "sequences",
-        "sequences_cnn": "sequences",
-        "sequences_cnn_rnn": "sequences",
-        "images_cnn": "images",
-        "images_cnn_rnn": "images",
+        "cnn_seq": "sequences",
+        "cnn_rnn_seq": "sequences",
+        "cnn_img": "images",
+        "cnn_rnn_img": "images",
         "pre_trained_cnn": "images",
         "han": "text",
         "transformer": "text",

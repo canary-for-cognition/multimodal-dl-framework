@@ -1,14 +1,14 @@
 from typing import Dict
 
 from classifier.classes.core.Model import Model
-from classifier.classes.modules.images.images_cnn.ModelImagesCNN import ModelImagesCNN
-from classifier.classes.modules.images.images_cnn_rnn.ModelImagesCNNRNN import ModelImagesCNNRNN
+from classifier.classes.modules.images.cnn_img.ModelImagesCNN import ModelImagesCNN
+from classifier.classes.modules.images.cnn_rnn_img.ModelImagesCNNRNN import ModelImagesCNNRNN
 from classifier.classes.modules.images.pre_trained_cnn.ModelPreTrainedCNN import ModelPreTrainedCNN
 from classifier.classes.modules.multimodal.vistempnet.ModelVisTempNet import ModelVisTempNet
 from classifier.classes.modules.multimodal.vistextnet.ModelVisTextNet import ModelVisTextNet
+from classifier.classes.modules.sequences.cnn_rnn_seq.ModelSequencesCNNRNN import ModelSequencesCNNRNN
+from classifier.classes.modules.sequences.cnn_seq.ModelSequencesCNN import ModelSequencesCNN
 from classifier.classes.modules.sequences.rnn.ModelRNN import ModelRNN
-from classifier.classes.modules.sequences.sequences_cnn.ModelSequencesCNN import ModelSequencesCNN
-from classifier.classes.modules.sequences.sequences_cnn_rnn.ModelSequencesCNNRNN import ModelSequencesCNNRNN
 from classifier.classes.modules.text.transformer.ModelTransformer import ModelTransformer
 
 
@@ -17,10 +17,10 @@ class ModelFactory:
         "vistextnet": ModelVisTextNet,
         "vistempnet": ModelVisTempNet,
         "rnn": ModelRNN,
-        "sequences_cnn": ModelSequencesCNN,
-        "sequences_cnn_rnn": ModelSequencesCNNRNN,
-        "images_cnn": ModelImagesCNN,
-        "images_cnn_rnn": ModelImagesCNNRNN,
+        "cnn_seq": ModelSequencesCNN,
+        "cnn_rnn_seq": ModelSequencesCNNRNN,
+        "cnn_img": ModelImagesCNN,
+        "cnn_rnn_img": ModelImagesCNNRNN,
         "pre_trained_cnn": ModelPreTrainedCNN,
         "transformer": ModelTransformer,
     }

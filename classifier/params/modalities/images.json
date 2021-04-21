@@ -1,5 +1,5 @@
 {
-  "path_to_data": "eye_tracking/scanpaths/augmented",
+  "path_to_data": "eye_tracking/scanpaths_grad/augmented",
   "file_format": "png",
   "num_channels": 3,
   "size": {

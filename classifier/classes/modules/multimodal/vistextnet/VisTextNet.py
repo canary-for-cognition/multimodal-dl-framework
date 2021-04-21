@@ -18,7 +18,7 @@ class VisTextNet(MultimodalNN):
 
         images_params = network_params["submodules"]["images"]
         images_architecture = images_params["architecture"]
-        self.__stateful_image_model = images_architecture in ["images_cnn_rnn"]
+        self.__stateful_image_model = images_architecture in ["cnn_rnn_img"]
 
         activate_submodule = self._fusion_policy != "early"
         self.images_network = NetworkFactory().get(images_architecture, images_params, activate_submodule)

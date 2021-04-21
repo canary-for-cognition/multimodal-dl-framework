@@ -1,9 +1,9 @@
 class ParamsBinder:
     params_map = {
-        "sequences_cnn": "cnn",
-        "images_cnn": "cnn",
-        "sequences_cnn_rnn": "cnn_rnn",
-        "images_cnn_rnn": "cnn_rnn",
+        "cnn_seq": "cnn",
+        "cnn_img": "cnn",
+        "cnn_rnn_seq": "cnn_rnn",
+        "cnn_rnn_img": "cnn_rnn",
     }
 
     def get(self, network_type: str) -> str:
