@@ -59,4 +59,7 @@ class MultimodalNN(nn.Module):
             "late_average_voting": self.__late_average_voting_fuse,
             "late_blending": self.__late_blending_fuse,
         }
+        if self._fusion_policy not in fusion_policy_map.keys():
+            raise ValueError("Fusion policy '{}' is not supported. Supported policies are: {}"
+                             .format(self._fusion_policy, list(fusion_policy_map.keys())))
         return fusion_policy_map[self._fusion_policy](x1, x2)

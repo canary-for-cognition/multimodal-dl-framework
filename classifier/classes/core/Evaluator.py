@@ -38,7 +38,7 @@ class Evaluator:
             with torch.no_grad():
 
                 for i, (x, y) in enumerate(dataloader):
-                    x, y = x.float().to(self.__device), y.long().to(self.__device)
+                    y = y.long().to(self.__device)
                     o = model.predict(x).to(self.__device)
 
                     loss += [model.get_loss(o, y)]

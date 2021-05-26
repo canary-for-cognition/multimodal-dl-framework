@@ -13,10 +13,12 @@ class VisTempNet(MultimodalNN):
         super().__init__(network_params["fusion_policy"], activation)
 
         images_params = network_params["submodules"]["images"]
+        images_params["device"] = network_params["device"]
         images_architecture = images_params["architecture"]
         self.__stateful_image_model = images_architecture not in ["cnn_lstm"]
 
         sequences_params = network_params["submodules"]["sequences"]
+        sequences_params["device"] = network_params["device"]
         sequences_params["input_size"] = sequences_params["modality"]["num_features"]
         sequences_architecture = sequences_params["architecture"]
 
@@ -43,7 +45,8 @@ class VisTempNet(MultimodalNN):
         :param images: a batch of W x H images of shape [batch_size, num_channels, img_width, img_height]
         :return: the logit for the prediction and the hidden states
         """
-        x1 = self.sequences_network(sequences)
+        state = self.sequences_network.init_state(sequences.shape[0])
+        x1 = self.sequences_network(sequences, state)
         x2 = self.images_network(images)
         return self._fuse_features(x1, x2)
 

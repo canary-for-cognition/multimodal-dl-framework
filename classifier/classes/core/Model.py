@@ -16,7 +16,7 @@ class Model:
         """
         Performs a prediction using the network and returns the output logits
         """
-        return self._network(x.to(self._device))
+        return self._network(x.float().to(self._device))
 
     def print_model_overview(self):
         """

@@ -20,5 +20,6 @@ class LoaderFactory:
         if isinstance(modality, tuple):
             modality = "multimodal"
         if modality not in self.loaders_map.keys():
-            raise ValueError("Loader for {} is not implemented!".format(modality))
+            raise ValueError("Loader for {} is not implemented! \n Implemented loaders are: {}"
+                             .format(modality, list(self.loaders_map.keys())))
         return self.loaders_map[modality]().load

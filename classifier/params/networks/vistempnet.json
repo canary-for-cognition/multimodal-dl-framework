@@ -9,5 +9,5 @@
     }
   },
   "output_size": 2,
-  "fusion_policy": "late_average_voting"
+  "fusion_policy": "late_blending"
 }

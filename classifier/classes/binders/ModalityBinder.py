@@ -6,7 +6,6 @@ class ModalityBinder:
         "cnn_img": "images",
         "cnn_rnn_img": "images",
         "pre_trained_cnn": "images",
-        "han": "text",
         "transformer": "text",
         "vistempnet": ("images", "sequences"),
         "vistextnet": ("images", "text")
@@ -14,5 +13,6 @@ class ModalityBinder:
 
     def get(self, network_type: str) -> str:
         if network_type not in self.modalities_map.keys():
-            raise ValueError("Network {} is not implemented, could not fetch modality!".format(network_type))
+            raise ValueError("Network {} is not implemented, could not fetch modality! \n Implemented networks are: {}"
+                             .format(network_type, list(self.modalities_map.keys())))
         return self.modalities_map[network_type]

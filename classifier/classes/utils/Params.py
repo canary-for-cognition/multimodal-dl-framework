@@ -63,7 +63,11 @@ class Params:
         :param network_type: the type of network to be loaded
         :return: the loaded network parameters in a Dict
         """
-        network_params = json.load(open(os.path.join("params", "networks", ParamsBinder().get(network_type)), "r"))
+        path_to_params = os.path.join("params", "networks", ParamsBinder().get(network_type))
+        if not os.path.isfile(path_to_params):
+            raise ValueError("Params file '{}' for network '{}' not found! \n Available params files are: {}"
+                             .format(path_to_params, network_type, os.listdir(os.path.join("params", "networks"))))
+        network_params = json.load(open(path_to_params, "r"))
 
         if "submodules" in network_params.keys():
             network_params["submodules"] = Params.__load_submodules_params(network_params["submodules"])
@@ -81,7 +85,11 @@ class Params:
         :param dataset_name: the type of data to be loaded
         :return: the loaded data parameters in a Dict
         """
-        params = json.load(open(os.path.join("params", "dataset", dataset_name + ".json"), "r"))
+        path_to_params = os.path.join("params", "dataset", dataset_name + ".json")
+        if not os.path.isfile(path_to_params):
+            raise ValueError("Params file '{}' for dataset '{}' not found! \n Available params files are: {}"
+                             .format(path_to_params, dataset_name, os.listdir(os.path.join("params", "dataset"))))
+        params = json.load(open(path_to_params, "r"))
         params["name"] = dataset_name
 
         dataset_dir, modalities_dir = params["paths"]["dataset_dir"], params["paths"]["modalities_dir"]

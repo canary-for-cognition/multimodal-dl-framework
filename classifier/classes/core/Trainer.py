@@ -63,7 +63,7 @@ class Trainer:
 
                 self.__model.reset_gradient()
 
-                x, y = x.float().to(self.__device), y.long().to(self.__device)
+                y = y.long().to(self.__device)
                 o = self.__model.predict(x).to(self.__device)
 
                 running_loss += self.__model.update_weights(o, y)

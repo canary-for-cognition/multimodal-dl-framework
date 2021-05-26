@@ -13,5 +13,6 @@ class GroupingPolicyFactory:
 
     def get(self, grouper_type: str) -> GroupingPolicy:
         if grouper_type not in self.policies_map.keys():
-            raise ValueError("Grouper for {} is not implemented!".format(grouper_type))
+            raise ValueError("Grouper for {} is not implemented! \n Implemented groupers are: {}"
+                             .format(grouper_type, list(self.policies_map.keys())))
         return self.policies_map[grouper_type]()

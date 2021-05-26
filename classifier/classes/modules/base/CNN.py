@@ -16,7 +16,7 @@ class CNN(nn.Module):
         self.__num_conv = network_params["num_conv"]
         self.__conv_block_params = network_params["layers"]["conv_block"]
         classifier_params = network_params["layers"]["classifier"]
-        bottleneck_output_size = classifier_params["linear_1"]["out_features"]
+        self.__bottleneck_output_size = classifier_params["linear_1"]["out_features"]
         self.__activation = activation
 
         conv_blocks, last_conv_out_channels = self._generate_conv_blocks()
@@ -25,12 +25,15 @@ class CNN(nn.Module):
         self.__linear_size = self._compute_linear_size(input_size, output_size=last_conv_out_channels)
 
         self.fc = nn.Sequential(
-            nn.Linear(self.__linear_size, bottleneck_output_size),
+            nn.Linear(self.__linear_size, self.__bottleneck_output_size),
             nn.ReLU()
         )
 
         if self.__activation:
             self.classifier = self.__generate_classifier(classifier_params, output_size)
+
+    def get_pre_activation_size(self) -> int:
+        return self.__bottleneck_output_size
 
     @staticmethod
     def __generate_classifier(params: Dict, output_size: int) -> nn.Sequential:

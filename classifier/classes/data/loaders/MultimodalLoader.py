@@ -9,7 +9,7 @@ from classifier.classes.utils.Params import Params
 class MultimodalLoader:
 
     def __init__(self):
-        network_params = Params.load_network_params(Params.load_experiment_params()["network_type"])
+        network_params = Params.load_network_params(Params.load_experiment_params()["train"]["network_type"])
         self.__modalities = list(network_params["submodules"].keys())
 
     loaders_map = {"images": ImageLoader, "sequences": SequenceLoader, "text": TextLoader}

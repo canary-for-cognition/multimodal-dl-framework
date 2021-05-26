@@ -10,3 +10,4 @@ class ImagesCNN(CNN):
         network_params["input_size"] = img_size
         network_params["layers"]["conv_block"]["conv_1"]["in_channels"] = network_params["modality"]["num_channels"]
         super().__init__(network_params, activation)
+

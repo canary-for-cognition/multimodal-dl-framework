@@ -13,6 +13,6 @@ class ModelVisTempNet(Model):
         self._network = VisTempNet(network_params).float().to(self._device)
 
     def predict(self, x: Dict, **kwargs) -> torch.Tensor:
-        seq = x["sequences"].to(self._device)
-        img = x["images"].to(self._device)
+        seq = x["sequences"].float().to(self._device)
+        img = x["images"].float().to(self._device)
         return self._network(seq, img)

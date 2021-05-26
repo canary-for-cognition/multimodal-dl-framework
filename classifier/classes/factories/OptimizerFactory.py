@@ -16,5 +16,6 @@ class OptimizerFactory:
 
     def get(self, optimizer_type: str) -> torch.optim:
         if optimizer_type not in self.optimizers_map.keys():
-            raise ValueError("Optimizer for {} is not implemented!".format(optimizer_type))
+            raise ValueError("Optimizer for {} is not implemented! \n Implemented optimizers are: {}"
+                             .format(optimizer_type, list(self.optimizers_map.keys())))
         return self.optimizers_map[optimizer_type]

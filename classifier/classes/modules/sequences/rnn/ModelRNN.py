@@ -19,5 +19,6 @@ class ModelRNN(Model):
         :param x: a batch of input sequences
         :return: the output logits
         """
+        x = x.float().to(self._device)
         s = self._network.init_state(x.shape[0])
         return self._network(x, s)

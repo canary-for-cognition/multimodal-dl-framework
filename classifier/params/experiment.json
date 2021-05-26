@@ -3,11 +3,11 @@
   "dataset_name": "alzheimer",
   "num_seeds": 10,
   "train": {
-    "network_type": "pre_trained_cnn",
+    "network_type": "vistempnet",
     "epochs": 15,
     "optimizer": "Adam",
     "criterion": "CrossEntropyLoss",
-    "batch_size": 32,
+    "batch_size": 64,
     "learning_rate": 3e-5,
     "log_every": 1,
     "evaluate_every": 1,
