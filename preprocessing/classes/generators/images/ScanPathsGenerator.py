@@ -22,7 +22,11 @@ class ScanPathsGenerator(Generator):
         sequences_files = os.listdir(path_to_src)
         for file_name in tqdm(sequences_files, desc="Generating scan-paths at {}".format(path_to_destination)):
             item = pickle.load(open(os.path.join(path_to_src, file_name), "rb")).values
+            
+            # Filter out NaN
             item = item[item[:, 0] != -1.0]
+            
+            # Take "GazePointX (ADCSpx)" and "GazePointY (ADCSpx)"
             x, y = item[:, 4], item[:, 5]
 
             if self.__use_temp_grad:
