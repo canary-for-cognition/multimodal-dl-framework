@@ -21,6 +21,10 @@ experiments.
 
 ### Eye-tracking
 
+> Resources:
+> * https://www.tobiipro.com/learn-and-support/learn/eye-tracking-essentials/how-do-tobii-eye-trackers-work/
+> * https://www.tobiipro.com/learn-and-support/learn/eye-tracking-essentials/types-of-eye-movements/
+
 Data recorded using the eye-tracker is provided by participant, not by task. For each participant, data related to a
 specific task can be identified using the timestamps provided in `metadata/timestamps.csv`.
 
