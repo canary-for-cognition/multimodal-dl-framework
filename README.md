@@ -1,7 +1,6 @@
 # Neural Networks for Binary Classification on Multimodal Data
 
-An extensible PyTorch framework to experiment with neural-networks-based deep learning algorithms on multiple data
-modalities for binary classification.
+An extensible PyTorch framework to experiment with neural-networks-based deep learning algorithms on multiple data modalities for binary classification. The code in this repository was written by @matteo-rizzo for his [Master's thesis](https://www.researchgate.net/publication/365470266_Neural_networks_for_predicting_early-stage_Alzheimer's_disease_on_a_multimodal_dataset).
 
 ## Main features
 
